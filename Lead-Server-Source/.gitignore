@@ -2,3 +2,5 @@
 .vs
 /**/Debug/
 /**/Release/
+/**/*.idb
+/**/*.pdb
