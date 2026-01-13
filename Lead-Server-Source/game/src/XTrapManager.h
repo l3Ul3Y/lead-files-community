@@ -2,7 +2,6 @@
 #ifndef _XTRAP_MANAGER_H_
 #define _XTRAP_MANAGER_H_
 
-#include "IFileMonitor.h"
 
 #define SESSION_BUF_LEN		320
 #define VERIFY_PACK_LEN		128

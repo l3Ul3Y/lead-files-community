@@ -68,12 +68,6 @@
 	#include "limit_time.h"
 #endif
 
-//#define __FILEMONITOR__
-
-#if defined (__FreeBSD__) && defined(__FILEMONITOR__)
-	#include "FileMonitor_FreeBSD.h"
-#endif
-
 #ifdef __AUCTION__
 #include "auction_manager.h"
 #endif
@@ -295,14 +289,6 @@ void heartbeat(LPHEART ht, int pulse)
 	// 약 1.16초마다
 	if (!(pulse % (passes_per_sec + 4)))
 		CHARACTER_MANAGER::instance().ProcessDelayedSave();
-
-	//4초 마다
-#if defined (__FreeBSD__) && defined(__FILEMONITOR__)
-	if (!(pulse % (passes_per_sec * 5)))
-	{
-		FileMonitorFreeBSD::Instance().Update(pulse); 
-	}
-#endif
 
 	// 약 5.08초마다
 	if (!(pulse % (passes_per_sec * 5 + 2)))
@@ -559,16 +545,6 @@ int main(int argc, char **argv)
 				CleanUpForEarlyExit();
 				return 0;
 			}
-#if defined (__FreeBSD__) && defined(__FILEMONITOR__)
-			//PFN_FileChangeListener pNotifyFunc = boost::bind( &CXTrapManager::NotifyMapFileChanged, CXTrapManager::instance(), _1 );
-			PFN_FileChangeListener pNotifyFunc = &(CXTrapManager::NotifyMapFileChanged);
-
-			const std::string strMap1Name = "map1.CS3";
-			const std::string strMap2Name = "map2.CS3";
-
-			FileMonitorFreeBSD::Instance().AddWatch( strMap1Name, pNotifyFunc );
-			FileMonitorFreeBSD::Instance().AddWatch( strMap2Name, pNotifyFunc );
-#endif
 		}
 	}
 
