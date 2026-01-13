@@ -383,8 +383,8 @@ void base64_decode(const char * str,char * resultStr)
 	for (i = 0; i < strlen(resultStr); i++) 
 	{
 		char c = resultStr[i];
-		int xor = i + 5;
-		resultStr[i] = char(c ^ xor);
+		int xy = i + 5;
+		resultStr[i] = char(c ^ xy);
 	}	
 	// E
 }
