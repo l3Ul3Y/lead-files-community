@@ -5,7 +5,6 @@
 #include "desc_client.h"
 #include "desc_manager.h"
 #include "protocol.h"
-#include "matrix_card.h"
 #include "passpod.h"
 #include "locale_service.h"
 #include "auth_brazil.h"
@@ -582,12 +581,6 @@ void CInputAuth::PasspodAnswer(LPDESC d, const char * c_pData)
 		sys_log(0, "PASSPOD: wrong answer: %s ret_code %d", d->GetAccountTable().login, ret_code);
 	
 		LoginFailure(d, ERR_MESSAGE[ret_code]);
-
-		if (!d->CheckMatrixTryCount())
-		{
-			LoginFailure(d, "QUIT");
-			d->SetPhase(PHASE_CLOSE);
-		}
 	}
 	else
 	{

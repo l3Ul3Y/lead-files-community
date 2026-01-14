@@ -13,7 +13,6 @@
 #include "item.h"
 #include "item_manager.h"
 #include "p2p.h"
-#include "matrix_card.h"
 #include "log.h"
 #include "login_data.h"
 #include "locale_service.h"
@@ -35,7 +34,6 @@ bool CheckPasspod(const char * account)
  	
 	if (!pMsg)
 	{
-		//fprintf(stderr, "cannot get the MATRIX\n");
 		sys_log(0, "cannot get the PASSPOD");
 		delete pMsg;
 		return false;
@@ -518,59 +516,30 @@ void DBManager::LoginPrepare(BYTE bBillType, DWORD dwBillID, long lRemainSecs, L
 
 	InsertLoginData(pkLD);
 
-	if (*d->GetMatrixCode())
+
+	if (LC_IsNewCIBN())
 	{
-		unsigned long rows = 0, cols = 0;
-		MatrixCardRndCoordinate(rows, cols);
-
-		d->SetMatrixCardRowsAndColumns(rows, cols);
-
-		TPacketGCMatrixCard pm;
-
-		pm.bHeader = HEADER_GC_MATRIX_CARD;
-		pm.dwRows = rows;
-		pm.dwCols = cols;
-
-		d->Packet(&pm, sizeof(TPacketGCMatrixCard));
-
-		sys_log(0, "MATRIX_QUERY: %s %c%d %c%d %c%d %c%d %s", 
-				r.login,
-				MATRIX_CARD_ROW(rows, 0) + 'A',
-				MATRIX_CARD_COL(cols, 0) + 1,
-				MATRIX_CARD_ROW(rows, 1) + 'A',
-				MATRIX_CARD_COL(cols, 1) + 1,
-				MATRIX_CARD_ROW(rows, 2) + 'A',
-				MATRIX_CARD_COL(cols, 2) + 1,
-				MATRIX_CARD_ROW(rows, 3) + 'A',
-				MATRIX_CARD_COL(cols, 3) + 1,
-				d->GetMatrixCode());
-	}
-	else
-	{
-		if (LC_IsNewCIBN())
+		if (!g_bNoPasspod)
 		{
-			if (!g_bNoPasspod)
+			if (CheckPasspod(r.login))
 			{
-				if (CheckPasspod(r.login))
-				{
-					BYTE id = HEADER_GC_REQUEST_PASSPOD;
-					d->Packet(&id, sizeof(BYTE));
-					sys_log(0, "%s request passpod", r.login);
-				}
-				else
-				{
-					SendAuthLogin(d);
-
-				}
+				BYTE id = HEADER_GC_REQUEST_PASSPOD;
+				d->Packet(&id, sizeof(BYTE));
+				sys_log(0, "%s request passpod", r.login);
 			}
 			else
 			{
 				SendAuthLogin(d);
+
 			}
 		}
 		else
+		{
 			SendAuthLogin(d);
+		}
 	}
+	else
+		SendAuthLogin(d);
 }
 
 bool GetGameTimeIP(MYSQL_RES * pRes, BYTE & bBillType, DWORD & dwBillID, int & seconds, const char * c_pszIP)
@@ -723,7 +692,6 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 					// PASSWORD('%s'), password, securitycode, social_id, id, status
 					char szEncrytPassword[45 + 1];
 					char szPassword[45 + 1];
-					char szMatrixCode[MATRIX_CODE_MAX_LEN + 1];
 					char szSocialID[SOCIAL_ID_MAX_LEN + 1];
 					char szStatus[ACCOUNT_STATUS_MAX_LEN + 1];
 					DWORD dwID = 0;
@@ -745,16 +713,6 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 				   	}
 				
 					strlcpy(szPassword, row[col++], sizeof(szPassword));
-
-					if (!row[col]) 
-					{
-						*szMatrixCode = '\0'; 
-						col++;
-					}
-					else
-					{
-						strlcpy(szMatrixCode, row[col++], sizeof(szMatrixCode));
-					}
 
 					if (!row[col])
 				   	{ 
@@ -883,8 +841,6 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 						strlcpy(r.social_id, szSocialID, sizeof(r.social_id));
 						DESC_MANAGER::instance().ConnectAccount(r.login, d);
 
-						d->SetMatrixCode(szMatrixCode);
-
 						if (!g_bBilling)
 						{
 							LoginPrepare(BILLING_FREE, 0, 0, d, pinfo->adwClientKey, aiPremiumTimes);
@@ -949,7 +905,6 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 					// PASSWORD('%s'), password, securitycode, social_id, id, status
 					char szEncrytPassword[45 + 1];
 					char szPassword[45 + 1];
-					char szMatrixCode[MATRIX_CODE_MAX_LEN + 1];
 					char szSocialID[SOCIAL_ID_MAX_LEN + 1];
 					char szStatus[ACCOUNT_STATUS_MAX_LEN + 1];
 					DWORD dwID = 0;
@@ -971,16 +926,6 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 				   	}
 				
 					strlcpy(szPassword, row[col++], sizeof(szPassword));
-
-					if (!row[col]) 
-					{
-						*szMatrixCode = '\0'; 
-						col++;
-					}
-					else
-					{
-						strlcpy(szMatrixCode, row[col++], sizeof(szMatrixCode));
-					}
 
 					if (!row[col])
 				   	{ 
@@ -1114,8 +1059,6 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 						strlcpy(r.passwd, pinfo->passwd, sizeof(r.passwd));
 						strlcpy(r.social_id, szSocialID, sizeof(r.social_id));
 						DESC_MANAGER::instance().ConnectAccount(r.login, d);
-
-						d->SetMatrixCode(szMatrixCode);
 
 						if (!g_bBilling)
 						{

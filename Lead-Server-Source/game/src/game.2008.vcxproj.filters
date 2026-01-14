@@ -292,9 +292,6 @@
     <ClCompile Include="marriage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="matrix_card.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="messenger_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -748,9 +745,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="marriage.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="matrix_card.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="messenger_manager.h">
