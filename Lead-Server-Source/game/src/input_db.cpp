@@ -31,7 +31,6 @@
 
 #include "monarch.h"
 #include "affect.h"
-#include "block_country.h"
 #include "motion.h"
 
 #include "dev_log.h"
@@ -989,13 +988,6 @@ void CInputDB::Boot(const char* data)
 	}
 
 	CPCBangManager::instance().RequestUpdateIPList(0);
-
-
-	// request blocked_country_ip
-	{
-		db_clientdesc->DBPacket(HEADER_GD_BLOCK_COUNTRY_IP, 0, NULL, 0);
-		dev_log(LOG_DEB0, "<sent HEADER_GD_BLOCK_COUNTRY_IP>");
-	}
 }
 
 EVENTINFO(quest_login_event_info)
