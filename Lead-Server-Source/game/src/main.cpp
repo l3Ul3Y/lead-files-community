@@ -48,7 +48,6 @@
 #include "castle.h"
 #include "ani.h"
 #include "BattleArena.h"
-#include "over9refine.h"
 #include "horsename_manager.h"
 #include "pcbang.h"
 #include "MarkManager.h"
@@ -453,7 +452,6 @@ int main(int argc, char **argv)
 	CPolymorphUtils polymorph_utils;
 	CProfiler		profiler;
 	CBattleArena	ba;
-	COver9RefineManager	o9r;
 	SpamManager		spam_mgr;
 	CThreeWayWar	threeway_war;
 	CDragonLairManager	dl_manager;
