@@ -19,16 +19,6 @@ UpgradeLog.htm
 # Ignore installed dependencies
 vcpkg_installed
 
-# Generated log files
-/**/packet_info.txt
-/**/p2p_packet_info.txt
-/**/ProfileLog
-/**/PTS.txt
-/**/syserr.txt
-/**/syslog.txt
-/**/syserr
-/**/syslog
-
 # Symlinks of cores
 /(auth|channel[1-4])/.*/data/?$
 /(auth|channel[1-4])/.*/locale/?$
