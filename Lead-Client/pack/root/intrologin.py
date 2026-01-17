@@ -52,9 +52,6 @@ elif localeInfo.IsHONGKONG():
 elif localeInfo.IsJAPAN():
 	FULL_BACK_IMAGE = True
 	
-elif localeInfo.IsBRAZIL():
-	LOGIN_DELAY_SEC = 60.0
-
 def IsFullBackImage():
 	global FULL_BACK_IMAGE
 	return FULL_BACK_IMAGE
@@ -373,10 +370,7 @@ class LoginWindow(ui.ScriptWindow):
 
 	def OnEndCountDown(self):
 		self.isNowCountDown = False
-		if localeInfo.IsBRAZIL():
-			self.timeOutMsg = True
-		else:
-			self.timeOutMsg = False
+		self.timeOutMsg = False
 		self.OnConnectFailure()
 
 	def OnConnectFailure(self):
@@ -482,10 +476,7 @@ class LoginWindow(ui.ScriptWindow):
 			if self.virtualKeyboard:
 				self.VIRTUAL_KEY_ALPHABET_UPPERS = Suffle(localeInfo.VIRTUAL_KEY_ALPHABET_UPPERS)
 				self.VIRTUAL_KEY_ALPHABET_LOWERS = "".join([localeInfo.VIRTUAL_KEY_ALPHABET_LOWERS[localeInfo.VIRTUAL_KEY_ALPHABET_UPPERS.index(e)] for e in self.VIRTUAL_KEY_ALPHABET_UPPERS])
-				if localeInfo.IsBRAZIL():
-					self.VIRTUAL_KEY_SYMBOLS_BR = Suffle(localeInfo.VIRTUAL_KEY_SYMBOLS_BR)
-				else:
-					self.VIRTUAL_KEY_SYMBOLS = Suffle(localeInfo.VIRTUAL_KEY_SYMBOLS)
+				self.VIRTUAL_KEY_SYMBOLS = Suffle(localeInfo.VIRTUAL_KEY_SYMBOLS)
 				self.VIRTUAL_KEY_NUMBERS = Suffle(localeInfo.VIRTUAL_KEY_NUMBERS)
 				self.__VirtualKeyboard_SetAlphabetMode()
 			
@@ -567,10 +558,7 @@ class LoginWindow(ui.ScriptWindow):
 		if self.virtualKeyboardMode == "ALPHABET":
 			self.__VirtualKeyboard_SetKeys(self.VIRTUAL_KEY_ALPHABET_UPPERS)
 		elif self.virtualKeyboardMode == "NUMBER":
-			if localeInfo.IsBRAZIL():
-				self.__VirtualKeyboard_SetKeys(self.VIRTUAL_KEY_SYMBOLS_BR)
-			else:	
-				self.__VirtualKeyboard_SetKeys(self.VIRTUAL_KEY_SYMBOLS)
+			self.__VirtualKeyboard_SetKeys(self.VIRTUAL_KEY_SYMBOLS)
 		else:
 			self.__VirtualKeyboard_SetKeys(self.VIRTUAL_KEY_NUMBERS)
 			
@@ -582,10 +570,7 @@ class LoginWindow(ui.ScriptWindow):
 		elif self.virtualKeyboardMode == "NUMBER":
 			self.__VirtualKeyboard_SetKeys(self.VIRTUAL_KEY_NUMBERS)			
 		else:
-			if localeInfo.IsBRAZIL():
-				self.__VirtualKeyboard_SetKeys(self.VIRTUAL_KEY_SYMBOLS_BR)
-			else:	
-				self.__VirtualKeyboard_SetKeys(self.VIRTUAL_KEY_SYMBOLS)
+			self.__VirtualKeyboard_SetKeys(self.VIRTUAL_KEY_SYMBOLS)
 			
 	def __VirtualKeyboard_SetAlphabetMode(self):
 		self.virtualKeyboardIsUpper = False
@@ -600,10 +585,7 @@ class LoginWindow(ui.ScriptWindow):
 	def __VirtualKeyboard_SetSymbolMode(self):		
 		self.virtualKeyboardIsUpper = False
 		self.virtualKeyboardMode = "SYMBOL"
-		if localeInfo.IsBRAZIL():
-			self.__VirtualKeyboard_SetKeys(self.VIRTUAL_KEY_SYMBOLS_BR)
-		else:	
-			self.__VirtualKeyboard_SetKeys(self.VIRTUAL_KEY_SYMBOLS)
+		self.__VirtualKeyboard_SetKeys(self.VIRTUAL_KEY_SYMBOLS)
 				
 	def Connect(self, id, pwd):
 
@@ -878,17 +860,14 @@ class LoginWindow(ui.ScriptWindow):
 		visible_index = 1
 		for id, regionDataDict in regionDict.items():
 			name = regionDataDict.get("name", "noname")
-			if localeInfo.IsBRAZIL() or localeInfo.IsCANADA():
-				self.serverList.InsertItem(id, "%s" % (name))
-			else:
-				try:
-					server_id = serverInfo.SERVER_ID_DICT[id]
-				except:
-					server_id = visible_index
+			try:
+				server_id = serverInfo.SERVER_ID_DICT[id]
+			except:
+				server_id = visible_index
 
-				self.serverList.InsertItem(id, "  %02d. %s" % (int(server_id), name))
+			self.serverList.InsertItem(id, "  %02d. %s" % (int(server_id), name))
 
-				visible_index += 1
+			visible_index += 1
 		
 		# END_OF_SEVER_LIST_BUG_FIX
 
