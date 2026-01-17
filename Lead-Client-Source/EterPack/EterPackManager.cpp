@@ -256,7 +256,7 @@ bool CEterPackManager::GetFromFile(CMappedFile & rMappedFile, const char * c_szF
 	//const char *pcExt = strchr(c_szFileName, '.');
 	//if (pcExt && 
 	//	_strnicmp(pcExt, ".py", 3) == 0 && // python 스크립트 중
-	//	stricmp(c_szFileName, "logininfo.py") != 0 && // 로그인 정보 파일이 아니고
+	//	_stricmp(c_szFileName, "logininfo.py") != 0 && // 로그인 정보 파일이 아니고
 	//	strnicmp(c_szFileName, "locale", 6) != 0
 	//	)
 	//{

@@ -385,72 +385,76 @@ bool CPythonSystem::IsUseDefaultIME()
 
 bool CPythonSystem::LoadConfig()
 {
-	FILE * fp = NULL;
+	FILE* fp = NULL;
 
-	if (NULL == (fp = fopen("metin2.cfg", "rt")))
+	if (fopen_s(&fp, "metin2.cfg", "rt") != 0)
 		return false;
 
 	char buf[256];
 	char command[256];
 	char value[256];
 
-	while (fgets(buf, 256, fp))
+	while (fgets(buf, sizeof(buf), fp))
 	{
-		if (sscanf(buf, " %s %s\n", command, value) == EOF)
+		if (sscanf_s(buf, " %s %s\n", command, (unsigned)sizeof(command), value, (unsigned)sizeof(value)) == EOF)
 			break;
 
-		if (!stricmp(command, "WIDTH"))
-			m_Config.width		= atoi(value);
-		else if (!stricmp(command, "HEIGHT"))
-			m_Config.height	= atoi(value);
-		else if (!stricmp(command, "BPP"))
-			m_Config.bpp		= atoi(value);
-		else if (!stricmp(command, "FREQUENCY"))
+		if (!_stricmp(command, "WIDTH"))
+			m_Config.width = atoi(value);
+		else if (!_stricmp(command, "HEIGHT"))
+			m_Config.height = atoi(value);
+		else if (!_stricmp(command, "BPP"))
+			m_Config.bpp = atoi(value);
+		else if (!_stricmp(command, "FREQUENCY"))
 			m_Config.frequency = atoi(value);
-		else if (!stricmp(command, "SOFTWARE_CURSOR"))
+		else if (!_stricmp(command, "SOFTWARE_CURSOR"))
 			m_Config.is_software_cursor = atoi(value) ? true : false;
-		else if (!stricmp(command, "OBJECT_CULLING"))
+		else if (!_stricmp(command, "OBJECT_CULLING"))
 			m_Config.is_object_culling = atoi(value) ? true : false;
-		else if (!stricmp(command, "VISIBILITY"))
+		else if (!_stricmp(command, "VISIBILITY"))
 			m_Config.iDistance = atoi(value);
-		else if (!stricmp(command, "MUSIC_VOLUME")) {
-			if(strchr(value, '.') == 0) { // Old compatiability
-				m_Config.music_volume = pow(10.0f, (-1.0f + (((float) atoi(value)) / 5.0f)));
-				if(atoi(value) == 0)
+		else if (!_stricmp(command, "MUSIC_VOLUME")) {
+			if (strchr(value, '.') == 0) { // Old compatiability
+				m_Config.music_volume = pow(10.0f, (-1.0f + (((float)atoi(value)) / 5.0f)));
+				if (atoi(value) == 0)
 					m_Config.music_volume = 0.0f;
-			} else
+			}
+			else
 				m_Config.music_volume = atof(value);
-		} else if (!stricmp(command, "VOICE_VOLUME"))
-			m_Config.voice_volume = (char) atoi(value);
-		else if (!stricmp(command, "GAMMA"))
+		}
+		else if (!_stricmp(command, "VOICE_VOLUME"))
+			m_Config.voice_volume = (char)atoi(value);
+		else if (!_stricmp(command, "GAMMA"))
 			m_Config.gamma = atoi(value);
-		else if (!stricmp(command, "IS_SAVE_ID"))
+		else if (!_stricmp(command, "IS_SAVE_ID"))
 			m_Config.isSaveID = atoi(value);
-		else if (!stricmp(command, "SAVE_ID"))
-			strncpy(m_Config.SaveID, value, 20);
-		else if (!stricmp(command, "PRE_LOADING_DELAY_TIME"))
+		else if (!_stricmp(command, "SAVE_ID"))
+		{
+			strncpy_s(m_Config.SaveID, sizeof(m_Config.SaveID), value, _TRUNCATE);
+		}
+		else if (!_stricmp(command, "PRE_LOADING_DELAY_TIME"))
 			g_iLoadingDelayTime = atoi(value);
-		else if (!stricmp(command, "WINDOWED"))
+		else if (!_stricmp(command, "WINDOWED"))
 		{
 			m_Config.bWindowed = atoi(value) == 1 ? true : false;
 		}
-		else if (!stricmp(command, "USE_DEFAULT_IME"))
+		else if (!_stricmp(command, "USE_DEFAULT_IME"))
 			m_Config.bUseDefaultIME = atoi(value) == 1 ? true : false;
-		else if (!stricmp(command, "SOFTWARE_TILING"))
+		else if (!_stricmp(command, "SOFTWARE_TILING"))
 			m_Config.bSoftwareTiling = atoi(value);
-		else if (!stricmp(command, "SHADOW_LEVEL"))
+		else if (!_stricmp(command, "SHADOW_LEVEL"))
 			m_Config.iShadowLevel = atoi(value);
-		else if (!stricmp(command, "DECOMPRESSED_TEXTURE"))
+		else if (!_stricmp(command, "DECOMPRESSED_TEXTURE"))
 			m_Config.bDecompressDDS = atoi(value) == 1 ? true : false;
-		else if (!stricmp(command, "NO_SOUND_CARD"))
+		else if (!_stricmp(command, "NO_SOUND_CARD"))
 			m_Config.bNoSoundCard = atoi(value) == 1 ? true : false;
-		else if (!stricmp(command, "VIEW_CHAT"))
+		else if (!_stricmp(command, "VIEW_CHAT"))
 			m_Config.bViewChat = atoi(value) == 1 ? true : false;
-		else if (!stricmp(command, "ALWAYS_VIEW_NAME"))
+		else if (!_stricmp(command, "ALWAYS_VIEW_NAME"))
 			m_Config.bAlwaysShowName = atoi(value) == 1 ? true : false;
-		else if (!stricmp(command, "SHOW_DAMAGE"))
+		else if (!_stricmp(command, "SHOW_DAMAGE"))
 			m_Config.bShowDamage = atoi(value) == 1 ? true : false;
-		else if (!stricmp(command, "SHOW_SALESTEXT"))
+		else if (!_stricmp(command, "SHOW_SALESTEXT"))
 			m_Config.bShowSalesText = atoi(value) == 1 ? true : false;
 	}
 
@@ -468,21 +472,10 @@ bool CPythonSystem::LoadConfig()
 			m_Config.height = screen_height;
 		}
 	}
-	
+
 	m_OldConfig = m_Config;
 
 	fclose(fp);
-
-//	Tracef("LoadConfig: Resolution: %dx%d %dBPP %dHZ Software Cursor: %d, Music/Voice Volume: %d/%d Gamma: %d\n",
-//		m_Config.width,
-//		m_Config.height,
-//		m_Config.bpp,
-//		m_Config.frequency,
-//		m_Config.is_software_cursor,
-//		m_Config.music_volume,
-//		m_Config.voice_volume,
-//		m_Config.gamma);
-
 	return true;
 }
 

@@ -155,10 +155,10 @@ bool CProperty::Save(const char * c_pszFileName)
 		char szCRC[MAX_PATH + 16 + 1];
 
 		GetTimeString(szCRC, time(0));
-		strcpy(szCRC + strlen(szCRC), c_pszFileName);
+		strcat_s(szCRC, sizeof(szCRC), c_pszFileName);
 
 		m_dwCRC = CPropertyManager::Instance().GetUniqueCRC(szCRC);
-		_snprintf(szCRC, sizeof(szCRC), "%u", m_dwCRC);
+		_snprintf_s(szCRC, sizeof(szCRC), _TRUNCATE, "%u", m_dwCRC);
 
 		m_stCRC.assign(szCRC);
 	}

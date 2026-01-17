@@ -35,13 +35,11 @@ VIRTUAL_KEY_NUMBERS    = "1234567890-=\[];',./`"
 
 __IS_ENGLISH	= "ENGLISH" == app.GetLocaleServiceName()	
 __IS_HONGKONG	= "HONGKONG" == app.GetLocaleServiceName()
-__IS_NEWCIBN	= "locale/newcibn" == app.GetLocalePath()
 __IS_EUROPE		= "EUROPE" == app.GetLocaleServiceName()		
 __IS_CANADA		= "locale/ca" == app.GetLocalePath()
 __IS_SINGAPORE	= "locale/sg" == app.GetLocalePath()
 __IS_VIETNAM	= "locale/vn" == app.GetLocalePath()
 __IS_ARABIC		= "locale/ae" == app.GetLocalePath()
-__IS_CIBN10		= "locale/cibn10" == app.GetLocalePath()
 __IS_WE_KOREA	= "locale/we_korea" == app.GetLocalePath()
 __IS_TAIWAN		= "locale/taiwan" == app.GetLocalePath()
 __IS_JAPAN		= "locale/japan" == app.GetLocalePath()	
@@ -67,13 +65,6 @@ def IsHONGKONG():
 
 def IsTAIWAN():
 	return "locale/taiwan" == app.GetLocalePath()
-
-def IsNEWCIBN():
-	return "locale/newcibn" == app.GetLocalePath()
-
-def IsCIBN10():
-	global __IS_CIBN10
-	return __IS_CIBN10
 	
 def IsEUROPE():
 	global __IS_EUROPE
@@ -176,12 +167,6 @@ elif IsSINGAPORE() :
 	FN_GM_MARK = "%s/effect/gm.mse"	% app.GetLocalePath()
 	LOCALE_FILE_NAME = "%s/locale_game.txt" % app.GetLocalePath()
 	constInfo.IN_GAME_SHOP_ENABLE = 0
-elif IsNEWCIBN() :
-	##���Ӹ��̱�����.
-	APP_TITLE = "������2"
-	FN_GM_MARK = "%s/effect/gm.mse"	% app.GetLocalePath()
-	LOCALE_FILE_NAME = "%s/locale_game.txt" % app.GetLocalePath()
-	constInfo.IN_GAME_SHOP_ENABLE = 1
 elif IsTAIWAN():
 	APP_TITLE = "��III��"
 	FN_GM_MARK = "%s/effect/gm.mse"	% app.GetLocalePath()
@@ -835,71 +820,6 @@ elif IsHONGKONG():
 
 		return result
 
-elif IsNEWCIBN() or IsCIBN10():
-	def DO_YOU_SELL_ITEM(sellItemName, sellItemCount, sellItemPrice):
-		if sellItemCount>1:
-			return "ȷ��Ҫ��%s��%s��%s���������" % (str(sellItemCount), sellItemName, str(sellItemPrice))
-		else:
-			return "ȷ��Ҫ��%s��%s���������" % (sellItemName, str(sellItemPrice))
-
-	def DO_YOU_BUY_ITEM(sellItemName, sellItemCount, sellItemPrice):
-		if sellItemCount>1:
-			return "ȷ��Ҫ��%s��%s��%s��������" % (str(sellItemCount), sellItemName, str(sellItemPrice))
-		else:
-			return "ȷ��Ҫ��%s��%s��������" % (sellItemName, str(sellItemPrice))
-
-	def REFINE_FAILURE_CAN_NOT_ATTACH(attachedItemName):
-		return "�޷���Ƕ%s ��װ��" % (attachedItemName)
-
-	def REFINE_FAILURE_NO_SOCKET(attachedItemName):
-		return "û�п�����Ƕ%s �Ŀ�" % (attachedItemName)
-
-	def REFINE_FAILURE_NO_GOLD_SOCKET(attachedItemName):
-		return "û�п�����Ƕ%s �Ļƽ��" % (attachedItemName)
-
-	def HOW_MANY_ITEM_DO_YOU_DROP(dropItemName, dropItemCount):
-		if dropItemCount>1:
-			return "ȷ��Ҫ�ӵ�%d��%s��?" % (dropItemCount, dropItemName)
-		else:
-			return "ȷ��Ҫ�ӵ�%s��?" % (dropItemName)
-
-	def FISHING_NOTIFY(isFish, fishName):
-		if isFish:
-			return fishName # ���� ���⿡ � ���� �پ��ִµ�, ���ڵ��� �����־ ������ ���� ���� �Ф�... cython���� ���ڵ� ���� ���� ��������...
-		else:
-			return "����" + fishName + "�ˡ�"
-
-	def FISHING_SUCCESS(isFish, fishName):
-		if isFish:
-			return "����" + fishName + "�ˡ�"
-		else:
-			return "���" + fishName + "�ˡ�"
-
-	def NumberToMoneyString(number):
-
-		if number <= 0:
-			return "0��"
-
-		number = str(number)
-		result = CutMoneyString(number, 0, 4, "", "")
-		result = CutMoneyString(number, 4, 8, "��", result)
-		result = CutMoneyString(number, 8, 12, "��", result)
-		result = result + "��"
-
-		return result
-
-	def NumberToSecondaryCoinString(number):
-
-		if number <= 0:
-			return "0JUN"
-
-		number = str(number)
-		result = CutMoneyString(number, 0, 4, "", "")
-		result = CutMoneyString(number, 4, 8, "��", result)
-		result = CutMoneyString(number, 8, 12, "��", result)
-		result = result + "JUN"
-
-		return result		
 elif IsEUROPE() and not IsWE_KOREA() and not IsYMIR():
 	def DO_YOU_SELL_ITEM(sellItemName, sellItemCount, sellItemPrice):
 		if sellItemCount > 1 :

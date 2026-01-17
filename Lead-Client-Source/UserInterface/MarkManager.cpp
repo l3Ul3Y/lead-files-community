@@ -1,14 +1,10 @@
 #include "stdafx.h"
 #include "MarkManager.h"
 
-#if _MSC_VER < 1200
-#include "crc32.h"
-#else
 #define sys_err TraceError
-#define sys_log // (n, format, ...) Tracenf(format, __VA_ARGS__)
+#define sys_log(n, format, ...) Tracenf(format, __VA_ARGS__)
 #define thecore_memcpy memcpy
 #define itertype(cont) typeof((cont).begin())
-#endif
 
 CGuildMarkImage * CGuildMarkManager::__NewImage()
 {
@@ -23,7 +19,7 @@ void CGuildMarkManager::__DeleteImage(CGuildMarkImage * pkImgDel)
 CGuildMarkManager::CGuildMarkManager()
 {
 #if _MSC_VER >= 1200
-	mkdir("mark");
+	_mkdir("mark");
 #endif
 	// 남은 mark id 셋을 만든다. (서버용)
 	for (DWORD i = 0; i < MAX_IMAGE_COUNT * CGuildMarkImage::MARK_TOTAL_COUNT; ++i)

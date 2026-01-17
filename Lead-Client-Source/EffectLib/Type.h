@@ -73,7 +73,7 @@ enum EBillBoardType
 	
 	BILLBOARD_TYPE_LIE, // ¹Ù´Ú¿¡ ´©Àº Çü»ó
 
-	BILLBOARD_TYPE_2FACE, //     / and \ 
+	BILLBOARD_TYPE_2FACE, //     / and
 	BILLBOARD_TYPE_3FACE, //     / and \ and -
 
 	//BILLBOARD_TYPE_RAY, // ÀÜ»ó

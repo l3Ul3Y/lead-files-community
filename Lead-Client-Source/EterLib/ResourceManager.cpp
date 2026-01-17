@@ -291,7 +291,7 @@ CResource * CResourceManager::GetResourcePointer(const char * c_szFileName)
 #ifdef _DEBUG
 	if (!IsFileExist(c_szFileName) )
 	{
-		if( pcFileExt == NULL || (stricmp( pcFileExt, ".fnt" ) != 0) ) {
+		if( pcFileExt == NULL || (_stricmp( pcFileExt, ".fnt" ) != 0) ) {
 			TraceError("CResourceManager::GetResourcePointer: File not exist %s", c_szFileName);
 		}
 	}

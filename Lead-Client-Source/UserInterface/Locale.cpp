@@ -239,9 +239,9 @@ void LocaleService_ForceSetLocale(const char* name, const char* localePath)
 	strcpy(MULTI_LOCALE_PATH, localePath);
 
 	// 기존 천마 서버로 접속시에는 security key 변경 (WE 버전 클라로 천마서버 접속하기 위함)
-	if (0 == stricmp(name, "ymir"))
+	if (0 == _stricmp(name, "ymir"))
 		__SECURITY_KEY_STRING__ = "testtesttesttest";
-	if (0 == stricmp(name, "we_korea"))
+	if (0 == _stricmp(name, "we_korea"))
 		__SECURITY_KEY_STRING__ = "1234abcd5678efgh";
 }
 
@@ -382,12 +382,12 @@ bool LocaleService_LoadGlobal(HINSTANCE hInstance)
 }
 #endif
 
-bool LocaleService_IsYMIR()		{ return (stricmp( LocaleService_GetName(), LSS_YMIR ) == 0) || (stricmp( LocaleService_GetLocaleName(), "ymir" ) == 0);	}
-bool LocaleService_IsJAPAN()	{ return (stricmp( LocaleService_GetName(), LSS_JAPAN ) == 0) || (stricmp( LocaleService_GetLocaleName(), "japan" ) == 0);	}
-bool LocaleService_IsENGLISH()	{ return (stricmp( LocaleService_GetName(), LSS_ENGLISH ) == 0);	}
-bool LocaleService_IsEUROPE()	{ return (stricmp( LocaleService_GetName(), LSS_EUROPE ) == 0);		}
-bool LocaleService_IsHONGKONG()	{ return (stricmp( LocaleService_GetName(), LSS_HONGKONG ) == 0);	}
-bool LocaleService_IsTAIWAN()	{ return (stricmp( LocaleService_GetName(), LSS_TAIWAN ) == 0);		}
+bool LocaleService_IsYMIR()		{ return (_stricmp( LocaleService_GetName(), LSS_YMIR ) == 0) || (_stricmp( LocaleService_GetLocaleName(), "ymir" ) == 0);	}
+bool LocaleService_IsJAPAN()	{ return (_stricmp( LocaleService_GetName(), LSS_JAPAN ) == 0) || (_stricmp( LocaleService_GetLocaleName(), "japan" ) == 0);	}
+bool LocaleService_IsENGLISH()	{ return (_stricmp( LocaleService_GetName(), LSS_ENGLISH ) == 0);	}
+bool LocaleService_IsEUROPE()	{ return (_stricmp( LocaleService_GetName(), LSS_EUROPE ) == 0);		}
+bool LocaleService_IsHONGKONG()	{ return (_stricmp( LocaleService_GetName(), LSS_HONGKONG ) == 0);	}
+bool LocaleService_IsTAIWAN()	{ return (_stricmp( LocaleService_GetName(), LSS_TAIWAN ) == 0);		}
 
 #if defined(LOCALE_SERVICE_WE_JAPAN)
 BOOL LocaleService_IsLeadByte( const char chByte )

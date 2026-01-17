@@ -76,7 +76,7 @@ bool CDir::Create(const char * c_szFilter, const char* c_szPath, BOOL bCheckedEx
 				}
 				else
 				{
-					if (0 != stricmp(c_szExtension+1, c_szFilter))
+					if (0 != _stricmp(c_szExtension+1, c_szFilter))
 						continue;
 				}
 			}

@@ -59,9 +59,9 @@ PyObject * packGet(PyObject * poSelf, PyObject * poArgs)
 	const char* pcExt = strrchr(strFileName, '.');
 	if (pcExt) // 확장자가 있고
 	{
-		if ((stricmp(pcExt, ".py") == 0) ||
-			(stricmp(pcExt, ".pyc") == 0) ||
-			(stricmp(pcExt, ".txt") == 0))
+		if ((_stricmp(pcExt, ".py") == 0) ||
+			(_stricmp(pcExt, ".pyc") == 0) ||
+			(_stricmp(pcExt, ".txt") == 0))
 		{
 			CMappedFile file;
 			const void * pData = NULL;

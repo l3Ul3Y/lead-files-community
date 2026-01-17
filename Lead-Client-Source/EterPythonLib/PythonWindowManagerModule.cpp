@@ -643,27 +643,27 @@ PyObject * wndMgrAddFlag(PyObject * poSelf, PyObject * poArgs)
 
 	if (pszFlag && *pszFlag)
 	{
-		if (!stricmp(pszFlag, "movable"))
+		if (!_stricmp(pszFlag, "movable"))
 			pWin->AddFlag(UI::CWindow::FLAG_MOVABLE);
-		else if (!stricmp(pszFlag, "limit"))
+		else if (!_stricmp(pszFlag, "limit"))
 			pWin->AddFlag(UI::CWindow::FLAG_LIMIT);
-		else if (!stricmp(pszFlag, "dragable"))
+		else if (!_stricmp(pszFlag, "dragable"))
 			pWin->AddFlag(UI::CWindow::FLAG_DRAGABLE);
-		else if (!stricmp(pszFlag, "attach"))
+		else if (!_stricmp(pszFlag, "attach"))
 			pWin->AddFlag(UI::CWindow::FLAG_ATTACH);
-		else if (!stricmp(pszFlag, "restrict_x"))
+		else if (!_stricmp(pszFlag, "restrict_x"))
 			pWin->AddFlag(UI::CWindow::FLAG_RESTRICT_X);
-		else if (!stricmp(pszFlag, "restrict_y"))
+		else if (!_stricmp(pszFlag, "restrict_y"))
 			pWin->AddFlag(UI::CWindow::FLAG_RESTRICT_Y);
-		else if (!stricmp(pszFlag, "float"))
+		else if (!_stricmp(pszFlag, "float"))
 			pWin->AddFlag(UI::CWindow::FLAG_FLOAT);
-		else if (!stricmp(pszFlag, "not_pick"))
+		else if (!_stricmp(pszFlag, "not_pick"))
 			pWin->AddFlag(UI::CWindow::FLAG_NOT_PICK);
-		else if (!stricmp(pszFlag, "ignore_size"))
+		else if (!_stricmp(pszFlag, "ignore_size"))
 			pWin->AddFlag(UI::CWindow::FLAG_IGNORE_SIZE);
-		else if (!stricmp(pszFlag, "rtl"))
+		else if (!_stricmp(pszFlag, "rtl"))
 			pWin->AddFlag(UI::CWindow::FLAG_RTL);
-		else if (!stricmp(pszFlag, "ltr"))
+		else if (!_stricmp(pszFlag, "ltr"))
 			pWin->RemoveFlag(UI::CWindow::FLAG_RTL);
 		else
 			TraceError("Unknown window flag %s", pszFlag);

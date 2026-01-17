@@ -390,7 +390,7 @@ int MINMAX(int min, int value, int max)
 	if (max < min)
 		return MAX(min, value);
 
-    register int tv;
+    int tv;
     tv = (min > value ? min : value);
     return (max < tv) ? max : tv;
 }
@@ -407,7 +407,7 @@ float fMAX(float a, float b)
 
 float fMINMAX(float min, float value, float max)
 {               
-    register float tv;
+    float tv;
 	
     tv = (min > value ? min : value);
     return (max < tv) ? max : tv;
@@ -624,7 +624,7 @@ PCHAR* CommandLineToArgv( PCHAR CmdLine, int* _argc )
 	i = 0;
 	j = 0;
 
-	while( a = CmdLine[i] ) {
+	while ((a = CmdLine[i])) {
 		if(in_QM) {
 			if(a == '\"') {
 				in_QM = FALSE;

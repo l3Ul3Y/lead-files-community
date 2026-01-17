@@ -38,7 +38,7 @@ bool CPropertyManager::Initialize(const char * c_pszPackFileName)
 			TEterPackIndex * pIndex = itor->second;
 			++itor;
 
-			if (!stricmp("property/reserve", pIndex->filename))
+			if (!_stricmp("property/reserve", pIndex->filename))
 			{
 				LoadReservedCRC(pIndex->filename);
 				continue;

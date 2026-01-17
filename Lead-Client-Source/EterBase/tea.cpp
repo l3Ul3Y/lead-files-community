@@ -31,7 +31,7 @@
 
 void tea_code(const unsigned long sz, const unsigned long sy, const unsigned long *key, unsigned long *dest)
 {
-	register unsigned long y = sy, z = sz, sum = 0;
+	unsigned long y = sy, z = sz, sum = 0;
 	unsigned long		n = TEA_ROUND;
 	
 	while (n-- > 0)
@@ -48,7 +48,7 @@ void tea_code(const unsigned long sz, const unsigned long sy, const unsigned lon
 void tea_decode(const unsigned long sz, const unsigned long sy, const unsigned long *key, unsigned long *dest)
 {
 #pragma warning(disable:4307)
-	register unsigned long y = sy, z = sz, sum = DELTA * TEA_ROUND;
+	unsigned long y = sy, z = sz, sum = DELTA * TEA_ROUND;
 #pragma warning(default:4307)
 
 	unsigned long		n = TEA_ROUND;

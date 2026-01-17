@@ -50,8 +50,9 @@ bool CBoundaryShapeManager::LoadBsfFile(const char* pszFilename)
 	bool bSuccess = true;
 	try
 	{
-		FILE* pFile = fopen(pszFilename, "rb");
-		if (pFile)
+		FILE* pFile = NULL;
+		errno_t err = fopen_s(&pFile, pszFilename, "rb");
+		if (err == 0 && pFile)
 		{
 			// number of boundary shapes
 			unsigned int nNumBoundaries;

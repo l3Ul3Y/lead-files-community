@@ -822,10 +822,10 @@ void CPythonNetworkStream::__BettingGuildWar_SetBettingMoney(UINT uBettingMoney)
 
 DWORD CPythonNetworkStream::EXPORT_GetBettingGuildWarValue(const char* c_szValueName)
 {
-	if (stricmp(c_szValueName, "OBSERVER_COUNT") == 0)
+	if (_stricmp(c_szValueName, "OBSERVER_COUNT") == 0)
 		return m_kBettingGuildWar.m_dwObserverCount;
 
-	if (stricmp(c_szValueName, "BETTING_MONEY") == 0)
+	if (_stricmp(c_szValueName, "BETTING_MONEY") == 0)
 		return m_kBettingGuildWar.m_dwBettingMoney;
 
 	return 0;

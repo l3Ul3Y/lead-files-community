@@ -377,8 +377,6 @@ size_t DH2KeyAgreement::Prepare(void* buffer, size_t* length) {
 		return 0;
 	}
 
-	size_t count = 0;
-
 	p = dh_.GetGroupParameters().GetModulus();
 	q = dh_.GetGroupParameters().GetSubgroupOrder();
 	g = dh_.GetGroupParameters().GetGenerator();
@@ -442,8 +440,6 @@ bool DH2KeyAgreement::Agree(size_t agreed_length, const void* buffer, size_t len
 	}
 	return true;
 }
-
-#pragma warning(pop)
 
 #endif // _IMPROVED_PACKET_ENCRYPTION_
 

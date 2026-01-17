@@ -30,7 +30,7 @@
 #pragma warning ( pop )
 
 #if _MSC_VER >= 1400
-#define stricmp _stricmp
+#define _stricmp _stricmp
 #define strnicmp _strnicmp
 #define strupt _strupr
 #define strcmpi _strcmpi

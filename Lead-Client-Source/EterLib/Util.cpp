@@ -144,7 +144,7 @@ static DWORD		gs_codePage=0;
 
 int CALLBACK EnumFontFamExProc(CONST LOGFONT* plogFont, CONST TEXTMETRIC* /*textMetric*/, DWORD /*dwWord*/, LPARAM lParam)
 {
-	return stricmp((const char*)lParam, plogFont->lfFaceName);
+	return _stricmp((const char*)lParam, plogFont->lfFaceName);
 }
 
 int GetCharsetFromCodePage(WORD codePage)

@@ -760,7 +760,6 @@ PyObject * playerMoveItem(PyObject* poSelf, PyObject* poArgs)
 	switch (PyTuple_Size(poArgs))
 	{
 	case 2:
-		int iSourceSlotIndex;
 		if (!PyTuple_GetInteger(poArgs, 0, &srcCell.cell))
 			return Py_BuildException();
 		if (!PyTuple_GetInteger(poArgs, 1, &dstCell.cell))
@@ -975,7 +974,6 @@ PyObject * playerGetItemMetinSocket(PyObject* poSelf, PyObject* poArgs)
 PyObject * playerGetItemAttribute(PyObject* poSelf, PyObject* poArgs)
 {
 	TItemPos Cell;
-	int iSlotPos;
 	int iAttributeSlotIndex;
 	switch (PyTuple_Size(poArgs))
 	{
