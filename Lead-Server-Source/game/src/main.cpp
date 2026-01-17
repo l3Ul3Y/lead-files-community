@@ -57,10 +57,6 @@
 #include "DragonSoul.h"
 #include <boost/bind.hpp>
 
-#ifdef __AUCTION__
-#include "auction_manager.h"
-#endif
-
 #ifndef __WIN32__
 #include <gtest/gtest.h>
 #endif
@@ -120,9 +116,6 @@ int g_shutdown_disconnect_force_pulse;
 int g_shutdown_core_pulse;
 bool g_bShutdown=false;
 
-#ifdef __AUCTION__
-extern int auction_server;
-#endif
 extern void CancelReloadSpamEvent();
 
 void ContinueOnFatalError()
@@ -356,10 +349,6 @@ int main(int argc, char **argv)
 	CDragonLairManager	dl_manager;
 
 	DSManager dsManager;
-
-#ifdef __AUCTION__
-	AuctionManager auctionManager;
-#endif
 
 	if (!start(argc, argv)) {
 		CleanUpForEarlyExit();

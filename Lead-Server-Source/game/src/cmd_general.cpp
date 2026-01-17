@@ -34,9 +34,6 @@
 #include "threeway_war.h"
 #include "log.h"
 #include "../../common/VnumHelper.h"
-#ifdef __AUCTION__
-#include "auction_manager.h"
-#endif
 
 extern int g_server_id;
 
@@ -2446,20 +2443,17 @@ ACMD(do_ride)
 			}
 		}
 
-	    // 일반 탈것 아이템
-	    // TODO : 탈것용 SubType 추가
 	    switch (item->GetVnum())
 	    {
-		case 71114:	// 저신이용권
-		case 71116:	// 산견신이용권
-		case 71118:	// 투지범이용권
-		case 71120:	// 사자왕이용권
+		case 71114:
+		case 71116:
+		case 71118:
+		case 71120:
 		    dev_log(LOG_DEB0, "[DO_RIDE] USE QUEST ITEM");
 		    ch->UseItem(TItemPos (INVENTORY, i));
 		    return;
 	    }
 
-		// GF mantis #113524, 52001~52090 번 탈것
 		if( (item->GetVnum() > 52000) && (item->GetVnum() < 52091) )	{
 			dev_log(LOG_DEB0, "[DO_RIDE] USE QUEST ITEM");
 			ch->UseItem(TItemPos (INVENTORY, i));
@@ -2469,189 +2463,5 @@ ACMD(do_ride)
     }
 
 
-    // 타거나 내릴 수 없을때
     ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("말을 먼저 소환해주세요."));
 }
-
-#ifdef __AUCTION__
-// temp_auction
-ACMD(do_get_item_id_list)
-{
-	for (int i = 0; i < INVENTORY_MAX_NUM; i++)
-	{
-		LPITEM item = ch->GetInventoryItem(i);
-		if (item != NULL)
-			ch->ChatPacket(CHAT_TYPE_INFO, "name : %s id : %d", item->GetProto()->szName, item->GetID());
-	}
-}
-
-// temp_auction
-
-ACMD(do_enroll_auction)
-{
-	char arg1[256];
-	char arg2[256];
-	char arg3[256];
-	char arg4[256];
-	two_arguments (two_arguments(argument, arg1, sizeof(arg1), arg2, sizeof(arg2)), arg3, sizeof(arg3), arg4, sizeof(arg4));
-	
-	DWORD item_id = strtoul(arg1, NULL, 10);
-	BYTE empire = strtoul(arg2, NULL, 10);
-	int bidPrice = strtol(arg3, NULL, 10);
-	int immidiatePurchasePrice = strtol(arg4, NULL, 10);
-
-	LPITEM item = ITEM_MANAGER::instance().Find(item_id);
-	if (item == NULL)
-		return;
-
-	AuctionManager::instance().enroll_auction(ch, item, empire, bidPrice, immidiatePurchasePrice);
-}
-
-ACMD(do_enroll_wish)
-{
-	char arg1[256];
-	char arg2[256];
-	char arg3[256];
-	one_argument (two_arguments(argument, arg1, sizeof(arg1), arg2, sizeof(arg2)), arg3, sizeof(arg3));
-	
-	DWORD item_num = strtoul(arg1, NULL, 10);
-	BYTE empire = strtoul(arg2, NULL, 10);
-	int wishPrice = strtol(arg3, NULL, 10);
-
-	AuctionManager::instance().enroll_wish(ch, item_num, empire, wishPrice);
-}
-
-ACMD(do_enroll_sale)
-{
-	char arg1[256];
-	char arg2[256];
-	char arg3[256];
-	one_argument (two_arguments(argument, arg1, sizeof(arg1), arg2, sizeof(arg2)), arg3, sizeof(arg3));
-	
-	DWORD item_id = strtoul(arg1, NULL, 10);
-	DWORD wisher_id = strtoul(arg2, NULL, 10);
-	int salePrice = strtol(arg3, NULL, 10);
-
-	LPITEM item = ITEM_MANAGER::instance().Find(item_id);
-	if (item == NULL)
-		return;
-
-	AuctionManager::instance().enroll_sale(ch, item, wisher_id, salePrice);
-}
-
-// temp_auction
-// packet으로 통신하게 하고, 이건 삭제해야한다.
-ACMD(do_get_auction_list)
-{
-	char arg1[256];
-	char arg2[256];
-	char arg3[256];
-	two_arguments (one_argument (argument, arg1, sizeof(arg1)), arg2, sizeof(arg2), arg3, sizeof(arg3));
-
-	AuctionManager::instance().get_auction_list (ch, strtoul(arg1, NULL, 10), strtoul(arg2, NULL, 10), strtoul(arg3, NULL, 10));
-}
-//
-//ACMD(do_get_wish_list)
-//{
-//	char arg1[256];
-//	char arg2[256];
-//	char arg3[256];
-//	two_arguments (one_argument (argument, arg1, sizeof(arg1)), arg2, sizeof(arg2), arg3, sizeof(arg3));
-//
-//	AuctionManager::instance().get_wish_list (ch, strtoul(arg1, NULL, 10), strtoul(arg2, NULL, 10), strtoul(arg3, NULL, 10));
-//}
-ACMD (do_get_my_auction_list)
-{
-	char arg1[256];
-	char arg2[256];
-	two_arguments (argument, arg1, sizeof(arg1), arg2, sizeof(arg2));
-
-	AuctionManager::instance().get_my_auction_list (ch, strtoul(arg1, NULL, 10), strtoul(arg2, NULL, 10));
-}
-
-ACMD (do_get_my_purchase_list)
-{
-	char arg1[256];
-	char arg2[256];
-	two_arguments (argument, arg1, sizeof(arg1), arg2, sizeof(arg2));
-
-	AuctionManager::instance().get_my_purchase_list (ch, strtoul(arg1, NULL, 10), strtoul(arg2, NULL, 10));
-}
-
-ACMD (do_auction_bid)
-{
-	char arg1[256];
-	char arg2[256];
-	two_arguments (argument, arg1, sizeof(arg1), arg2, sizeof(arg2));
-
-	AuctionManager::instance().bid (ch, strtoul(arg1, NULL, 10), strtoul(arg2, NULL, 10));
-}
-
-ACMD (do_auction_impur)
-{
-	char arg1[256];
-	one_argument (argument, arg1, sizeof(arg1));
-
-	AuctionManager::instance().immediate_purchase (ch, strtoul(arg1, NULL, 10));
-}
-
-ACMD (do_get_auctioned_item)
-{
-	char arg1[256];
-	char arg2[256];
-	two_arguments (argument, arg1, sizeof(arg1), arg2, sizeof(arg2));
-
-	AuctionManager::instance().get_auctioned_item (ch, strtoul(arg1, NULL, 10), strtoul(arg2, NULL, 10));
-}
-
-ACMD (do_buy_sold_item)
-{
-	char arg1[256];
-	char arg2[256];
-	one_argument (argument, arg1, sizeof(arg1));
-
-	AuctionManager::instance().get_auctioned_item (ch, strtoul(arg1, NULL, 10), strtoul(arg2, NULL, 10));
-}
-
-ACMD (do_cancel_auction)
-{
-	char arg1[256];
-	one_argument (argument, arg1, sizeof(arg1));
-
-	AuctionManager::instance().cancel_auction (ch, strtoul(arg1, NULL, 10));
-}
-
-ACMD (do_cancel_wish)
-{
-	char arg1[256];
-	one_argument (argument, arg1, sizeof(arg1));
-
-	AuctionManager::instance().cancel_wish (ch, strtoul(arg1, NULL, 10));
-}
-
-ACMD (do_cancel_sale)
-{
-	char arg1[256];
-	one_argument (argument, arg1, sizeof(arg1));
-
-	AuctionManager::instance().cancel_sale (ch, strtoul(arg1, NULL, 10));
-}
-
-ACMD (do_rebid)
-{
-	char arg1[256];
-	char arg2[256];
-	two_arguments (argument, arg1, sizeof(arg1), arg2, sizeof(arg2));
-
-	AuctionManager::instance().rebid (ch, strtoul(arg1, NULL, 10), strtoul(arg2, NULL, 10));
-}
-
-ACMD (do_bid_cancel)
-{
-	char arg1[256];
-	char arg2[256];
-	two_arguments (argument, arg1, sizeof(arg1), arg2, sizeof(arg2));
-
-	AuctionManager::instance().bid_cancel (ch, strtoul(arg1, NULL, 10));
-}
-#endif

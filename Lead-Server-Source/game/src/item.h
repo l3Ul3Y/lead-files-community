@@ -236,20 +236,6 @@ class CItem : public CEntity
 		void		ClearMountAttributeAndAffect();
 		bool		IsNewMountItem();
 
-#ifdef __AUCTION__
-		// 경매장
-		bool		MoveToAuction ();
-		void		CopyToRawData (TPlayerItem* item);
-#endif
-		// 독일에서 기존 캐시 아이템과 같지만, 교환 가능한 캐시 아이템을 만든다고 하여,
-		// 오리지널 아이템에, 교환 금지 플래그만 삭제한 새로운 아이템들을 새로운 아이템 대역에 할당하였다.
-		// 문제는 새로운 아이템도 오리지널 아이템과 같은 효과를 내야하는데,
-		// 서버건, 클라건, vnum 기반으로 되어있어
-		// 새로운 vnum을 죄다 서버에 새로 다 박아야하는 안타까운 상황에 맞닿았다.
-		// 그래서 새 vnum의 아이템이면, 서버에서 돌아갈 때는 오리지널 아이템 vnum으로 바꿔서 돌고 하고,
-		// 저장할 때에 본래 vnum으로 바꿔주도록 한다.
-
-		// Mask vnum은 어떤 이유(ex. 위의 상황)로 인해 vnum이 바뀌어 돌아가는 아이템을 위해 있다.
 		void		SetMaskVnum(DWORD vnum)	{	m_dwMaskVnum = vnum; }
 		DWORD		GetMaskVnum()			{	return m_dwMaskVnum; }
 		bool		IsMaskedItem()	{	return m_dwMaskVnum != 0;	}

@@ -34,9 +34,6 @@ bool	g_bNoMoreClient = false;
 bool	g_bNoRegen = false;
 
 int			test_server = 0;
-#ifdef __AUCTION__
-int			auction_server = 0;
-#endif
 bool		guild_mark_server = true;
 BYTE		guild_mark_min_level = 3;
 bool		no_wander = false;
@@ -788,16 +785,6 @@ void config_init(const string& st_localeServiceName)
 			str_to_number(test_server, value_string);
 			continue;
 		}
-#ifdef __AUCTION__
-		TOKEN("auction_server")
-		{
-			printf("-----------------------------------------------\n");
-			printf("AUCTION_SERVER\n");
-			printf("-----------------------------------------------\n");
-			str_to_number(auction_server, value_string);
-			continue;
-		}
-#endif
 
 		TOKEN("shutdowned")
 		{

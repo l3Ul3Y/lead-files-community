@@ -81,17 +81,16 @@ CPPFILE = BattleArena.cpp FSM.cpp MarkConvert.cpp MarkImage.cpp MarkManager.cpp 
 		  messenger_manager.cpp mining.cpp mob_manager.cpp monarch.cpp motion.cpp p2p.cpp packet_info.cpp\
 		  party.cpp pcbang.cpp polymorph.cpp priv_manager.cpp pvp.cpp\
 		  questevent.cpp questlua.cpp questlua_affect.cpp questlua_arena.cpp questlua_ba.cpp questlua_building.cpp\
-		  questlua_dungeon.cpp questlua_forked.cpp questlua_game.cpp questlua_global.cpp\
+		  questlua_dungeon.cpp questlua_game.cpp questlua_global.cpp\
 		  questlua_guild.cpp questlua_horse.cpp questlua_pet.cpp questlua_item.cpp questlua_marriage.cpp questlua_mgmt.cpp\
 		  questlua_monarch.cpp questlua_npc.cpp questlua_oxevent.cpp questlua_party.cpp questlua_pc.cpp\
 		  questlua_quest.cpp questlua_target.cpp questmanager.cpp questnpc.cpp questpc.cpp\
 		  refine.cpp regen.cpp safebox.cpp sectree.cpp sectree_manager.cpp sequence.cpp shop.cpp\
 		  skill.cpp start_position.cpp target.cpp text_file_loader.cpp trigger.cpp utils.cpp vector.cpp war_map.cpp\
-		  wedding.cpp xmas_event.cpp version.cpp panama.cpp threeway_war.cpp map_location.cpp auth_brazil.cpp\
+		  wedding.cpp xmas_event.cpp version.cpp panama.cpp map_location.cpp\
 		  BlueDragon.cpp BlueDragon_Binder.cpp DragonLair.cpp questlua_dragonlair.cpp\
 		  skill_power.cpp affect.cpp\
-		  SpeedServer.cpp questlua_speedserver.cpp\
-		  auction_manager.cpp ClientPackageCryptInfo.cpp cipher.cpp\
+		  ClientPackageCryptInfo.cpp cipher.cpp\
 		  buff_on_attributes.cpp dragon_soul_table.cpp DragonSoul.cpp\
 		  group_text_parse_tree.cpp char_dragonsoul.cpp questlua_dragonsoul.cpp\
 		  shop_manager.cpp shopEx.cpp item_manager_read_tables.cpp
