@@ -48,12 +48,7 @@ char		g_szInternalIP[16] = "0";
 bool		g_bSkillDisable = false;
 int			g_iFullUserCount = 1200;
 int			g_iBusyUserCount = 650;
-//Canada
-//int			g_iFullUserCount = 600;
-//int			g_iBusyUserCount = 350;
-//Brazil
-//int			g_iFullUserCount = 650;
-//int			g_iBusyUserCount = 450;
+
 bool		g_bEmpireWhisper = true;
 BYTE		g_bAuthServer = false;
 

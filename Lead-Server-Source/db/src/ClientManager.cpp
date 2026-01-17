@@ -3276,16 +3276,6 @@ bool CClientManager::InitializeLocalization()
 				g_stLocale = "latin1";
 				g_stLocaleNameColumn = "gb2312name";
 			}
-			else if (strcmp(locale.szValue, "brazil") == 0)
-			{
-				sys_log(0, "locale[LOCALE] = %s", locale.szValue);
-
-				if (g_stLocale != locale.szValue)
-					sys_log(0, "Changed g_stLocale %s to %s", g_stLocale.c_str(), "latin1");
-
-				g_stLocale = "latin1";
-				g_stLocaleNameColumn = "locale_name";
-			}
 			else if (strcmp(locale.szValue, "greek") == 0)
 			{
 				sys_log(0, "locale[LOCALE] = %s", locale.szValue);

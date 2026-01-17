@@ -250,8 +250,6 @@ LPITEM ITEM_MANAGER::CreateItem(DWORD vnum, DWORD count, DWORD id, bool bTryMagi
 		case REWARD_BOX_ITEM_AUTO_SP_RECOVERY_S:
 		case REWARD_BOX_ITEM_AUTO_HP_RECOVERY_XS:
 		case REWARD_BOX_ITEM_AUTO_HP_RECOVERY_S:
-		case FUCKING_BRAZIL_ITEM_AUTO_SP_RECOVERY_S:
-		case FUCKING_BRAZIL_ITEM_AUTO_HP_RECOVERY_S:
 			if (bIsNewItem)
 				item->SetSocket(2, item->GetValue(0), true);
 			else

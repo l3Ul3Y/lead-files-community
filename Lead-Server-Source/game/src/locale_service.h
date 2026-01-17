@@ -27,7 +27,6 @@ enum eLocalization
 	LC_POLAND,
 	LC_PORTUGAL,
 	LC_CANADA,
-	LC_BRAZIL,
 	LC_GREEK,
 	LC_RUSSIA,
 	LC_DENMARK,
@@ -60,7 +59,6 @@ bool LC_IsGermany();
 bool LC_IsKorea();
 bool LC_IsEurope();
 bool LC_IsCanada();
-bool LC_IsBrazil();
 bool LC_IsSingapore();
 bool LC_IsVietnam();
 bool LC_IsThailand();

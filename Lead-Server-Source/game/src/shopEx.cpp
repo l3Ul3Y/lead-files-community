@@ -218,17 +218,8 @@ int CShopEx::Buy(LPCHARACTER ch, BYTE pos)
 	if (item)
 		sys_log(0, "ShopEx: BUY: name %s %s(x %d):%u price %u", ch->GetName(), item->GetName(), item->GetCount(), item->GetID(), dwPrice);
 
-	if (LC_IsBrazil())
-	{
-		ch->SaveReal();
-		db_clientdesc->DBPacketHeader(HEADER_GD_FLUSH_CACHE, 0, sizeof(DWORD));
-		DWORD pid = ch->GetPlayerID();
-		db_clientdesc->Packet(&pid, sizeof(DWORD));
-	}
-	else
-	{
-		ch->Save();
-	}
+
+	ch->Save();
 
     return (SHOP_SUBHEADER_GC_OK);
 }

@@ -3901,8 +3901,6 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 							case REWARD_BOX_ITEM_AUTO_SP_RECOVERY_S: 
 							case REWARD_BOX_ITEM_AUTO_HP_RECOVERY_XS: 
 							case REWARD_BOX_ITEM_AUTO_HP_RECOVERY_S:
-							case FUCKING_BRAZIL_ITEM_AUTO_SP_RECOVERY_S:
-							case FUCKING_BRAZIL_ITEM_AUTO_HP_RECOVERY_S:
 								{
 									if (CArenaManager::instance().IsArenaMap(GetMapIndex()) == true)
 									{
@@ -3923,7 +3921,6 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										case ITEM_AUTO_HP_RECOVERY_L:
 										case REWARD_BOX_ITEM_AUTO_HP_RECOVERY_XS:
 										case REWARD_BOX_ITEM_AUTO_HP_RECOVERY_S:
-										case FUCKING_BRAZIL_ITEM_AUTO_HP_RECOVERY_S:
 											type = AFFECT_AUTO_HP_RECOVERY;
 											break;
 
@@ -3935,7 +3932,6 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 										case ITEM_AUTO_SP_RECOVERY_L:
 										case REWARD_BOX_ITEM_AUTO_SP_RECOVERY_XS:
 										case REWARD_BOX_ITEM_AUTO_SP_RECOVERY_S:
-										case FUCKING_BRAZIL_ITEM_AUTO_SP_RECOVERY_S:
 											type = AFFECT_AUTO_SP_RECOVERY;
 											break;
 									}
@@ -5440,32 +5436,11 @@ bool CHARACTER::DropGold(int gold)
 			//Motion(MOTION_PICKUP);
 			PointChange(POINT_GOLD, -gold, true);
 
-			// 브라질에 돈이 없어진다는 버그가 있는데,
-			// 가능한 시나리오 중에 하나는,
-			// 메크로나, 핵을 써서 1000원 이하의 돈을 계속 버려 골드를 0으로 만들고, 
-			// 돈이 없어졌다고 복구 신청하는 것일 수도 있다.
-			// 따라서 그런 경우를 잡기 위해 낮은 수치의 골드에 대해서도 로그를 남김.
-			if (LC_IsBrazil() == true)
-			{
-				if (gold >= 213)
-					LogManager::instance().CharLog(this, gold, "DROP_GOLD", "");
-			}
-			else
-			{
-				if (gold > 1000) // 천원 이상만 기록한다.
-					LogManager::instance().CharLog(this, gold, "DROP_GOLD", "");
-			}
+			if (gold > 1000)
+				LogManager::instance().CharLog(this, gold, "DROP_GOLD", "");
 
-			if (false == LC_IsBrazil())
-			{
-				item->StartDestroyEvent(150);
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("떨어진 아이템은 %d분 후 사라집니다."), 150/60);
-			}
-			else
-			{
-				item->StartDestroyEvent(60);
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("떨어진 아이템은 %d분 후 사라집니다."), 1);
-			}
+			item->StartDestroyEvent(60);
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("떨어진 아이템은 %d분 후 사라집니다."), 1);
 		}
 
 		Save();
@@ -5712,21 +5687,8 @@ void CHARACTER::GiveGold(int iAmount)
 	{
 		PointChange(POINT_GOLD, iAmount, true);
 
-		// 브라질에 돈이 없어진다는 버그가 있는데,
-		// 가능한 시나리오 중에 하나는,
-		// 메크로나, 핵을 써서 1000원 이하의 돈을 계속 버려 골드를 0으로 만들고, 
-		// 돈이 없어졌다고 복구 신청하는 것일 수도 있다.
-		// 따라서 그런 경우를 잡기 위해 낮은 수치의 골드에 대해서도 로그를 남김.
-		if (LC_IsBrazil() == true)
-		{
-			if (iAmount >= 213)
-				LogManager::instance().CharLog(this, iAmount, "GET_GOLD", "");
-		}
-		else
-		{
-			if (iAmount > 1000) // 천원 이상만 기록한다.
-				LogManager::instance().CharLog(this, iAmount, "GET_GOLD", "");
-		}
+		if (iAmount > 1000)
+			LogManager::instance().CharLog(this, iAmount, "GET_GOLD", "");
 	}
 }
 

@@ -269,13 +269,7 @@ int GetKillValue(int level)
 	int iMinLevelFor2Point, iMaxLevelFor2Point;
 	int iMinLevelFor3Point, iMaxLevelFor3Point;
 
-	if (LC_IsBrazil() == true)
-	{
-		iMinLevelFor1Point = 35; iMaxLevelFor1Point = 50;
-		iMinLevelFor2Point = 51; iMaxLevelFor2Point = 70;
-		iMinLevelFor3Point = 71; iMaxLevelFor3Point = 99;
-	}
-	else if (LC_IsYMIR() == false)
+	if (LC_IsYMIR() == false)
 	{
 		iMinLevelFor1Point = 30; iMaxLevelFor1Point = 39;
 		iMinLevelFor2Point = 40; iMaxLevelFor2Point = 49;

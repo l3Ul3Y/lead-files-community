@@ -17,7 +17,6 @@
 #include "locale_service.h"
 #include "pcbang.h"
 #include "spam.h"
-#include "auth_brazil.h"
 
 extern std::string g_stBlockDate;
 extern int openid_server;
@@ -273,22 +272,9 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 
 				if (pMsg->Get()->uiNumRows == 0)
 				{
-					if (true == LC_IsBrazil())
-					{
-						// 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙 占싼댐옙
-						ReturnQuery(QID_BRAZIL_CREATE_ID, qi->dwIdent, pinfo,
-								"INSERT INTO account(login, password, social_id, create_time) "
-								"VALUES('%s', password('%s'), '0000000', NOW()) ;",
-								pinfo->login, pinfo->passwd);
-
-						sys_log(0, "[AUTH_BRAZIL] : Create A new AccountID From OnGame");
-					}
-					else
-					{
-						sys_log(0, "   NOID");
-						LoginFailure(d, "NOID");
-						M2_DELETE(pinfo);
-					}
+					sys_log(0, "   NOID");
+					LoginFailure(d, "NOID");
+					M2_DELETE(pinfo);
 				}
 				else
 				{
@@ -392,11 +378,6 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 
 					int nPasswordDiff = strcmp(szEncrytPassword, szPassword);
 
-					if (true == LC_IsBrazil())
-					{
-						nPasswordDiff = 0; // 占쏙옙占쏙옙占 占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙 占쏙옙橘占싫 체크占쏙옙 占쏙옙占쏙옙 占십는댐옙.
-					}
-
 					if (nPasswordDiff)
 					{
 						LoginFailure(d, "WRONGPWD");
@@ -474,16 +455,7 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 
 				if (pMsg->Get()->uiNumRows == 0)
 				{
-					if (true == LC_IsBrazil())
-					{
-						// 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙 占싼댐옙
-						ReturnQuery(QID_BRAZIL_CREATE_ID, qi->dwIdent, pinfo,
-								"INSERT INTO account(login, password, social_id, create_time) "
-								"VALUES('%s', password('%s'), '0000000', NOW()) ;",
-								pinfo->login, pinfo->passwd);
-
-						sys_log(0, "[AUTH_BRAZIL] : Create A new AccountID From OnGame");
-					} else if (true == LC_IsJapan())
+					if (true == LC_IsJapan())
 					{
 						// 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙 占싼댐옙
 						ReturnQuery(QID_JAPAN_CREATE_ID, qi->dwIdent, pinfo,
@@ -603,11 +575,6 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 					}
 
 					int nPasswordDiff = strcmp(szEncrytPassword, szPassword);
-
-					if (true == LC_IsBrazil())
-					{
-						nPasswordDiff = 0; // 占쏙옙占쏙옙占 占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙 占쏙옙橘占싫 체크占쏙옙 占쏙옙占쏙옙 占십는댐옙.
-					}
 
 					//OpenID : OpenID 占쏙옙 占쏙옙占, 占쏙옙橘占싫 체크占쏙옙 占쏙옙占쏙옙 占십는댐옙.
 					if (openid_server)
@@ -830,37 +797,6 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 
 			// END_OF_PCBANG_IP_LIST
 
-		case QID_BRAZIL_CREATE_ID :
-			{
-				TPacketCGLogin3 * pinfo = (TPacketCGLogin3 *) qi->pvData ;
-
-				if( pMsg->Get()->uiAffectedRows == 0 || pMsg->Get()->uiAffectedRows == (uint32_t)-1 )
-				{
-					LPDESC d = DESC_MANAGER::instance().FindByLoginKey(qi->dwIdent) ;
-					sys_log(0, "[AUTH_BRAZIL]   NOID") ;
-					sys_log(0, "[AUTH_BRAZIL] : Failed to create a new account %s", pinfo->login) ;
-					LoginFailure(d, "NOID") ;
-					M2_DELETE(pinfo);
-				}
-				else
-				{
-					sys_log(0, "[AUTH_BRAZIL] : Succeed to create a new account %s", pinfo->login) ;
-
-					ReturnQuery(QID_AUTH_LOGIN, qi->dwIdent, pinfo,
-							"SELECT PASSWORD('%s'),password,securitycode,social_id,id,status,availDt - NOW() > 0,"
-							"UNIX_TIMESTAMP(silver_expire),"
-							"UNIX_TIMESTAMP(gold_expire),"
-							"UNIX_TIMESTAMP(safebox_expire),"
-							"UNIX_TIMESTAMP(autoloot_expire),"
-							"UNIX_TIMESTAMP(fish_mind_expire),"
-							"UNIX_TIMESTAMP(marriage_fast_expire),"
-							"UNIX_TIMESTAMP(money_drop_rate_expire),"
-							"UNIX_TIMESTAMP(create_time)"
-							" FROM account WHERE login='%s'",
-							pinfo->passwd, pinfo->login) ;
-				}
-			}
-			break;
 		case QID_JAPAN_CREATE_ID :
 			{
 				TPacketCGLogin3 * pinfo = (TPacketCGLogin3 *) qi->pvData ;

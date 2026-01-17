@@ -712,22 +712,6 @@ static void __LocaleService_Init_Canada()
 	g_iUseLocale = TRUE;
 }
 
-static void __LocaleService_Init_Brazil()
-{
-	g_stLocale = "latin1";
-	g_stServiceBasePath = "locale/brazil";
-	g_stQuestDir		= "locale/brazil/quest";
-	g_stServiceMapPath	= "locale/brazil/map";
-
-	g_setQuestObjectDir.clear();
-	g_setQuestObjectDir.insert("locale/brazil/quest/object");
-	g_stLocaleFilename = "locale/brazil/locale_string.txt";
-
-	check_name = check_name_alphabet;
-
-	g_iUseLocale = TRUE;
-}
-
 static void __LocaleService_Init_YMIR()
 {
 	g_stLocaleFilename = "";
@@ -1107,10 +1091,6 @@ bool LocaleService_Init(const std::string& c_rstServiceName)
 	{
 		__LocaleService_Init_Canada();
 	}
-	else if ( "brazil" == g_stServiceName)
-	{
-		__LocaleService_Init_Brazil();
-	}
 	else if ( "ymir" == g_stServiceName)
 	{
 		__LocaleService_Init_YMIR();
@@ -1267,8 +1247,6 @@ bool LC_InitLocalization( const std::string& szLocal )
 		g_eLocalType = LC_PORTUGAL;
 	else if ( !g_stLocal.compare("canada") )
 		g_eLocalType = LC_CANADA;
-	else if ( !g_stLocal.compare("brazil") )
-		g_eLocalType = LC_BRAZIL;
 	else if ( !g_stLocal.compare("russia") )
 		g_eLocalType = LC_RUSSIA;
 	else if ( !g_stLocal.compare("denmark") )
@@ -1324,7 +1302,6 @@ bool LC_IsHongKong()	{ return LC_GetLocalType() == LC_HONGKONG ? true : false; }
 bool LC_IsGermany()		{ return LC_GetLocalType() == LC_GERMANY ? true : false; }
 bool LC_IsKorea()		{ return LC_GetLocalType() == LC_KOREA ? true : false; }
 bool LC_IsCanada()		{ return LC_GetLocalType() == LC_CANADA ? false : false; }
-bool LC_IsBrazil()		{ return LC_GetLocalType() == LC_BRAZIL ? true : false; }
 bool LC_IsSingapore()	{ return LC_GetLocalType() == LC_SINGAPORE ? true : false; }
 bool LC_IsVietnam()		{ return LC_GetLocalType() == LC_VIETNAM ? true : false; }
 bool LC_IsThailand()	{ return LC_GetLocalType() == LC_THAILAND ? true : false; }

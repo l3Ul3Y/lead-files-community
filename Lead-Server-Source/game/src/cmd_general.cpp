@@ -910,21 +910,6 @@ ACMD(do_safebox_change_password)
 		return;
 	}
 
-	if (LC_IsBrazil() == true)
-	{
-		for (int i = 0; i < 6; ++i)
-		{
-			if (arg2[i] == '\0')
-				break;
-
-			if (isalpha(arg2[i]) == false)
-			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<창고> 비밀번호는 영문자만 가능합니다."));
-				return;
-			}
-		}
-	}
-
 	TSafeboxChangePasswordPacket p;
 
 	p.dwID = ch->GetDesc()->GetAccountTable().id;

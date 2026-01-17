@@ -228,11 +228,6 @@ bool CGuild::RemoveMember(DWORD pid)
 		ch->SetGuild(NULL);
 	}
 
-	if ( LC_IsBrazil() == true )
-	{
-		DBManager::instance().Query("REPLACE INTO guild_invite_limit VALUES(%d, %d)", GetID(), get_global_time());
-	}
-
 	return true;
 }
 
@@ -2087,28 +2082,6 @@ CGuild::GuildJoinErrCode CGuild::VerifyGuildJoinableCondition( const LPCHARACTER
 	else if ( UnderAnyWar() != 0 )
 	{
 		return GERR_GUILD_IS_IN_WAR;
-	}
-	else if ( LC_IsBrazil() == true )
-	{
-		std::unique_ptr<SQLMsg> pMsg( DBManager::instance().DirectQuery("SELECT value FROM guild_invite_limit WHERE id=%d", GetID()) );
-
-		if ( pMsg->Get()->uiNumRows > 0 )
-		{
-			MYSQL_ROW row = mysql_fetch_row(pMsg->Get()->pSQLResult);
-			time_t limit_time=0;
-			str_to_number( limit_time, row[0] );
-
-			if ( test_server == true )
-			{
-				limit_time += quest::CQuestManager::instance().GetEventFlag("guild_invite_limit") * 60;
-			}
-			else
-			{
-				limit_time += quest::CQuestManager::instance().GetEventFlag("guild_invite_limit") * 24 * 60 * 60;
-			}
-
-			if ( get_global_time() < limit_time ) return GERR_INVITE_LIMIT;
-		}
 	}
 
 	return GERR_NONE;
