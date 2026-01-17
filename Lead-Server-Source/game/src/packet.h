@@ -834,7 +834,6 @@ enum EPhase
 	PHASE_DBCLIENT,
 	PHASE_P2P,
 	PHASE_AUTH,
-	PHASE_TEEN,
 };
 
 typedef struct packet_phase
