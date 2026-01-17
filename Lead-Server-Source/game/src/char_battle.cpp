@@ -38,7 +38,6 @@
 #include "guild_manager.h"
 #include "questmanager.h"
 #include "questlua.h"
-#include "threeway_war.h"
 #include "BlueDragon.h"
 #include "DragonLair.h"
 
@@ -1219,7 +1218,6 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 	bool isAgreedPVP = false;
 	bool isUnderGuildWar = false;
 	bool isDuel = false;
-	bool isForked = false;
 
 	if (pkKiller && pkKiller->IsPC())
 	{
@@ -1247,31 +1245,16 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 		}
 	}
 
-	//CHECK_FORKEDROAD_WAR
-	if (IsPC())
-	{
-		if (CThreeWayWar::instance().IsThreeWayWarMapIndex(GetMapIndex()))
-			isForked = true;
-	}
-	//END_CHECK_FORKEDROAD_WAR
-
 	if (pkKiller &&
 			!isAgreedPVP &&
 			!isUnderGuildWar &&
 			IsPC() &&
-			!isDuel &&
-			!isForked)
+			!isDuel)
 	{
 		if (GetGMLevel() == GM_PLAYER || test_server)
 		{
 			ItemDropPenalty(pkKiller);
 		}
-	}
-
-
-	if (true == isForked)
-	{
-		CThreeWayWar::instance().onDead( this, pkKiller );
 	}
 
 	SetPosition(POS_DEAD);
@@ -1281,12 +1264,9 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 	{
 		if (!pkKiller->IsPC())
 		{
-			if (!isForked)
-			{
-				sys_log(1, "DEAD: %s %p WITH PENALTY", GetName(), this);
-				SET_BIT(m_pointsInstant.instant_flag, INSTANT_FLAG_DEATH_PENALTY);
-				LogManager::instance().CharLog(this, pkKiller->GetRaceNum(), "DEAD_BY_NPC", pkKiller->GetName());
-			}
+			sys_log(1, "DEAD: %s %p WITH PENALTY", GetName(), this);
+			SET_BIT(m_pointsInstant.instant_flag, INSTANT_FLAG_DEATH_PENALTY);
+			LogManager::instance().CharLog(this, pkKiller->GetRaceNum(), "DEAD_BY_NPC", pkKiller->GetName());
 		}
 		else
 		{
@@ -1315,7 +1295,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 			}
 			else
 			{
-				if (!isAgreedPVP && !isUnderGuildWar && !IsKillerMode() && GetAlignment() >= 0 && !isDuel && !isForked)
+				if (!isAgreedPVP && !isUnderGuildWar && !IsKillerMode() && GetAlignment() >= 0 && !isDuel)
 				{
 					int iNoPenaltyProb = 0;
 

@@ -32,7 +32,6 @@
 #include "xmas_event.h"
 #include "log.h"
 #include "pcbang.h"
-#include "threeway_war.h"
 #include "unique_item.h"
 #include "DragonSoul.h"
 
@@ -330,11 +329,6 @@ bool CHARACTER_GoToName(LPCHARACTER ch, BYTE empire, int mapIndex, const char* g
 { "Desert|영비사막|사막",	1, 63, 2178, 6272 },
 { "Desert|영비사막|사막",	2, 63, 2219, 5027 },
 { "Desert|영비사막|사막",	3, 63, 3440, 5025 },
-
-// Threeway
-{ "Three|승룡곡",		1, 64, 4021, 6739 },
-{ "Three|승룡곡",		2, 64, 2704, 7399 },
-{ "Three|승룡곡",		3, 64, 3213, 8080 },
 
 // 밀교사원
 { "Milgyo|밀교사원",	1, 65, 5536, 1436 },
@@ -3570,37 +3564,6 @@ struct FCountInMap
 	}
 	int GetCount(BYTE bEmpire) { return m_Count[bEmpire]; } 
 };
-
-ACMD(do_threeway_war_info)
-{
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("각제국 진행 정보"));
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("선택 맵 정보 성지 %d 통로 %d %d %d"), GetSungziMapIndex(), GetPassMapIndex(1), GetPassMapIndex(2), GetPassMapIndex(3)); 
-	ch->ChatPacket(CHAT_TYPE_INFO, "ThreewayPhase %d", CThreeWayWar::instance().GetRegenFlag());
-
-	for (int n = 1; n < 4; ++n)
-	{
-		LPSECTREE_MAP pSecMap = SECTREE_MANAGER::instance().GetMap(GetSungziMapIndex());
-
-		FCountInMap c;
-
-		if (pSecMap)
-		{
-			pSecMap->for_each(c);
-		}
-
-		ch->ChatPacket(CHAT_TYPE_INFO, "%s killscore %d usercount %d",
-				EMPIRE_NAME(n),
-			   	CThreeWayWar::instance().GetKillScore(n),
-				c.GetCount(n));
-	}
-}
-
-ACMD(do_threeway_war_myinfo)
-{
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("나의 삼거리 진행정보"));
-	ch->ChatPacket(CHAT_TYPE_INFO, "Deadcount %d",
-			CThreeWayWar::instance().GetReviveTokenForPlayer(ch->GetPlayerID()));
-}
 
 ACMD(do_rmcandidacy)
 {
