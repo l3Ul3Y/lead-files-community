@@ -5848,7 +5848,7 @@ void CHARACTER::EffectPacket(int enumEffectType)
 {
 	TPacketGCSpecialEffect p;
 
-	p.header = HEADER_GC_SEPCIAL_EFFECT;
+	p.header = HEADER_GC_SPECIAL_EFFECT;
 	p.type = enumEffectType;
 	p.vid = GetVID();
 

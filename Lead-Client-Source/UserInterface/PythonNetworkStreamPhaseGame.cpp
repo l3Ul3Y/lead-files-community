@@ -476,7 +476,7 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvRefineInformationPacket();
 				break;
 
-			case HEADER_GC_SEPCIAL_EFFECT:
+			case HEADER_GC_SPECIAL_EFFECT:
 				ret = RecvSpecialEffect();
 				break;
 
