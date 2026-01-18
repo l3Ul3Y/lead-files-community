@@ -37,14 +37,10 @@ class CEterPackManager : public CSingleton<CEterPackManager>
 		void SetSearchMode(bool bPackFirst);
 		int GetSearchMode();
 
-		//THEMIDA
 		bool Get(CMappedFile & rMappedFile, const char * c_szFileName, LPCVOID * pData);
-		
-		//THEMIDA
 		bool GetFromPack(CMappedFile & rMappedFile, const char * c_szFileName, LPCVOID * pData);
-		
-		//THEMIDA
 		bool GetFromFile(CMappedFile & rMappedFile, const char * c_szFileName, LPCVOID * pData);
+
 		bool isExist(const char * c_szFileName);
 		bool isExistInPack(const char * c_szFileName);
 
@@ -58,12 +54,9 @@ class CEterPackManager : public CSingleton<CEterPackManager>
 		const char * GetRootPackFileName();
 
 		//for hybridcrypt
-		//THEMIDA
 		void WriteHybridCryptPackInfo(const char* pFileName);
 
-		//THEMIDA
 		void RetrieveHybridCryptPackKeys( const BYTE* pStream );
-		//THEMIDA
 		void RetrieveHybridCryptPackSDB( const BYTE* pStream );
 
 		// 메모리에 매핑된 팩들 가운데, 정리해야할 것들 정리.

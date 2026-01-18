@@ -25,10 +25,6 @@
 #include "../EterBase/Debug.h"
 #include "../EterBase/CRC32.h"
 
-#ifdef __THEMIDA__
-#include <ThemidaSDK.h>
-#endif
-
 #include <iostream>
 #include <fstream>
 
@@ -585,10 +581,6 @@ bool CEterPack::Get(CMappedFile& out_file, const char * filename, LPCVOID * data
 	}
 	else if (COMPRESSED_TYPE_HYBRIDCRYPT == index->compressed_type || COMPRESSED_TYPE_HYBRIDCRYPT_WITHSDB == index->compressed_type)
 	{
-#ifdef __THEMIDA__
-		VM_START
-#endif
-
 		auto stFilename = std::string(filename);
 		CLZObject * zObj = new CLZObject;
 
@@ -614,9 +606,6 @@ bool CEterPack::Get(CMappedFile& out_file, const char * filename, LPCVOID * data
 		{
 			*data = zObj->GetBuffer();
 		}
-#ifdef __THEMIDA__
-		VM_END
-#endif
 	}
 	return true;
 }
@@ -699,10 +688,6 @@ bool CEterPack::Get2(CMappedFile& out_file, const char * filename, TEterPackInde
 	}
 	else if (COMPRESSED_TYPE_HYBRIDCRYPT == index->compressed_type || COMPRESSED_TYPE_HYBRIDCRYPT_WITHSDB == index->compressed_type)
 	{
-#ifdef __THEMIDA__
-		VM_START
-#endif
-
 		auto stFilename = std::string(filename);
 		CLZObject * zObj = new CLZObject;
 
@@ -729,9 +714,6 @@ bool CEterPack::Get2(CMappedFile& out_file, const char * filename, TEterPackInde
 		{
 			*data = zObj->GetBuffer();
 		}
-#ifdef __THEMIDA__
-		VM_END
-#endif
 	}
 
 	return true;
@@ -812,9 +794,6 @@ bool CEterPack::Extract()
 		}
 		else if (COMPRESSED_TYPE_HYBRIDCRYPT == index->compressed_type || COMPRESSED_TYPE_HYBRIDCRYPT_WITHSDB == index->compressed_type)
 		{
-#ifdef __THEMIDA__
-			VM_START
-#endif
 			auto stFilename = std::string(index->filename);
 			if( !m_pCSHybridCryptPolicy->DecryptMemory(stFilename, (const BYTE *) data + index->data_position, index->data_size, zObj) )
 				return false;
@@ -837,9 +816,6 @@ bool CEterPack::Extract()
 				writeFile.Write(zObj.GetBuffer(), zObj.GetBufferSize());
 			}
 			zObj.Clear();
-#ifdef __THEMIDA__
-			VM_END
-#endif
 		}
 		else if (COMPRESSED_TYPE_NONE == index->compressed_type)
 			writeFile.Write((const char *) data + index->data_position, index->data_size);
@@ -896,9 +872,6 @@ bool CEterPack::Put(const char * filename, const char * sourceFilename, BYTE pac
 
 	if( packType == COMPRESSED_TYPE_HYBRIDCRYPT || packType == COMPRESSED_TYPE_HYBRIDCRYPT_WITHSDB )
 	{
-#ifdef __THEMIDA__
-		VM_START
-#endif
 		m_pCSHybridCryptPolicy->GenerateCryptKey(stFilename);
 
 		if( packType == COMPRESSED_TYPE_HYBRIDCRYPT_WITHSDB )
@@ -908,9 +881,6 @@ bool CEterPack::Put(const char * filename, const char * sourceFilename, BYTE pac
 				return false;
 			}
 		}
-#ifdef __THEMIDA__
-		VM_END
-#endif
 	}
 
 	return Put(filename, pMappedData, iMappedDataSize, packType);
@@ -999,10 +969,6 @@ bool CEterPack::Put(const char * filename, LPCVOID data, long len, BYTE packType
 	}
 	else if (packType == COMPRESSED_TYPE_HYBRIDCRYPT || packType == COMPRESSED_TYPE_HYBRIDCRYPT_WITHSDB )
 	{
-#ifdef __THEMIDA__
-		VM_START
-#endif
-
 		auto stFilename = std::string(filename);
 		if( !m_pCSHybridCryptPolicy->EncryptMemory(stFilename, (const BYTE *)data, len, zObj ) )
 		{
@@ -1011,10 +977,6 @@ bool CEterPack::Put(const char * filename, LPCVOID data, long len, BYTE packType
 
 		data = zObj.GetBuffer();
 		len = zObj.GetBufferSize();
-#ifdef __THEMIDA__
-		VM_END
-#endif
-
 	}
 
 

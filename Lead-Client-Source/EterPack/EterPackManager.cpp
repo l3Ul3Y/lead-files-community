@@ -12,11 +12,6 @@
 #define PATH_ABSOLUTE_YMIRWORK1	"d:/ymir work/"
 #define PATH_ABSOLUTE_YMIRWORK2	"d:\\ymir work\\"
 
-#ifdef __THEMIDA__
-#include <ThemidaSDK.h>
-#endif
-
-
 CEterPack* CEterPackManager::FindPack(const char* c_szPathName)
 {
 	std::string strFileName;

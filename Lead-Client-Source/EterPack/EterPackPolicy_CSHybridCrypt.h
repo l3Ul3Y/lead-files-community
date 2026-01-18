@@ -19,7 +19,6 @@ enum eHybridCipherAlgorithm
 class CFileBase;
 class CLZObject;
 
-//THEMIDA
 class EterPackPolicy_CSHybridCrypt
 {
 public:

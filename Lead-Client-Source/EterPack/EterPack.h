@@ -116,15 +116,10 @@ class CEterPack
 		const std::string&	GetPathName();
 		const char *		GetDBName();
 
-		//THEMIDA
 		bool				Get(CMappedFile & mappedFile, const char * filename, LPCVOID * data);
-		//THEMIDA
 		bool				Get2(CMappedFile & mappedFile, const char * filename, TEterPackIndex* index, LPCVOID * data);
 
-
-		//THEMIDA
 		bool				Put(const char * filename, const char * sourceFilename, BYTE packType, const std::string& strRelateMapName);
-		//THEMIDA
 		bool				Put(const char * filename, LPCVOID data, long len, BYTE packType);
 
 		bool				Delete(const char * filename);

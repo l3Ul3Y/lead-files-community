@@ -13,9 +13,6 @@ using namespace CryptoPP;
 
 #define CIPHER_MODE	CTR_Mode
 
-#ifdef __THEMIDA__
-#include <ThemidaSDK.h>
-#endif
 //Cipher
 //Block Size
 //Key Length
@@ -66,10 +63,6 @@ bool EterPackPolicy_CSHybridCrypt::IsContainingCryptKey() const
 
 bool EterPackPolicy_CSHybridCrypt::GenerateCryptKey( std::string& rfileName )
 {
-#ifdef __THEMIDA__
-	VM_START
-#endif
-
 	//make lower & extract ext
 	std::string extName = GetFileExt(rfileName);
 	stl_lowers(extName);
@@ -96,20 +89,11 @@ bool EterPackPolicy_CSHybridCrypt::GenerateCryptKey( std::string& rfileName )
 		memset( &info.uEncryptIV.iv, 0x10, sizeof(info.uEncryptIV) ); */
 	}
 	m_mapHybridCryptKey[dwExtHash] = info;
-
-#ifdef __THEMIDA__
-	VM_END
-#endif
-
 	return true;
 }
 
 bool EterPackPolicy_CSHybridCrypt::GetPerFileCryptKey( std::string& rfileName, eHybridCipherAlgorithm& eAlgorithm, TEncryptKey& key, TEncryptIV& iv )
 {
-#ifdef __THEMIDA__
-	VM_START
-#endif
-
 	std::string fileNamelower = rfileName;
 	stl_lowers(fileNamelower);
 
@@ -131,8 +115,6 @@ bool EterPackPolicy_CSHybridCrypt::GetPerFileCryptKey( std::string& rfileName, e
 	::memcpy(key.key, cit->second.uEncryptKey.key, sizeof(key) );
 	::memcpy(iv.iv,   cit->second.uEncryptIV.iv,   sizeof(iv) );
 
-
-	//Themida Warning
 	for( int i = 0; i < (sizeof(key)/sizeof(dwfileNameCrc)); ++i)
 	{
 		*((DWORD*)key.key + i) ^= dwfileNameCrc;
@@ -141,9 +123,6 @@ bool EterPackPolicy_CSHybridCrypt::GetPerFileCryptKey( std::string& rfileName, e
 	{
 		*((DWORD*)iv.iv + i) ^= dwfileNameCrc;
 	}
-#ifdef __THEMIDA__
-	VM_END
-#endif
 
 	return true;
 }
@@ -151,10 +130,6 @@ bool EterPackPolicy_CSHybridCrypt::GetPerFileCryptKey( std::string& rfileName, e
 
 bool EterPackPolicy_CSHybridCrypt::EncryptMemory( std::string& rfileName, IN const BYTE* pSrcData, IN int iSrcLen, OUT CLZObject& zObj )
 {
-#ifdef __THEMIDA__
-	VM_START
-#endif
-
 	eHybridCipherAlgorithm eAlgorithm;
 	TEncryptKey			   key;
 	TEncryptIV			   iv;
@@ -207,19 +182,11 @@ bool EterPackPolicy_CSHybridCrypt::EncryptMemory( std::string& rfileName, IN con
 	zObj.AllocBuffer(iSrcLen);
 	memcpy(zObj.GetBuffer(), strCipher.c_str(), strCipher.length() );
 
-#ifdef __THEMIDA__
-	VM_END
-#endif
-
 	return true;
 }
 
 bool EterPackPolicy_CSHybridCrypt::DecryptMemory( std::string& rfilename, IN const BYTE* pEncryptedData, IN int iEncryptedLen, OUT CLZObject& zObj )
 {
-#ifdef __THEMIDA__
-	VM_START
-#endif
-
 	eHybridCipherAlgorithm eAlgorithm;
 	TEncryptKey			   key;
 	TEncryptIV			   iv;
@@ -272,10 +239,6 @@ bool EterPackPolicy_CSHybridCrypt::DecryptMemory( std::string& rfilename, IN con
 
 	zObj.AllocBuffer(iEncryptedLen);
 	memcpy(zObj.GetBuffer(), strDecipher.c_str(), strDecipher.length() );
-
-#ifdef __THEMIDA__
-	VM_END
-#endif
 
 	return true;
 }
@@ -336,10 +299,6 @@ int EterPackPolicy_CSHybridCrypt::ReadCryptKeyInfoFromStream( IN const BYTE* pSt
 
 bool EterPackPolicy_CSHybridCrypt::GenerateSupplementaryDataBlock(std::string& rfilename, const std::string& strMapName, IN const BYTE* pSrcData, IN int iSrcLen, OUT LPBYTE& pDestData, OUT int& iDestLen )
 {
-#ifdef __THEMIDA__
-	VM_START
-#endif
-
 	std::string fileNamelower = rfilename;
 	stl_lowers( fileNamelower );
 
@@ -385,19 +344,13 @@ bool EterPackPolicy_CSHybridCrypt::GenerateSupplementaryDataBlock(std::string& r
 
 		memcpy( &sdbVector[0], pDestData + iDestLen, iSDBSize );
 	}
-#ifdef __THEMIDA__
-	VM_END
-#endif
+
 	return true;
 }
 
 
 bool EterPackPolicy_CSHybridCrypt::GetSupplementaryDataBlock( std::string& rfilename, OUT LPBYTE& pSDB, OUT int& iSDBSize )
 {
-#ifdef __THEMIDA__
-	VM_START
-#endif
-
 	std::string fileNamelower = rfilename;
 	stl_lowers( fileNamelower );
 
@@ -420,11 +373,7 @@ bool EterPackPolicy_CSHybridCrypt::GetSupplementaryDataBlock( std::string& rfile
 		return false;
 	}
 
-	pSDB = (BYTE*)&vecSDB[0]; 
-#ifdef __THEMIDA__
-	VM_END
-#endif
-
+	pSDB = (BYTE*)&vecSDB[0];
 	return true;
 }
 
@@ -468,10 +417,6 @@ void EterPackPolicy_CSHybridCrypt::WriteSupplementaryDataBlockToFile( CFileBase&
 
 int EterPackPolicy_CSHybridCrypt::ReadSupplementatyDataBlockFromStream( IN const BYTE* pStream )
 {
-#ifdef __THEMIDA__
-	VM_START
-#endif
-
 	//DWORD				dwFileIdentifier;
 	//std::vector<BYTE>	vecSDBStream;
 
@@ -494,10 +439,6 @@ int EterPackPolicy_CSHybridCrypt::ReadSupplementatyDataBlockFromStream( IN const
 
 		m_mapSDBMap[dwFileNameHash] = info;
 	}
-
-#ifdef __THEMIDA__
-	VM_END
-#endif
 
 	return iStreamOffset;
 }

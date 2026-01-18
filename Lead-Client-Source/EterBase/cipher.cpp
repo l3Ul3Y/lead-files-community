@@ -33,10 +33,6 @@
 #include <cryptopp/skipjack.h>
 #include <cryptopp/tea.h>
 
-#ifdef __THEMIDA__
-#include <ThemidaSDK.h>
-#endif
-
 #include "Debug.h"
 
 
@@ -160,10 +156,6 @@ void Cipher::CleanUp() {
 }
 
 size_t Cipher::Prepare(void* buffer, size_t* length) {
-#ifdef __THEMIDA__
-	VM_START
-#endif
-
 	assert(key_agreement_ == NULL);
 	key_agreement_ = new DH2KeyAgreement();
 	assert(key_agreement_ != NULL);
@@ -172,19 +164,11 @@ size_t Cipher::Prepare(void* buffer, size_t* length) {
 		delete key_agreement_;
 		key_agreement_ = NULL;
 	}
-#ifdef __THEMIDA__
-	VM_END
-#endif
-
 	return agreed_length;
 }
 
 bool Cipher::Activate(bool polarity, size_t agreed_length,
 					  const void* buffer, size_t length) {
-#ifdef __THEMIDA__
-	VM_START
-#endif
-
 	assert(activated_ == false);
 	assert(key_agreement_ != NULL);
 	bool result = false;
@@ -193,18 +177,10 @@ bool Cipher::Activate(bool polarity, size_t agreed_length,
 	}
 	delete key_agreement_;
 	key_agreement_ = NULL;
-#ifdef __THEMIDA__
-	VM_END
-#endif
-
 	return result;
 }
 
 bool Cipher::SetUp(bool polarity) {
-#ifdef __THEMIDA__
-	VM_START
-#endif
-
 	assert(key_agreement_ != NULL);
 	const SecByteBlock& shared = key_agreement_->shared();
 
@@ -266,10 +242,6 @@ bool Cipher::SetUp(bool polarity) {
 
 	assert(encoder_ != NULL);
 	assert(decoder_ != NULL);
-#ifdef __THEMIDA__
-	VM_END
-#endif
-
 	return true;
 }
 
@@ -338,10 +310,6 @@ DH2KeyAgreement::~DH2KeyAgreement() {
 }
 
 size_t DH2KeyAgreement::Prepare(void* buffer, size_t* length) {
-#ifdef __THEMIDA__
-	VM_START
-#endif
-
 	// RFC 5114, 1024-bit MODP Group with 160-bit Prime Order Subgroup
 	// http://tools.ietf.org/html/rfc5114#section-2.1
 	Integer p("0xB10B8F96A080E01DDE92DE5EAE5D54EC52C99FBCFB06A3C6"
@@ -413,11 +381,6 @@ size_t DH2KeyAgreement::Prepare(void* buffer, size_t* length) {
 	byte* buf = (byte*)buffer;
 	memcpy(buf, spub_key.BytePtr(), spub_key_length);
 	memcpy(buf + spub_key_length, epub_key.BytePtr(), epub_key_length);
-
-#ifdef __THEMIDA__
-	VM_END
-#endif
-
 	return dh2_.AgreedValueLength();
 }
 
