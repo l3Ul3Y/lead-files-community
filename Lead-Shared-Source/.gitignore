@@ -1,0 +1,6 @@
+# Generated build files
+/**/Debug/
+/**/Release/
+
+# Ignore installed dependencies
+vcpkg_installed

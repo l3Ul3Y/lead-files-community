@@ -2,7 +2,7 @@
 #ifndef __INC_DB_CACHE_H__
 #define __INC_DB_CACHE_H__
 
-#include "../../common/cache.h"
+#include "common/cache.h"
 
 class CItemCache : public cache<TPlayerItem>
 {

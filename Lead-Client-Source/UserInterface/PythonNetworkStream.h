@@ -160,8 +160,7 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		// Shop
 		bool SendShopEndPacket();
 		bool SendShopBuyPacket(BYTE byCount);
-		bool SendShopSellPacket(BYTE bySlot);
-		bool SendShopSellPacketNew(BYTE bySlot, BYTE byCount);
+		bool SendShopSellPacket(BYTE bySlot, BYTE byCount);
 
 		// Exchange
 		bool SendExchangeStartPacket(DWORD vid);
@@ -295,7 +294,6 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		// Login Phase
 		bool SendLoginPacket(const char * c_szName, const char * c_szPassword);
 		bool SendLoginPacketNew(const char * c_szName, const char * c_szPassword);
-		bool SendDirectEnterPacket(const char * c_szName, const char * c_szPassword, UINT uChrSlot);
 
 		bool SendEnterGame();
 
@@ -380,10 +378,6 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		bool __SendHack(const char* c_szMsg);
 
 	protected:
-		bool RecvObserverAddPacket();
-		bool RecvObserverRemovePacket();
-		bool RecvObserverMovePacket();
-
 		// Common
 		bool RecvErrorPacket(int header);
 		bool RecvPingPacket();
@@ -391,8 +385,7 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		bool RecvPhasePacket();
 
 		// Login Phase
-		bool __RecvLoginSuccessPacket3();
-		bool __RecvLoginSuccessPacket4();
+		bool __RecvLoginSuccessPacket();
 		bool __RecvLoginFailurePacket();
 		bool __RecvEmpirePacket();
 		bool __RecvLoginKeyPacket();
@@ -423,9 +416,7 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
         bool RecvGlobalTimePacket();
 		bool RecvCharacterAppendPacket();
 		bool RecvCharacterAdditionalInfo();
-		bool RecvCharacterAppendPacketNew();
 		bool RecvCharacterUpdatePacket();
-		bool RecvCharacterUpdatePacketNew();
 		bool RecvCharacterDeletePacket();
 		bool RecvChatPacket();
 		bool RecvOwnerShipPacket();
@@ -438,9 +429,8 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		bool RecvDeadPacket();
 		bool RecvCharacterMovePacket();
 
+		bool RecvItemDelPacket();					// Alarm to python
 		bool RecvItemSetPacket();					// Alarm to python
-		bool RecvItemSetPacket2();					// Alarm to python
-		bool RecvItemUsePacket();					// Alarm to python
 		bool RecvItemUpdatePacket();				// Alarm to python
 		bool RecvItemGroundAddPacket();
 		bool RecvItemGroundDelPacket();
@@ -465,16 +455,11 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 
 		// Skill
 		bool RecvSkillLevel();
-		bool RecvSkillLevelNew();
-		bool RecvSkillCoolTimeEnd();
 
 		// Target
 		bool RecvTargetPacket();
 		bool RecvViewEquipPacket();
 		bool RecvDamageInfoPacket();
-
-		// Mount
-		bool RecvMountPacket();
 
 		// Fly
 		bool RecvCreateFlyPacket();
@@ -501,7 +486,6 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		bool RecvSafeBoxDelPacket();
 		bool RecvSafeBoxWrongPasswordPacket();
 		bool RecvSafeBoxSizePacket();
-		bool RecvSafeBoxMoneyChangePacket();
 
 		// Fishing
 		bool RecvFishing();
@@ -520,7 +504,6 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 
 		// Refine
 		bool RecvRefineInformationPacket();
-		bool RecvRefineInformationPacketNew();
 
 		// Use Potion
 		bool RecvSpecialEffect();
@@ -535,7 +518,6 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		bool RecvNPCList();
 		bool RecvLandPacket();
 		bool RecvTargetCreatePacket();
-		bool RecvTargetCreatePacketNew();
 		bool RecvTargetUpdatePacket();
 		bool RecvTargetDeletePacket();
 
@@ -639,9 +621,9 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		PyObject*							m_apoPhaseWnd[PHASE_WINDOW_NUM];
 		PyObject*							m_poSerCommandParserWnd;
 
-		TSimplePlayerInformation			m_akSimplePlayerInfo[PLAYER_PER_ACCOUNT4];
-		DWORD								m_adwGuildID[PLAYER_PER_ACCOUNT4];
-		std::string							m_astrGuildName[PLAYER_PER_ACCOUNT4];
+		TSimplePlayer			m_akSimplePlayerInfo[PLAYER_PER_ACCOUNT];
+		DWORD								m_adwGuildID[PLAYER_PER_ACCOUNT];
+		std::string							m_astrGuildName[PLAYER_PER_ACCOUNT];
 		bool m_bSimplePlayerInfo;
 
 		CRef<CNetworkActorManager>			m_rokNetActorMgr;

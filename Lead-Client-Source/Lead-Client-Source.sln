@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.1.11312.151 d18.0
+VisualStudioVersion = 18.1.11312.151
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CWebBrowser", "CWebBrowser\CWebBrowser_VC90.vcxproj", "{D64AE35F-F982-46D4-8E38-09E5C9752955}"
 EndProject
@@ -33,6 +33,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "scriptLib", "scriptLib\scriptLib_VC90.vcxproj", "{E682CEA2-1D79-4DE9-A2CE-6AED27E4170E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EterLocale", "EterLocale\EterLocale_VC90.vcxproj", "{05207E97-C83A-49C6-8E08-403679963A7B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "shared", "..\Lead-Shared-Source\Lead-Shared-Source.vcxproj", "{76C68FB7-46A0-464F-B0D2-EEDB6E2A450B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -104,6 +106,10 @@ Global
 		{05207E97-C83A-49C6-8E08-403679963A7B}.Debug|Win32.Build.0 = Debug|Win32
 		{05207E97-C83A-49C6-8E08-403679963A7B}.Release|Win32.ActiveCfg = Release|Win32
 		{05207E97-C83A-49C6-8E08-403679963A7B}.Release|Win32.Build.0 = Release|Win32
+		{76C68FB7-46A0-464F-B0D2-EEDB6E2A450B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{76C68FB7-46A0-464F-B0D2-EEDB6E2A450B}.Debug|Win32.Build.0 = Debug|Win32
+		{76C68FB7-46A0-464F-B0D2-EEDB6E2A450B}.Release|Win32.ActiveCfg = Debug|Win32
+		{76C68FB7-46A0-464F-B0D2-EEDB6E2A450B}.Release|Win32.Build.0 = Debug|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

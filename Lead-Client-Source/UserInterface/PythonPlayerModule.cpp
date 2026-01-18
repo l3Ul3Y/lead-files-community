@@ -1353,7 +1353,7 @@ PyObject * playerIsValuableItem(PyObject* poSelf, PyObject* poArgs)
 	BOOL hasMetinSocket = FALSE;
 	BOOL isHighPrice = FALSE;
 
-	for (int i = 0; i < METIN_SOCKET_COUNT; ++i)
+	for (int i = 0; i < ITEM_SOCKET_SLOT_MAX_NUM; ++i)
 		if (CPythonPlayer::METIN_SOCKET_TYPE_NONE != CPythonPlayer::Instance().GetItemMetinSocket(SlotIndex, i))
 			hasMetinSocket = TRUE;
 
@@ -1633,7 +1633,7 @@ PyObject * playerCanDetach(PyObject * poSelf, PyObject * poArgs)
 
 	if (pTargetItemData->IsFlag(CItemData::ITEM_FLAG_REFINEABLE))
 	{
-		for (int iSlotCount = 0; iSlotCount < METIN_SOCKET_COUNT; ++iSlotCount)
+		for (int iSlotCount = 0; iSlotCount < ITEM_SOCKET_SLOT_MAX_NUM; ++iSlotCount)
 			if (CPythonPlayer::Instance().GetItemMetinSocket(TargetSlotIndex, iSlotCount) > 2)
 			{
 				return Py_BuildValue("i", DETACH_METIN_OK);
@@ -2109,16 +2109,16 @@ PyObject* playerSendDragonSoulRefine(PyObject* poSelf, PyObject* poArgs)
 {
 	BYTE bSubHeader;
 	PyObject* pDic;
-	TItemPos RefineItemPoses[DS_REFINE_WINDOW_MAX_NUM];
+	TItemPos RefineItemPoses[DRAGON_SOUL_REFINE_WINDOW_MAX_NUM];
 	if (!PyTuple_GetByte(poArgs, 0, &bSubHeader))
 		return Py_BuildException();
 	switch (bSubHeader)
 	{
 	case DS_SUB_HEADER_CLOSE:
 		break;
-	case DS_SUB_HEADER_DO_UPGRADE:
-	case DS_SUB_HEADER_DO_IMPROVEMENT:
-	case DS_SUB_HEADER_DO_REFINE:
+	case DS_SUB_HEADER_DO_REFINE_GRADE:
+	case DS_SUB_HEADER_DO_REFINE_STEP:
+	case DS_SUB_HEADER_DO_REFINE_STRENGTH:
 		{
 			if (!PyTuple_GetObject(poArgs, 1, &pDic))
 				return Py_BuildException();
@@ -2129,7 +2129,7 @@ PyObject* playerSendDragonSoulRefine(PyObject* poSelf, PyObject* poArgs)
 			while (PyDict_Next(pDic, &pos, &key, &value))
 			{
 				int i = PyInt_AsLong(key);
-				if (i > DS_REFINE_WINDOW_MAX_NUM)
+				if (i > DRAGON_SOUL_REFINE_WINDOW_MAX_NUM)
 					return Py_BuildException();
 
 				if (!PyTuple_GetByte(value, 0, &RefineItemPoses[i].window_type) 
@@ -2331,14 +2331,17 @@ void initPlayer()
     PyModule_AddIntConstant(poModule, "HT",						POINT_HT);
     PyModule_AddIntConstant(poModule, "DX",						POINT_DX);
     PyModule_AddIntConstant(poModule, "IQ",						POINT_IQ);
-    PyModule_AddIntConstant(poModule, "ATT_POWER",				POINT_ATT_POWER);
-	PyModule_AddIntConstant(poModule, "ATT_MIN",				POINT_MIN_ATK);
-	PyModule_AddIntConstant(poModule, "ATT_MAX",				POINT_MAX_ATK);
+
+	// TODO: this constant was assigned wrongly, fix it later
+    PyModule_AddIntConstant(poModule, "ATT_POWER",				POINT_DEF_GRADE);
+
+	PyModule_AddIntConstant(poModule, "ATT_MIN",				POINT_WEAPON_MIN);
+	PyModule_AddIntConstant(poModule, "ATT_MAX",				POINT_WEAPON_MAX);
 	PyModule_AddIntConstant(poModule, "MIN_MAGIC_WEP",			POINT_MIN_MAGIC_WEP);
 	PyModule_AddIntConstant(poModule, "MAX_MAGIC_WEP",			POINT_MAX_MAGIC_WEP);
     PyModule_AddIntConstant(poModule, "ATT_SPEED",				POINT_ATT_SPEED);
 	PyModule_AddIntConstant(poModule, "ATT_BONUS",				POINT_ATT_GRADE_BONUS);
-    PyModule_AddIntConstant(poModule, "EVADE_RATE",				POINT_EVADE_RATE);
+    PyModule_AddIntConstant(poModule, "EVADE_RATE",				POINT_ATT_GRADE);
     PyModule_AddIntConstant(poModule, "MOVING_SPEED",			POINT_MOV_SPEED);
     PyModule_AddIntConstant(poModule, "DEF_GRADE",				POINT_DEF_GRADE);
     PyModule_AddIntConstant(poModule, "DEF_BONUS",				POINT_DEF_GRADE_BONUS);
@@ -2355,7 +2358,7 @@ void initPlayer()
 	PyModule_AddIntConstant(poModule, "BOW_DISTANCE",			POINT_BOW_DISTANCE);
 	PyModule_AddIntConstant(poModule, "HP_RECOVERY",			POINT_HP_RECOVERY);
 	PyModule_AddIntConstant(poModule, "SP_RECOVERY",			POINT_SP_RECOVERY);
-	PyModule_AddIntConstant(poModule, "ATTACKER_BONUS",			POINT_PARTY_ATT_GRADE);
+	PyModule_AddIntConstant(poModule, "ATTACKER_BONUS",			POINT_PARTY_ATTACKER_BONUS);
     PyModule_AddIntConstant(poModule, "MAX_NUM",				POINT_MAX_NUM);
 	////
 	PyModule_AddIntConstant(poModule, "POINT_CRITICAL_PCT",		POINT_CRITICAL_PCT);
@@ -2535,13 +2538,13 @@ void initPlayer()
 	PyModule_AddIntConstant(poModule, "DRAGON_SOUL_PAGE_COUNT",	DRAGON_SOUL_GRADE_MAX);
 	PyModule_AddIntConstant(poModule, "DRAGON_SOUL_SLOT_COUNT",	c_DragonSoul_Inventory_Count);
 	PyModule_AddIntConstant(poModule, "DRAGON_SOUL_EQUIPMENT_SLOT_START",	c_DragonSoul_Equip_Start);
-	PyModule_AddIntConstant(poModule, "DRAGON_SOUL_EQUIPMENT_PAGE_COUNT",	DS_DECK_MAX_NUM);
+	PyModule_AddIntConstant(poModule, "DRAGON_SOUL_EQUIPMENT_PAGE_COUNT",	DRAGON_SOUL_DECK_MAX_NUM);
 	PyModule_AddIntConstant(poModule, "DRAGON_SOUL_EQUIPMENT_FIRST_SIZE",	c_DragonSoul_Equip_Slot_Max);
 
 	// 용혼석 개량창
 	PyModule_AddIntConstant(poModule, "DRAGON_SOUL_REFINE_CLOSE",	DS_SUB_HEADER_CLOSE);
-	PyModule_AddIntConstant(poModule, "DS_SUB_HEADER_DO_UPGRADE",	DS_SUB_HEADER_DO_UPGRADE);
-	PyModule_AddIntConstant(poModule, "DS_SUB_HEADER_DO_IMPROVEMENT",	DS_SUB_HEADER_DO_IMPROVEMENT);
-	PyModule_AddIntConstant(poModule, "DS_SUB_HEADER_DO_REFINE",	DS_SUB_HEADER_DO_REFINE);
+	PyModule_AddIntConstant(poModule, "DS_SUB_HEADER_DO_UPGRADE",	DS_SUB_HEADER_DO_REFINE_GRADE);
+	PyModule_AddIntConstant(poModule, "DS_SUB_HEADER_DO_IMPROVEMENT",	DS_SUB_HEADER_DO_REFINE_STEP);
+	PyModule_AddIntConstant(poModule, "DS_SUB_HEADER_DO_REFINE",	DS_SUB_HEADER_DO_REFINE_STRENGTH);
 
 }

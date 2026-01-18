@@ -615,7 +615,7 @@ class InventoryWindow(ui.ScriptWindow):
 		if self.sellingSlotitemIndex == player.GetItemIndex(self.sellingSlotNumber):
 			if self.sellingSlotitemCount == player.GetItemCount(self.sellingSlotNumber):
 				## 용혼석도 팔리게 하는 기능 추가하면서 인자 type 추가
-				net.SendShopSellPacketNew(self.sellingSlotNumber, self.questionDialog.count, player.INVENTORY)
+				net.SendShopSellPacket(self.sellingSlotNumber, self.questionDialog.count, player.INVENTORY)
 				snd.PlaySound("sound/ui/money.wav")
 		self.OnCloseQuestionDialog()
 

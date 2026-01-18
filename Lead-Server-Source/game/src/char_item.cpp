@@ -37,7 +37,7 @@
 #include "safebox.h"
 #include "shop.h"
 
-#include "../../common/VnumHelper.h"
+#include "common/VnumHelper.h"
 #include "DragonSoul.h"
 #include "buff_on_attributes.h"
 #include "belt_inventory_helper.h"
@@ -411,6 +411,7 @@ void CHARACTER::SetItem(TItemPos Cell, LPITEM pItem)
 		}
 		else
 		{
+			// TODO: Check why this is deprecated
 			TPacketGCItemDelDeprecated pack;
 			pack.header = HEADER_GC_ITEM_DEL;
 			pack.Cell = Cell;

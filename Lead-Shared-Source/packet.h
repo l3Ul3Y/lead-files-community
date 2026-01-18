@@ -1,6 +1,10 @@
 #ifndef __INC_PACKET_H__
 #define __INC_PACKET_H__
 
+#include "common/tables.h"
+
+typedef BYTE TPacketHeader;
+
 enum
 {
 	HEADER_CG_HANDSHAKE				= 0xff,
@@ -68,7 +72,7 @@ enum
 
 	HEADER_CG_FISHING				= 82,
 
-	HEADER_CG_ITEM_GIVE				= 83,
+	HEADER_CG_GIVE_ITEM				= 83,
 
 	HEADER_CG_EMPIRE				= 90,
 
@@ -114,7 +118,6 @@ enum
 	HEADER_GC_SYNC_POSITION			= 5,
 
 	HEADER_GC_LOGIN_SUCCESS			= 6,
-	HEADER_GC_LOGIN_SUCCESS_NEWSLOT	= 32,
 	HEADER_GC_LOGIN_FAILURE			= 7,
 
 	HEADER_GC_CHARACTER_CREATE_SUCCESS		= 8,
@@ -126,7 +129,6 @@ enum
 	HEADER_GC_STUN				= 13,
 	HEADER_GC_DEAD				= 14,
 
-	HEADER_GC_MAIN_CHARACTER_OLD		= 15,
 	HEADER_GC_CHARACTER_POINTS			= 16,
 	HEADER_GC_CHARACTER_POINT_CHANGE		= 17,
 	HEADER_GC_CHANGE_SPEED			= 18,
@@ -135,7 +137,6 @@ enum
 
 	HEADER_GC_ITEM_DEL				= 20,
 	HEADER_GC_ITEM_SET				= 21,
-	HEADER_GC_ITEM_USE				= 22,
 	HEADER_GC_ITEM_DROP				= 23,
 	HEADER_GC_ITEM_UPDATE			= 25,
 
@@ -165,7 +166,6 @@ enum
 	HEADER_GC_SCRIPT				= 45,
 	HEADER_GC_QUEST_CONFIRM			= 46,
 
-	HEADER_GC_MOUNT				= 61,
 	HEADER_GC_OWNERSHIP				= 62,
 	HEADER_GC_TARGET			 	= 63,
 
@@ -174,7 +174,6 @@ enum
 	HEADER_GC_ADD_FLY_TARGETING			= 69,
 	HEADER_GC_CREATE_FLY			= 70,
 	HEADER_GC_FLY_TARGETING			= 71,
-	HEADER_GC_SKILL_LEVEL_OLD			= 72,
 	HEADER_GC_SKILL_LEVEL			= 76,
 
 	HEADER_GC_MESSENGER				= 74,
@@ -201,7 +200,6 @@ enum
 	HEADER_GC_PARTY_UNLINK			= 92,
 
 	HEADER_GC_REFINE_INFORMATION_OLD		= 95,
-
 	HEADER_GC_VIEW_EQUIP			= 99,
 
 	HEADER_GC_MARK_BLOCK			= 100,
@@ -217,7 +215,7 @@ enum
 	HEADER_GC_MAIN_CHARACTER			= 113,
 
 	//	HEADER_GC_USE_POTION			= 114,
-	HEADER_GC_SEPCIAL_EFFECT		= 114,
+	HEADER_GC_SPECIAL_EFFECT		= 114,
 
 	HEADER_GC_NPC_POSITION			= 115,
 
@@ -413,6 +411,15 @@ typedef struct SPacketGGMessenger
 	char        szCompanion[CHARACTER_NAME_MAX_LEN + 1];
 } TPacketGGMessenger;
 
+typedef struct packet_messenger_logout
+{
+	uint8_t length;
+} TPacketGCMessengerLogout;
+
+typedef struct packet_messenger_login
+{
+	uint8_t length;
+} TPacketGCMessengerLogin;
 
 typedef struct SPacketGGFindPosition
 {
@@ -508,14 +515,20 @@ typedef struct command_player_select
 {
 	BYTE	header;
 	BYTE	index;
-} TPacketCGPlayerSelect;
+} TPacketCGCharacterSelect;
 
 typedef struct command_player_delete
 {
 	BYTE	header;
 	BYTE	index;
-	char	private_code[8];
-} TPacketCGPlayerDelete;
+	char	private_code[PRIVATE_CODE_LENGTH];
+} TPacketCGCharacterDelete;
+
+typedef struct packet_player_delete_success
+{
+	BYTE        header;
+	BYTE        account_index;
+} TPacketGCDestroyCharacterSuccess;
 
 typedef struct command_player_create
 {
@@ -528,14 +541,14 @@ typedef struct command_player_create
 	BYTE	Int;
 	BYTE	Str;
 	BYTE	Dex;
-} TPacketCGPlayerCreate;
+} TPacketCGCharacterCreate;
 
 typedef struct command_player_create_success
 {
 	BYTE		header;
 	BYTE		bAccountCharacterIndex;
 	TSimplePlayer	player;
-} TPacketGCPlayerCreateSuccess;
+} TPacketGCCharacterCreateSuccess;
 
 // 공격
 typedef struct command_attack
@@ -672,8 +685,7 @@ enum
 {
 	SHOP_SUBHEADER_CG_END,
 	SHOP_SUBHEADER_CG_BUY,
-	SHOP_SUBHEADER_CG_SELL,
-	SHOP_SUBHEADER_CG_SELL2
+	SHOP_SUBHEADER_CG_SELL
 };
 
 typedef struct command_shop_buy
@@ -742,7 +754,7 @@ typedef struct command_script_button
 typedef struct command_quest_input_string
 {
 	BYTE header;
-	char msg[64+1];
+	char msg[QUEST_INPUT_STRING_MAX_NUM+1];
 } TPacketCGQuestInputString;
 
 typedef struct command_quest_confirm
@@ -793,6 +805,16 @@ typedef struct packet_phase
 	BYTE	phase;
 } TPacketGCPhase;
 
+typedef struct packet_blank
+{
+	BYTE		header;
+} TPacketGCBlank;
+
+typedef struct packet_header_dynamic_size
+{
+	BYTE header;
+	WORD size;
+} TDynamicSizePacketHeader;
 
 enum
 {
@@ -1104,33 +1126,33 @@ typedef struct packet_item_ground_del
 	DWORD	dwVID;
 } TPacketGCItemGroundDel;
 
-struct packet_quickslot_add
+typedef struct packet_quickslot_add
 {
 	BYTE	header;
 	BYTE	pos;
 	TQuickslot	slot;
-};
+} TPacketGCQuickslotAdd;
 
-struct packet_quickslot_del
+typedef struct packet_quickslot_del
 {
 	BYTE	header;
 	BYTE	pos;
-};
+} TPacketGCQuickslotDel;
 
-struct packet_quickslot_swap
+typedef struct packet_quickslot_swap
 {
 	BYTE	header;
 	BYTE	pos;
 	BYTE	pos_to;
-};
+} TPacketGCQuickSlotSwap;
 
-struct packet_motion
+typedef struct packet_motion
 {
 	BYTE	header;
 	DWORD	vid;
 	DWORD	victim_vid;
 	WORD	motion;
-};
+} TPacketGCMotion;
 
 enum EPacketShopSubHeaders
 {
@@ -1148,7 +1170,7 @@ enum EPacketShopSubHeaders
 	SHOP_SUBHEADER_GC_NOT_ENOUGH_MONEY_EX,
 };
 
-struct packet_shop_item
+typedef struct packet_shop_item
 {   
 	DWORD       vnum;
 	DWORD       price;
@@ -1156,11 +1178,11 @@ struct packet_shop_item
 	BYTE		display_pos;
 	long	alSockets[ITEM_SOCKET_MAX_NUM];
 	TPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_MAX_NUM];
-};
+} TShopItemData;
 
 typedef struct packet_shop_start
 {
-	DWORD   owner_vid;
+	DWORD owner_vid;
 	struct packet_shop_item	items[SHOP_HOST_ITEM_MAX_NUM];
 } TPacketGCShopStart;
 
@@ -1194,7 +1216,7 @@ typedef struct packet_shop	// 가변 패킷
 	BYTE        subheader;
 } TPacketGCShop;
 
-struct packet_exchange
+typedef struct packet_exchange
 {
 	BYTE	header;
 	BYTE	sub_header;
@@ -1204,7 +1226,7 @@ struct packet_exchange
 	DWORD	arg3;	// count
 	long	alSockets[ITEM_SOCKET_MAX_NUM];
 	TPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_MAX_NUM];
-};
+} TPacketGCExchange;
 
 enum EPacketTradeSubHeaders
 {
@@ -1218,25 +1240,30 @@ enum EPacketTradeSubHeaders
 	EXCHANGE_SUBHEADER_GC_LESS_GOLD,	/* arg1 == not used */
 };
 
-struct packet_position
+typedef struct packet_position
 {
 	BYTE	header;
 	DWORD	vid;
 	BYTE	position;
-};
+} TPacketGCPosition;
 
 typedef struct packet_ping
 {
 	BYTE	header;
 } TPacketGCPing;
 
-struct packet_script
+typedef struct packet_pong
+{
+	BYTE		bHeader;
+} TPacketCGPong;
+
+typedef struct packet_script
 {
 	BYTE	header;
 	WORD	size;
 	BYTE	skin;
 	WORD	src_size;
-};
+} TPacketGCScript;
 
 typedef struct packet_change_speed
 {
@@ -1375,13 +1402,13 @@ typedef struct command_warp
 	BYTE	bHeader;
 } TPacketCGWarp;
 
-struct packet_quest_info
+typedef struct packet_quest_info
 {
 	BYTE header;
 	WORD size;
 	WORD index;
 	BYTE flag;
-};
+} TPacketGCQuestInfo;
 
 enum 
 {
@@ -1576,12 +1603,12 @@ typedef struct packet_safebox_size
 {
 	BYTE bHeader;
 	BYTE bSize;
-} TPacketCGSafeboxSize;
+} TPacketGCSafeboxSize;
 
 typedef struct packet_safebox_wrong_password
 {
 	BYTE	bHeader;
-} TPacketCGSafeboxWrongPassword;
+} TPacketGCSafeboxWrongPassword;
 
 typedef struct command_empire
 {
@@ -1608,12 +1635,6 @@ typedef struct command_safebox_money
 	long	lMoney;
 } TPacketCGSafeboxMoney;
 
-typedef struct packet_safebox_money_change
-{
-	BYTE	bHeader;
-	long	lMoney;
-} TPacketGCSafeboxMoneyChange;
-
 // Guild
 
 enum
@@ -1639,6 +1660,7 @@ enum
 	GUILD_SUBHEADER_GC_GUILD_WAR_END_LIST,
 	GUILD_SUBHEADER_GC_WAR_SCORE,
 	GUILD_SUBHEADER_GC_MONEY_CHANGE,
+	GUILD_SUBHEADER_GC_WAR_POINT
 };
 
 enum GUILD_SUBHEADER_CG
@@ -1666,6 +1688,38 @@ typedef struct packet_guild
 	WORD size;
 	BYTE subheader;
 } TPacketGCGuild;
+
+typedef struct packet_guild_sub_grade
+{
+	char grade_name[GUILD_GRADE_NAME_MAX_LEN+1]; // 8+1 길드장, 길드원 등의 이름
+	BYTE auth_flag;
+} TPacketGCGuildSubGrade;
+
+typedef struct packet_guild_sub_member
+{
+	DWORD pid;
+	BYTE byGrade;
+	BYTE byIsGeneral;
+	BYTE byJob;
+	BYTE byLevel;
+	DWORD dwOffer;
+	BYTE byNameFlag;
+	// if NameFlag is TRUE, name is sent from server.
+	//	char szName[CHARACTER_ME_MAX_LEN+1];
+} TPacketGCGuildSubMember;
+
+typedef struct packet_guild_sub_info
+{
+	WORD member_count;
+	WORD max_member_count;
+	DWORD guild_id;
+	DWORD master_pid;
+	DWORD exp;
+	BYTE level;
+	char name[GUILD_NAME_MAX_LEN+1];
+	DWORD gold;
+	BYTE has_land;
+} TPacketGCGuildInfo;
 
 typedef struct packet_guild_name_t
 {
@@ -1767,6 +1821,28 @@ typedef struct packet_symbol_data
 	WORD size;
 	DWORD guild_id;
 } TPacketGCGuildSymbolData;
+
+typedef struct packet_observer_add
+{
+	BYTE	header;
+	DWORD	vid;
+	WORD	x;
+	WORD	y;
+} TPacketGCObserverAdd;
+
+typedef struct packet_observer_move
+{
+	BYTE	header;
+	DWORD	vid;
+	WORD	x;
+	WORD	y;
+} TPacketGCObserverMove;
+
+typedef struct packet_observer_remove
+{
+	BYTE	header;
+	DWORD	vid;
+} TPacketGCObserverRemove;
 
 // Fishing
 
@@ -1952,17 +2028,20 @@ typedef struct packet_channel
 	BYTE channel;
 } TPacketGCChannel;
 
-typedef struct pakcet_view_equip
+typedef struct SEquipmentItemSet
+{
+	uint32_t vnum;
+	BYTE count;
+	int32_t alSockets[ITEM_SOCKET_MAX_NUM];
+	TPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_MAX_NUM];
+} TEquipmentItemSet;
+
+typedef struct packet_view_equip
 {
 	BYTE  header;
 	DWORD vid;
-	struct {
-		DWORD	vnum;
-		BYTE	count;
-		long	alSockets[ITEM_SOCKET_MAX_NUM];
-		TPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_MAX_NUM];
-	} equips[WEAR_MAX_NUM];
-} TPacketViewEquip;
+	TEquipmentItemSet equips[WEAR_MAX_NUM];
+} TPacketGCViewEquip;
 
 typedef struct 
 {
@@ -2064,101 +2143,117 @@ typedef struct SPacketGCPanamaPack
 	BYTE	abIV[32];
 } TPacketGCPanamaPack;
 
-//TODO :  아우 짱나..가변패킷 사이즈 받아들일수 있게 패킷 핸들러 Refactoring 하자. 
 typedef struct SPacketGCHybridCryptKeys
 {
-	SPacketGCHybridCryptKeys() : m_pStream(NULL) {}
+	SPacketGCHybridCryptKeys() : bHeader(HEADER_GC_HYBRIDCRYPT_KEYS),
+		uDynamicPacketSize(0), KeyStreamLen(0), pDataKeyStream(nullptr), m_pStream(nullptr) {}
+
 	~SPacketGCHybridCryptKeys()
 	{
-		//GCC 에선 NULL delete 해도 괜찮나? 일단 안전하게 NULL 체크 하자. ( 근데 이거 C++ 표준아니었나 --a )
-		if( m_pStream )
+		if (m_pStream)
 		{
 			delete[] m_pStream;
-			m_pStream = NULL;
+			m_pStream = nullptr;
 		}
 	}
-	
-	DWORD GetStreamSize()
+
+	SPacketGCHybridCryptKeys(int32_t iStreamSize) : bHeader(HEADER_GC_HYBRIDCRYPT_KEYS),
+		uDynamicPacketSize(0), KeyStreamLen(iStreamSize), pDataKeyStream(nullptr)
 	{
-		return sizeof(bHeader) + sizeof(WORD) + sizeof(int) + KeyStreamLen; 
+		m_pStream = new uint8_t[iStreamSize];
 	}
 
-	BYTE* GetStreamData()
+	static int32_t GetFixedHeaderSize()
 	{
-		if( m_pStream )
-			delete[] m_pStream;
+		return sizeof(uint8_t) + sizeof(uint16_t) + sizeof(int32_t);
+	}
 
-		uDynamicPacketSize = (WORD)GetStreamSize();
-		
-		m_pStream = new BYTE[ uDynamicPacketSize ];
+	uint32_t GetStreamSize()
+	{
+		return GetFixedHeaderSize() + KeyStreamLen;
+	}
 
-		memcpy( m_pStream, &bHeader, 1 );
-		memcpy( m_pStream+1, &uDynamicPacketSize, 2 );
-		memcpy( m_pStream+3, &KeyStreamLen, 4 );
+	uint8_t *GetStreamData()
+	{
+		delete[] m_pStream;
 
-		if( KeyStreamLen > 0 )
-			memcpy( m_pStream+7, pDataKeyStream, KeyStreamLen );
+		uDynamicPacketSize = static_cast<uint16_t>(GetStreamSize());
+
+		m_pStream = new uint8_t[uDynamicPacketSize];
+
+		memcpy(m_pStream, &bHeader, 1);
+		memcpy(m_pStream + 1, &uDynamicPacketSize, 2);
+		memcpy(m_pStream + 3, &KeyStreamLen, 4);
+
+		if (KeyStreamLen > 0)
+			memcpy(m_pStream + 7, pDataKeyStream, KeyStreamLen);
 
 		return m_pStream;
 	}
 
-	BYTE	bHeader;
-	WORD    uDynamicPacketSize; // 빌어먹을 클라  DynamicPacketHeader 구조때문에 맞춰줘야한다 -_-;
-	int		KeyStreamLen;
-	BYTE*   pDataKeyStream;
-
-private:
-	BYTE* m_pStream;
-
+	uint8_t bHeader;
+	uint16_t uDynamicPacketSize;
+	int32_t KeyStreamLen;
+	uint8_t *pDataKeyStream;
+	uint8_t *m_pStream;
 
 } TPacketGCHybridCryptKeys;
 
-
 typedef struct SPacketGCPackageSDB
 {
-	SPacketGCPackageSDB() : m_pDataSDBStream(NULL), m_pStream(NULL) {}
+	SPacketGCPackageSDB() : bHeader(HEADER_GC_HYBRIDCRYPT_SDB), uDynamicPacketSize(0),
+		m_pDataSDBStream(nullptr), m_pStream(nullptr), iStreamLen(0) {}
+
 	~SPacketGCPackageSDB()
 	{
-		if( m_pStream )
+		if (m_pStream)
 		{
 			delete[] m_pStream;
-			m_pStream = NULL;
+			m_pStream = nullptr;
 		}
 	}
-	
-	DWORD GetStreamSize()
+
+	SPacketGCPackageSDB(int32_t iStreamSize) : bHeader(HEADER_GC_HYBRIDCRYPT_SDB), uDynamicPacketSize(0),
+		m_pDataSDBStream(nullptr), iStreamLen(iStreamSize)
 	{
-		return sizeof(bHeader) + sizeof(WORD) + sizeof(int) + iStreamLen; 
+		m_pStream = new uint8_t[iStreamSize];
 	}
 
-	BYTE* GetStreamData()
+	static int32_t GetFixedHeaderSize()
 	{
-		if( m_pStream )
-			delete[] m_pStream;
+		return sizeof(uint8_t) + sizeof(uint16_t) + sizeof(int32_t);
+	}
 
-		uDynamicPacketSize =  GetStreamSize();
+	uint32_t GetStreamSize()
+	{
+		return GetFixedHeaderSize() + iStreamLen;
+	}
 
-		m_pStream = new BYTE[ uDynamicPacketSize ];
+	uint8_t *GetStreamData()
+	{
+		delete[] m_pStream;
 
-		memcpy( m_pStream, &bHeader, 1 );
-		memcpy( m_pStream+1, &uDynamicPacketSize, 2 );
-		memcpy( m_pStream+3, &iStreamLen, 4 );
+		uDynamicPacketSize = GetStreamSize();
 
-		if( iStreamLen > 0 )
-			memcpy( m_pStream+7, m_pDataSDBStream, iStreamLen );
+		m_pStream = new uint8_t[uDynamicPacketSize];
+
+		memcpy(m_pStream, &bHeader, 1);
+		memcpy(m_pStream + 1, &uDynamicPacketSize, 2);
+		memcpy(m_pStream + 3, &iStreamLen, 4);
+
+		if (iStreamLen > 0)
+			memcpy(m_pStream + 7, m_pDataSDBStream, iStreamLen);
 
 		return m_pStream;
 	}
 
-	BYTE	bHeader;
-	WORD    uDynamicPacketSize; // 빌어먹을 클라  DynamicPacketHeader 구조때문에 맞춰줘야한다 -_-;
-	int		iStreamLen;
-	BYTE*   m_pDataSDBStream;
+	uint8_t bHeader;
+	uint16_t uDynamicPacketSize;
+	uint8_t *m_pDataSDBStream;
 
-private:
-	BYTE* m_pStream;
-
-
+public:
+	uint8_t *m_pStream;
+	int32_t iStreamLen;
 } TPacketGCPackageSDB;
 
 #ifdef _IMPROVED_PACKET_ENCRYPTION_

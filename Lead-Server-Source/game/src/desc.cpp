@@ -891,7 +891,7 @@ void DESC::SendLoginSuccessPacket()
 
 	TPacketGCLoginSuccess p;
 
-	p.bHeader    = HEADER_GC_LOGIN_SUCCESS_NEWSLOT;
+	p.bHeader    = HEADER_GC_LOGIN_SUCCESS;
 
 	p.handle     = GetHandle();
 	p.random_key = DESC_MANAGER::instance().MakeRandomKey(GetHandle()); // FOR MARK

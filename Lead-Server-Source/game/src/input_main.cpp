@@ -1033,18 +1033,6 @@ int CInputMain::Shop(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 		case SHOP_SUBHEADER_CG_SELL:
 			{
-				if (uiBytes < sizeof(BYTE))
-					return -1;
-
-				BYTE pos = *c_pData;
-
-				sys_log(0, "INPUT: %s SHOP: SELL", ch->GetName());
-				CShopManager::instance().Sell(ch, pos);
-				return sizeof(BYTE);
-			}
-
-		case SHOP_SUBHEADER_CG_SELL2:
-			{
 				if (uiBytes < sizeof(BYTE) + sizeof(BYTE))
 					return -1;
 
@@ -3095,7 +3083,7 @@ int CInputMain::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 				ItemToItem(ch, c_pData);
 			break;
 
-		case HEADER_CG_ITEM_GIVE:
+		case HEADER_CG_GIVE_ITEM:
 			if (!ch->IsObserverMode())
 				ItemGive(ch, c_pData);
 			break;

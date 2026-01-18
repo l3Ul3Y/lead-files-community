@@ -61,7 +61,7 @@ bool CPythonNetworkStream::LoadConvertTable(DWORD dwEmpireID, const char* c_szFi
 		return false;
 
 	DWORD dwEngCount=26;
-	DWORD dwHanCount=(0xc8-0xb0+1)*(0xfe-0xa1+1);
+	DWORD dwHanCount = (0xc8 - 0xb0 + 1) * (0xfe - 0xa1 + 1);
 	DWORD dwHanSize=dwHanCount*2;
 	DWORD dwFileSize=dwEngCount*2+dwHanSize;
 
@@ -93,13 +93,8 @@ void CPythonNetworkStream::LoadingPhase()
 				return;
 			break;
 
-		case HEADER_GC_MAIN_CHARACTER:
-			if (RecvMainCharacter())
-				return;
-			break;
-
 		// SUPPORT_BGM
-		case HEADER_GC_MAIN_CHARACTER2_EMPIRE:
+		case HEADER_GC_MAIN_CHARACTER:
 			if (RecvMainCharacter2_EMPIRE())
 				return;
 			break;
@@ -121,18 +116,18 @@ void CPythonNetworkStream::LoadingPhase()
 				return;
 			break;
 
-		case HEADER_GC_PLAYER_POINTS:
+		case HEADER_GC_CHARACTER_POINTS:
 			if (__RecvPlayerPoints())
 				return;
 			break;
 
-		case HEADER_GC_PLAYER_POINT_CHANGE:
+		case HEADER_GC_CHARACTER_POINT_CHANGE:
 			if (RecvPointChange())
 				return;
 			break;
 
-		case HEADER_GC_ITEM_SET:
-			if (RecvItemSetPacket())
+		case HEADER_GC_ITEM_DEL:
+			if (RecvItemDelPacket())
 				return;
 			break;
 
@@ -199,7 +194,7 @@ bool CPythonNetworkStream::RecvMainCharacter()
 	m_dwMainActorVID = MainChrPacket.dwVID;
 	m_dwMainActorRace = MainChrPacket.wRaceNum;
 	m_dwMainActorEmpire = 0;
-	m_dwMainActorSkillGroup = MainChrPacket.bySkillGroup;
+	m_dwMainActorSkillGroup = MainChrPacket.skill_group;
 
 	m_rokNetActorMgr->SetMainActorVID(m_dwMainActorVID);
 
@@ -207,7 +202,7 @@ bool CPythonNetworkStream::RecvMainCharacter()
 	rkPlayer.SetName(MainChrPacket.szName);
 	rkPlayer.SetMainCharacterIndex(GetMainActorVID());
 
-	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_LOAD], "LoadData", Py_BuildValue("(ii)", MainChrPacket.lX, MainChrPacket.lY));
+	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_LOAD], "LoadData", Py_BuildValue("(ii)", MainChrPacket.lx, MainChrPacket.ly));
 
 	//Tracef(" >> RecvMainCharacter\n");
 
@@ -218,14 +213,14 @@ bool CPythonNetworkStream::RecvMainCharacter()
 // SUPPORT_BGM
 bool CPythonNetworkStream::RecvMainCharacter2_EMPIRE()
 {
-	TPacketGCMainCharacter2_EMPIRE mainChrPacket;
+	TPacketGCMainCharacter mainChrPacket;
 	if (!Recv(sizeof(mainChrPacket), &mainChrPacket))
 		return false;
 
 	m_dwMainActorVID = mainChrPacket.dwVID;
 	m_dwMainActorRace = mainChrPacket.wRaceNum;
-	m_dwMainActorEmpire = mainChrPacket.byEmpire;
-	m_dwMainActorSkillGroup = mainChrPacket.bySkillGroup;
+	m_dwMainActorEmpire = mainChrPacket.empire;
+	m_dwMainActorSkillGroup = mainChrPacket.skill_group;
 
 	m_rokNetActorMgr->SetMainActorVID(m_dwMainActorVID);
 
@@ -233,7 +228,7 @@ bool CPythonNetworkStream::RecvMainCharacter2_EMPIRE()
 	rkPlayer.SetName(mainChrPacket.szName);
 	rkPlayer.SetMainCharacterIndex(GetMainActorVID());
 
-	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_LOAD], "LoadData", Py_BuildValue("(ii)", mainChrPacket.lX, mainChrPacket.lY));
+	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_LOAD], "LoadData", Py_BuildValue("(ii)", mainChrPacket.lx, mainChrPacket.ly));
 
 	//Tracef(" >> RecvMainCharacterNew : %d\n", m_dwMainActorEmpire);
 
@@ -249,18 +244,18 @@ bool CPythonNetworkStream::RecvMainCharacter3_BGM()
 
 	m_dwMainActorVID = mainChrPacket.dwVID;
 	m_dwMainActorRace = mainChrPacket.wRaceNum;
-	m_dwMainActorEmpire = mainChrPacket.byEmpire;
-	m_dwMainActorSkillGroup = mainChrPacket.bySkillGroup;
+	m_dwMainActorEmpire = mainChrPacket.empire;
+	m_dwMainActorSkillGroup = mainChrPacket.skill_group;
 
 	m_rokNetActorMgr->SetMainActorVID(m_dwMainActorVID);
 
 	CPythonPlayer& rkPlayer=CPythonPlayer::Instance();
-	rkPlayer.SetName(mainChrPacket.szUserName);
+	rkPlayer.SetName(mainChrPacket.szChrName);
 	rkPlayer.SetMainCharacterIndex(GetMainActorVID());
 
 	__SetFieldMusicFileName(mainChrPacket.szBGMName);
 
-	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_LOAD], "LoadData", Py_BuildValue("(ii)", mainChrPacket.lX, mainChrPacket.lY));
+	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_LOAD], "LoadData", Py_BuildValue("(ii)", mainChrPacket.lx, mainChrPacket.ly));
 
 	//Tracef(" >> RecvMainCharacterNew : %d\n", m_dwMainActorEmpire);
 
@@ -276,18 +271,18 @@ bool CPythonNetworkStream::RecvMainCharacter4_BGM_VOL()
 
 	m_dwMainActorVID = mainChrPacket.dwVID;
 	m_dwMainActorRace = mainChrPacket.wRaceNum;
-	m_dwMainActorEmpire = mainChrPacket.byEmpire;
-	m_dwMainActorSkillGroup = mainChrPacket.bySkillGroup;
+	m_dwMainActorEmpire = mainChrPacket.empire;
+	m_dwMainActorSkillGroup = mainChrPacket.skill_group;
 
 	m_rokNetActorMgr->SetMainActorVID(m_dwMainActorVID);
 
 	CPythonPlayer& rkPlayer=CPythonPlayer::Instance();
-	rkPlayer.SetName(mainChrPacket.szUserName);
+	rkPlayer.SetName(mainChrPacket.szChrName);
 	rkPlayer.SetMainCharacterIndex(GetMainActorVID());
 
 	__SetFieldMusicFileInfo(mainChrPacket.szBGMName, mainChrPacket.fBGMVol);
 
-	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_LOAD], "LoadData", Py_BuildValue("(ii)", mainChrPacket.lX, mainChrPacket.lY));
+	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_LOAD], "LoadData", Py_BuildValue("(ii)", mainChrPacket.lx, mainChrPacket.ly));
 
 	//Tracef(" >> RecvMainCharacterNew : %d\n", m_dwMainActorEmpire);
 
@@ -343,8 +338,7 @@ void CPythonNetworkStream::StartGame()
 	
 bool CPythonNetworkStream::SendEnterGame()
 {
-	TPacketCGEnterFrontGame EnterFrontGamePacket;
-
+	TPacketGCBlank EnterFrontGamePacket;
 	EnterFrontGamePacket.header = HEADER_CG_ENTERGAME;
 
 	if (!Send(sizeof(EnterFrontGamePacket), &EnterFrontGamePacket))

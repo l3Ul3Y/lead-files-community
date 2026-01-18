@@ -18,7 +18,7 @@
 #include "item.h"
 #include "item_manager.h"
 
-#include "../../common/VnumHelper.h"
+#include "common/VnumHelper.h"
 #include "DragonSoul.h"
 #include "cube.h"
 

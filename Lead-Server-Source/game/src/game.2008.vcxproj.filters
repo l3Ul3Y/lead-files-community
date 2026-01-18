@@ -198,7 +198,6 @@
     <ClInclude Include="guild_manager.h" />
     <ClInclude Include="horsename_manager.h" />
     <ClInclude Include="horse_rider.h" />
-    <ClInclude Include="IFileMonitor.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="ip_ban.h" />
     <ClInclude Include="item.h" />
@@ -222,7 +221,6 @@
     <ClInclude Include="motion.h" />
     <ClInclude Include="OXEvent.h" />
     <ClInclude Include="p2p.h" />
-    <ClInclude Include="packet.h" />
     <ClInclude Include="packet_info.h" />
     <ClInclude Include="panama.h" />
     <ClInclude Include="party.h" />
@@ -267,8 +265,6 @@
     <ClInclude Include="xmas_event.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="any_function.inc">
-      <Filter>Source Files</Filter>
-    </None>
+    <None Include="any_function.inc" />
   </ItemGroup>
 </Project>

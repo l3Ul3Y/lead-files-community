@@ -202,13 +202,13 @@ void CInputDB::PlayerCreateSuccess(LPDESC d, const char * data)
 	TAccountTable & r_Tab = d->GetAccountTable();
 	r_Tab.players[pPacketDB->bAccountCharacterIndex] = pPacketDB->player;
 
-	TPacketGCPlayerCreateSuccess pack;
+	TPacketGCCharacterCreateSuccess pack;
 
 	pack.header = HEADER_GC_CHARACTER_CREATE_SUCCESS;
 	pack.bAccountCharacterIndex = pPacketDB->bAccountCharacterIndex;
 	pack.player = pPacketDB->player;
 
-	d->Packet(&pack, sizeof(TPacketGCPlayerCreateSuccess));
+	d->Packet(&pack, sizeof(TPacketGCCharacterCreateSuccess));
 
 	// 기본 무기와 귀환부를 지급
 	TPlayerItem t;
@@ -1089,7 +1089,7 @@ void CInputDB::SafeboxWrongPassword(LPDESC d)
 	if (!d->GetCharacter())
 		return;
 
-	TPacketCGSafeboxWrongPassword p;
+	TPacketGCSafeboxWrongPassword p;
 	p.bHeader = HEADER_GC_SAFEBOX_WRONG_PASSWORD;
 	d->Packet(&p, sizeof(p));
 

@@ -171,43 +171,6 @@ bool CPythonNetworkStream::RecvCharacterAdditionalInfo()
 	return true;
 }
 
-bool CPythonNetworkStream::RecvCharacterAppendPacketNew()
-{
-	TraceError("TPacketGCCharacterAdd2는 쓰지 않는 패킷입니다.");
-	TPacketGCCharacterAdd2 chrAddPacket;
-	if (!Recv(sizeof(chrAddPacket), &chrAddPacket))
-		return false;
-	if(IsInvisibleRace(chrAddPacket.wRaceNum))
-		return true;
-
-	__GlobalPositionToLocalPosition(chrAddPacket.x, chrAddPacket.y);
-
-	SNetworkActorData kNetActorData;
-	kNetActorData.m_dwLevel = 0;
-	kNetActorData.m_bType=chrAddPacket.bType;
-	kNetActorData.m_dwGuildID=chrAddPacket.dwGuild;
-	kNetActorData.m_dwEmpireID=chrAddPacket.bEmpire;	
-	kNetActorData.m_dwMovSpd=chrAddPacket.bMovingSpeed;
-	kNetActorData.m_dwAtkSpd=chrAddPacket.bAttackSpeed;
-	kNetActorData.m_dwRace=chrAddPacket.wRaceNum;
-	kNetActorData.m_dwArmor=chrAddPacket.awPart[CHR_EQUIPPART_ARMOR];
-	kNetActorData.m_dwWeapon=chrAddPacket.awPart[CHR_EQUIPPART_WEAPON];
-	kNetActorData.m_dwHair=chrAddPacket.awPart[CHR_EQUIPPART_HAIR];
-	kNetActorData.m_dwStateFlags=chrAddPacket.bStateFlag;
-	kNetActorData.m_dwVID=chrAddPacket.dwVID;
-	kNetActorData.m_dwMountVnum=chrAddPacket.dwMountVnum;
-	kNetActorData.m_fRot=chrAddPacket.angle;
-	kNetActorData.m_kAffectFlags.CopyData(0, sizeof(chrAddPacket.dwAffectFlag[0]), &chrAddPacket.dwAffectFlag[0]);
-	kNetActorData.m_kAffectFlags.CopyData(32, sizeof(chrAddPacket.dwAffectFlag[1]), &chrAddPacket.dwAffectFlag[1]);
-	kNetActorData.SetPosition(chrAddPacket.x, chrAddPacket.y);
-	kNetActorData.m_sAlignment=chrAddPacket.sAlignment;
-	kNetActorData.m_byPKMode=chrAddPacket.bPKMode;
-	kNetActorData.m_stName=chrAddPacket.name;
-	__RecvCharacterAppendPacket(&kNetActorData);
-
-	return true;
-}
-
 bool CPythonNetworkStream::RecvCharacterUpdatePacket()
 {
 	TPacketGCCharacterUpdate chrUpdatePacket;
@@ -222,31 +185,6 @@ bool CPythonNetworkStream::RecvCharacterUpdatePacket()
 	kNetUpdateActorData.m_dwWeapon=chrUpdatePacket.awPart[CHR_EQUIPPART_WEAPON];
 	kNetUpdateActorData.m_dwHair=chrUpdatePacket.awPart[CHR_EQUIPPART_HAIR];
 	kNetUpdateActorData.m_dwVID=chrUpdatePacket.dwVID;	
-	kNetUpdateActorData.m_kAffectFlags.CopyData(0, sizeof(chrUpdatePacket.dwAffectFlag[0]), &chrUpdatePacket.dwAffectFlag[0]);
-	kNetUpdateActorData.m_kAffectFlags.CopyData(32, sizeof(chrUpdatePacket.dwAffectFlag[1]), &chrUpdatePacket.dwAffectFlag[1]);
-	kNetUpdateActorData.m_sAlignment=chrUpdatePacket.sAlignment;
-	kNetUpdateActorData.m_byPKMode=chrUpdatePacket.bPKMode;
-	kNetUpdateActorData.m_dwStateFlags=chrUpdatePacket.bStateFlag;
-	kNetUpdateActorData.m_dwMountVnum=chrUpdatePacket.dwMountVnum;
-	__RecvCharacterUpdatePacket(&kNetUpdateActorData);
-
-	return true;
-}
-
-bool CPythonNetworkStream::RecvCharacterUpdatePacketNew()
-{
-	TPacketGCCharacterUpdate2 chrUpdatePacket;
-	if (!Recv(sizeof(chrUpdatePacket), &chrUpdatePacket))
-		return false;
-
-	SNetworkUpdateActorData kNetUpdateActorData;
-	kNetUpdateActorData.m_dwGuildID=chrUpdatePacket.dwGuildID;
-	kNetUpdateActorData.m_dwMovSpd=chrUpdatePacket.bMovingSpeed;
-	kNetUpdateActorData.m_dwAtkSpd=chrUpdatePacket.bAttackSpeed;
-	kNetUpdateActorData.m_dwArmor=chrUpdatePacket.awPart[CHR_EQUIPPART_ARMOR];
-	kNetUpdateActorData.m_dwWeapon=chrUpdatePacket.awPart[CHR_EQUIPPART_WEAPON];
-	kNetUpdateActorData.m_dwHair=chrUpdatePacket.awPart[CHR_EQUIPPART_HAIR];
-	kNetUpdateActorData.m_dwVID=chrUpdatePacket.dwVID;
 	kNetUpdateActorData.m_kAffectFlags.CopyData(0, sizeof(chrUpdatePacket.dwAffectFlag[0]), &chrUpdatePacket.dwAffectFlag[0]);
 	kNetUpdateActorData.m_kAffectFlags.CopyData(32, sizeof(chrUpdatePacket.dwAffectFlag[1]), &chrUpdatePacket.dwAffectFlag[1]);
 	kNetUpdateActorData.m_sAlignment=chrUpdatePacket.sAlignment;
@@ -333,13 +271,13 @@ bool CPythonNetworkStream::RecvCharacterDeletePacket()
 		return false;
 	}
 
-	m_rokNetActorMgr->RemoveActor(chrDelPacket.dwVID);
+	m_rokNetActorMgr->RemoveActor(chrDelPacket.id);
 
 	// 캐릭터가 사라질때 개인 상점도 없애줍니다.
 	// Key Check 를 하기때문에 없어도 상관은 없습니다.
 	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], 
 		"BINARY_PrivateShop_Disappear", 
-		Py_BuildValue("(i)", chrDelPacket.dwVID)
+		Py_BuildValue("(i)", chrDelPacket.id)
 	);
 
 	return true;

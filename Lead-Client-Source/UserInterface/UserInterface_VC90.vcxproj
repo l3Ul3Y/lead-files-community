@@ -85,7 +85,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../../Lead-Extern/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../Lead-Extern/include;../../Lead-Shared-Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;HAVE_SNPRINTF;_DEBUG;_WINDOWS;USE_LOD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -133,7 +133,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../../Lead-Extern/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../Lead-Extern/include;../../Lead-Shared-Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;HAVE_SNPRINTF;NDEBUG;_WINDOWS;USE_LOD;DUNGEON_WORK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -298,7 +298,6 @@
     <ClInclude Include="MovieMan.h" />
     <ClInclude Include="NetworkActorManager.h" />
     <ClInclude Include="NProtectGameGuard.h" />
-    <ClInclude Include="Packet.h" />
     <ClInclude Include="ProcessCRC.h" />
     <ClInclude Include="ProcessScanner.h" />
     <ClInclude Include="PythonApplication.h" />
@@ -329,121 +328,6 @@
     <ClInclude Include="Test.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\bin\colorInfo.py" />
-    <None Include="..\bin\consoleModule.py" />
-    <None Include="..\bin\constInfo.py" />
-    <None Include="..\bin\debugInfo.py" />
-    <None Include="..\bin\exception.py" />
-    <None Include="..\bin\game.py" />
-    <None Include="..\bin\interfaceModule.py" />
-    <None Include="..\bin\introCreate.py" />
-    <None Include="..\bin\introEmpire.py" />
-    <None Include="..\bin\introLoading.py" />
-    <None Include="..\bin\introLogin.py" />
-    <None Include="..\bin\introLogo.py" />
-    <None Include="..\bin\introSelect.py" />
-    <None Include="..\bin\locale.py" />
-    <None Include="..\bin\mouseModule.py" />
-    <None Include="..\bin\musicInfo.py" />
-    <None Include="..\bin\networkModule.py" />
-    <None Include="..\bin\playerSettingModule.py" />
-    <None Include="..\bin\Prototype.py" />
-    <None Include="..\bin\serverInfo.py" />
-    <None Include="..\bin\system.py" />
-    <None Include="..\bin\ui.py" />
-    <None Include="..\bin\uiAffectShower.py" />
-    <None Include="..\bin\uiAttachMetin.py" />
-    <None Include="..\bin\uiCandidate.py" />
-    <None Include="..\bin\uiCharacter.py" />
-    <None Include="..\bin\uiChat.py" />
-    <None Include="..\bin\uiCommon.py" />
-    <None Include="..\bin\uiCube.py" />
-    <None Include="..\bin\uiDragonSoul.py" />
-    <None Include="..\bin\uiEx.py" />
-    <None Include="..\bin\uiExchange.py" />
-    <None Include="..\bin\uiGameButton.py" />
-    <None Include="..\bin\uiGameOption.py" />
-    <None Include="..\bin\uiGuild.py" />
-    <None Include="..\bin\uiHelp.py" />
-    <None Include="..\bin\uiInventory.py" />
-    <None Include="..\bin\uiMapNameShower.py" />
-    <None Include="..\bin\uiMessenger.py" />
-    <None Include="..\bin\uiMiniMap.py" />
-    <None Include="..\bin\uiOption.py" />
-    <None Include="..\bin\uiParty.py" />
-    <None Include="..\bin\uiPhaseCurtain.py" />
-    <None Include="..\bin\uiPickMoney.py" />
-    <None Include="..\bin\uiPlayerGauge.py" />
-    <None Include="..\bin\uiPointReset.py" />
-    <None Include="..\bin\uiPrivateShopBuilder.py" />
-    <None Include="..\bin\uiQuest.py" />
-    <None Include="..\bin\uiRefine.py" />
-    <None Include="..\bin\uiRestart.py" />
-    <None Include="..\bin\uiSafebox.py" />
-    <None Include="..\bin\uiScriptLocale.py" />
-    <None Include="..\bin\UIScript\936_LoginWindow.py" />
-    <None Include="..\bin\UIScript\949_LoginWindow.py" />
-    <None Include="..\bin\UIScript\AtlasWindow.py" />
-    <None Include="..\bin\UIScript\AttachStoneDialog.py" />
-    <None Include="..\bin\UIScript\ChangeGradeNameDialog.py" />
-    <None Include="..\bin\UIScript\ChangePasswordDialog.py" />
-    <None Include="..\bin\UIScript\CharacterWindow.py" />
-    <None Include="..\bin\UIScript\ConnectingDialog.py" />
-    <None Include="..\bin\UIScript\CostumeWindow.py" />
-    <None Include="..\bin\UIScript\CreateCharacterWindow.py" />
-    <None Include="..\bin\UIScript\DragonSoulWindow.py" />
-    <None Include="..\bin\UIScript\ExchangeDialog.py" />
-    <None Include="..\bin\UIScript\FishingWindow.py" />
-    <None Include="..\bin\UIScript\GameOptionDialog.py" />
-    <None Include="..\bin\UIScript\GameWindow.py" />
-    <None Include="..\bin\UIScript\GuildWindow.py" />
-    <None Include="..\bin\UIScript\GuildWindow_BaseInfoPage.py" />
-    <None Include="..\bin\UIScript\GuildWindow_BoardPage.py" />
-    <None Include="..\bin\UIScript\GuildWindow_GradePage.py" />
-    <None Include="..\bin\UIScript\GuildWindow_GuildInfoPage.py" />
-    <None Include="..\bin\UIScript\GuildWindow_GuildSkillPage.py" />
-    <None Include="..\bin\UIScript\GuildWindow_MemberPage.py" />
-    <None Include="..\bin\UIScript\HelpWindow.py" />
-    <None Include="..\bin\UIScript\IMEKOR.py" />
-    <None Include="..\bin\UIScript\InputDialog.py" />
-    <None Include="..\bin\UIScript\InputDialogWithDescription.py" />
-    <None Include="..\bin\UIScript\InventoryWindow.py" />
-    <None Include="..\bin\UIScript\LoadingWindow.py" />
-    <None Include="..\bin\UIScript\MarkListWindow.py" />
-    <None Include="..\bin\UIScript\MessengerWindow.py" />
-    <None Include="..\bin\UIScript\MiniMap.py" />
-    <None Include="..\bin\UIScript\MouseButtonWindow.py" />
-    <None Include="..\bin\UIScript\PartyMemberInfoBoard.py" />
-    <None Include="..\bin\UIScript\PasswordDialog.py" />
-    <None Include="..\bin\UIScript\PickMoneyDialog.py" />
-    <None Include="..\bin\UIScript\PopupDialog.py" />
-    <None Include="..\bin\UIScript\PrivateShopBuilder.py" />
-    <None Include="..\bin\UIScript\QuestDialog.py" />
-    <None Include="..\bin\UIScript\QuestionDialog.py" />
-    <None Include="..\bin\UIScript\QuestionDialog2.py" />
-    <None Include="..\bin\UIScript\RefineDialog.py" />
-    <None Include="..\bin\UIScript\RestartDialog.py" />
-    <None Include="..\bin\UIScript\RightMouseButtonWindow.py" />
-    <None Include="..\bin\UIScript\SafeboxWindow.py" />
-    <None Include="..\bin\UIScript\SelectCharacterWindow.py" />
-    <None Include="..\bin\UIScript\SelectEmpireWindow.py" />
-    <None Include="..\bin\UIScript\ShopDialog.py" />
-    <None Include="..\bin\UIScript\SkillPointResetDialog.py" />
-    <None Include="..\bin\UIScript\SystemDialog.py" />
-    <None Include="..\bin\UIScript\SystemDialog_ForPortal.py" />
-    <None Include="..\bin\uiscript\SystemOptionDialog.py" />
-    <None Include="..\bin\UIScript\TaskBar.py" />
-    <None Include="..\bin\UIScript\WhisperDialog.py" />
-    <None Include="..\bin\uiShop.py" />
-    <None Include="..\bin\uiSystem.py" />
-    <None Include="..\bin\uiSystemOption.py" />
-    <None Include="..\bin\uiTarget.py" />
-    <None Include="..\bin\uiTaskBar.py" />
-    <None Include="..\bin\uiTest.py" />
-    <None Include="..\bin\uiTip.py" />
-    <None Include="..\bin\uiToolTip.py" />
-    <None Include="..\bin\uiUploadMark.py" />
-    <None Include="..\bin\uiWhisper.py" />
     <None Include="Cursors\cursor.cur" />
     <None Include="Cursors\cursor_attack.cur" />
     <None Include="Cursors\cursor_buy.cur" />

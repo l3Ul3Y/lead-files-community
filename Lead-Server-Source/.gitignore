@@ -18,7 +18,3 @@ UpgradeLog.htm
 
 # Ignore installed dependencies
 vcpkg_installed
-
-# Symlinks of cores
-/(auth|channel[1-4])/.*/data/?$
-/(auth|channel[1-4])/.*/locale/?$

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "../../common/VnumHelper.h"
+#include "common/VnumHelper.h"
 
 #include "char.h"
 
@@ -5447,12 +5447,12 @@ void CHARACTER::LoadSafebox(int iSize, DWORD dwGold, int iItemCount, TPlayerItem
 
 	m_iSafeboxSize = iSize;
 
-	TPacketCGSafeboxSize p;
+	TPacketGCSafeboxSize p;
 
 	p.bHeader = HEADER_GC_SAFEBOX_SIZE;
 	p.bSize = iSize;
 
-	GetDesc()->Packet(&p, sizeof(TPacketCGSafeboxSize));
+	GetDesc()->Packet(&p, sizeof(TPacketGCSafeboxSize));
 
 	if (!bLoaded)
 	{
@@ -5488,12 +5488,12 @@ void CHARACTER::ChangeSafeboxSize(BYTE bSize)
 	//if (!m_pkSafebox)
 	//return;
 
-	TPacketCGSafeboxSize p;
+	TPacketGCSafeboxSize p;
 
 	p.bHeader = HEADER_GC_SAFEBOX_SIZE;
 	p.bSize = bSize;
 
-	GetDesc()->Packet(&p, sizeof(TPacketCGSafeboxSize));
+	GetDesc()->Packet(&p, sizeof(TPacketGCSafeboxSize));
 
 	if (m_pkSafebox)
 		m_pkSafebox->ChangeSize(bSize);
@@ -5542,12 +5542,12 @@ void CHARACTER::LoadMall(int iItemCount, TPlayerItem * pItems)
 
 	m_pkMall->SetWindowMode(MALL);
 
-	TPacketCGSafeboxSize p;
+	TPacketGCSafeboxSize p;
 
 	p.bHeader = HEADER_GC_MALL_OPEN;
 	p.bSize = 3 * SAFEBOX_PAGE_SIZE;
 
-	GetDesc()->Packet(&p, sizeof(TPacketCGSafeboxSize));
+	GetDesc()->Packet(&p, sizeof(TPacketGCSafeboxSize));
 
 	if (!bLoaded)
 	{
@@ -5848,7 +5848,7 @@ void CHARACTER::EffectPacket(int enumEffectType)
 {
 	TPacketGCSpecialEffect p;
 
-	p.header = HEADER_GC_SEPCIAL_EFFECT;
+	p.header = HEADER_GC_SPECIAL_EFFECT;
 	p.type = enumEffectType;
 	p.vid = GetVID();
 
@@ -6101,7 +6101,7 @@ void CHARACTER::DetermineDropMetinStone()
 
 void CHARACTER::SendEquipment(LPCHARACTER ch)
 {
-	TPacketViewEquip p;
+	TPacketGCViewEquip p;
 	p.header = HEADER_GC_VIEW_EQUIP;
 	p.vid    = GetVID();
 	for (int i = 0; i<WEAR_MAX_NUM; i++)

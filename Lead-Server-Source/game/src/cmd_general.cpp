@@ -31,7 +31,7 @@
 #include "buffer_manager.h"
 #include "unique_item.h"
 #include "log.h"
-#include "../../common/VnumHelper.h"
+#include "common/VnumHelper.h"
 
 extern int g_server_id;
 

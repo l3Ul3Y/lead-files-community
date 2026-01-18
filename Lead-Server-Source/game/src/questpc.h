@@ -32,17 +32,6 @@ namespace quest
 	class PC
 	{
 		public:
-			enum 
-			{
-				QUEST_SEND_ISBEGIN		= (1 << 0),
-				QUEST_SEND_TITLE		= (1 << 1),  // 30자 까지 
-				QUEST_SEND_CLOCK_NAME		= (1 << 2),  // 16자 까지		
-				QUEST_SEND_CLOCK_VALUE		= (1 << 3),
-				QUEST_SEND_COUNTER_NAME		= (1 << 4),  // 16자 까지	
-				QUEST_SEND_COUNTER_VALUE	= (1 << 5),
-				QUEST_SEND_ICON_FILE		= (1 << 6),  // 24자 까지
-			};
-
 			typedef map<unsigned int, QuestState>	QuestInfo;
 			typedef QuestInfo::iterator				QuestInfoIterator;
 

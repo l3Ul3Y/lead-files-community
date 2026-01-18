@@ -1,7 +1,7 @@
 #pragma once
 
+#include "common/tables.h"
 #include "AbstractPlayer.h"
-#include "Packet.h"
 #include "PythonSkill.h"
 
 class CInstanceBase;
@@ -119,7 +119,7 @@ class CPythonPlayer : public CSingleton<CPythonPlayer>, public IAbstractPlayer
 		{		    
 			TItemData			aItem[c_Inventory_Count];
 			TItemData			aDSItem[c_DragonSoul_Inventory_Count];
-			TQuickSlot			aQuickSlot[QUICKSLOT_MAX_NUM];
+			TQuickslot			aQuickSlot[QUICKSLOT_MAX_NUM];
 			TSkillInstance		aSkill[SKILL_MAX_NUM];
 			long				m_alPoint[POINT_MAX_NUM];
 			long				lQuickPageIndex;
@@ -137,7 +137,7 @@ class CPythonPlayer : public CSingleton<CPythonPlayer>, public IAbstractPlayer
 			std::string strName;
 			BYTE byState;
 			BYTE byHPPercentage;
-			short sAffects[PARTY_AFFECT_SLOT_MAX_NUM];
+			short sAffects[SAffects::PARTY_AFFECT_SLOT_MAX_NUM];
 		} TPartyMemberInfo;
 
 		enum EPartyRole
@@ -422,8 +422,8 @@ class CPythonPlayer : public CSingleton<CPythonPlayer>, public IAbstractPlayer
 		__inline void					 SetAutoPotionInfo(int type, const SAutoPotionInfo& info)	{ m_kAutoPotionInfo[type] = info; }		
 
 	protected:
-		TQuickSlot &	__RefLocalQuickSlot(int SlotIndex);
-		TQuickSlot &	__RefGlobalQuickSlot(int SlotIndex);
+		TQuickslot &	__RefLocalQuickSlot(int SlotIndex);
+		TQuickslot &	__RefGlobalQuickSlot(int SlotIndex);
 
 
 		DWORD	__GetLevelAtk();

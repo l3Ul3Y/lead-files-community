@@ -92,8 +92,6 @@ class CItem : public CEntity
 		bool		DistanceValid(LPCHARACTER ch);
 
 		void		UpdatePacket();
-		void		UsePacketEncode(LPCHARACTER ch, LPCHARACTER victim, struct packet_item_use * packet);
-
 		void		SetExchanging(bool isOn = true);
 		bool		IsExchanging()		{ return m_bExchanging;	}
 

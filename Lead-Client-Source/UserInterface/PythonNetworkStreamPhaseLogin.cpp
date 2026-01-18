@@ -18,12 +18,8 @@ void CPythonNetworkStream::LoginPhase()
 				return;
 			break;
 
-		case HEADER_GC_LOGIN_SUCCESS3:
-			if (__RecvLoginSuccessPacket3())
-				return;
-			break;
-		case HEADER_GC_LOGIN_SUCCESS4:
-			if (__RecvLoginSuccessPacket4())
+		case HEADER_GC_LOGIN_SUCCESS:
+			if (__RecvLoginSuccessPacket())
 				return;
 			break;
 
@@ -132,44 +128,16 @@ bool CPythonNetworkStream::__RecvEmpirePacket()
 	return true;
 }
 
-bool CPythonNetworkStream::__RecvLoginSuccessPacket3()
+bool CPythonNetworkStream::__RecvLoginSuccessPacket()
 {
-	TPacketGCLoginSuccess3 kPacketLoginSuccess;
+	TPacketGCLoginSuccess kPacketLoginSuccess;
 
 	if (!Recv(sizeof(kPacketLoginSuccess), &kPacketLoginSuccess))
 		return false;	
 	
-	for (int i = 0; i<PLAYER_PER_ACCOUNT3; ++i)
+	for (int i = 0; i < PLAYER_PER_ACCOUNT; ++i)
 	{
-		m_akSimplePlayerInfo[i]=kPacketLoginSuccess.akSimplePlayerInformation[i];
-		m_adwGuildID[i]=kPacketLoginSuccess.guild_id[i];
-		m_astrGuildName[i]=kPacketLoginSuccess.guild_name[i];
-	}
-
-	m_kMarkAuth.m_dwHandle=kPacketLoginSuccess.handle;
-	m_kMarkAuth.m_dwRandomKey=kPacketLoginSuccess.random_key;	
-
-	if (__DirectEnterMode_IsSet())
-	{
-	}
-	else
-	{
-		PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_SELECT], "Refresh", Py_BuildValue("()"));		
-	}
-
-	return true;
-}
-
-bool CPythonNetworkStream::__RecvLoginSuccessPacket4()
-{
-	TPacketGCLoginSuccess4 kPacketLoginSuccess;
-
-	if (!Recv(sizeof(kPacketLoginSuccess), &kPacketLoginSuccess))
-		return false;	
-	
-	for (int i = 0; i<PLAYER_PER_ACCOUNT4; ++i)
-	{
-		m_akSimplePlayerInfo[i]=kPacketLoginSuccess.akSimplePlayerInformation[i];
+		m_akSimplePlayerInfo[i]=kPacketLoginSuccess.players[i];
 		m_adwGuildID[i]=kPacketLoginSuccess.guild_id[i];
 		m_astrGuildName[i]=kPacketLoginSuccess.guild_name[i];
 	}
@@ -215,33 +183,16 @@ bool CPythonNetworkStream::__RecvLoginFailurePacket()
 	return true;
 }
 
-bool CPythonNetworkStream::SendDirectEnterPacket(const char* c_szID, const char* c_szPassword, UINT uChrSlot)
-{
-	TPacketCGDirectEnter kPacketDirectEnter;
-	kPacketDirectEnter.bHeader=HEADER_CG_DIRECT_ENTER;
-	kPacketDirectEnter.index=uChrSlot;
-	strncpy(kPacketDirectEnter.login, c_szID, ID_MAX_NUM);
-	strncpy(kPacketDirectEnter.passwd, c_szPassword, PASS_MAX_NUM);
-
-	if (!Send(sizeof(kPacketDirectEnter), &kPacketDirectEnter))
-	{
-		Tracen("SendDirectEnter");
-		return false;
-	}
-
-	return SendSequence();
-}
-
 bool CPythonNetworkStream::SendLoginPacket(const char* c_szName, const char* c_szPassword)
 {
 	TPacketCGLogin LoginPacket;
 	LoginPacket.header = HEADER_CG_LOGIN;
 
-	strncpy(LoginPacket.name, c_szName, sizeof(LoginPacket.name)-1);
-	strncpy(LoginPacket.pwd, c_szPassword, sizeof(LoginPacket.pwd)-1);
+	strncpy(LoginPacket.login, c_szName, sizeof(LoginPacket.login)-1);
+	strncpy(LoginPacket.passwd, c_szPassword, sizeof(LoginPacket.passwd)-1);
 
-	LoginPacket.name[ID_MAX_NUM]='\0';
-	LoginPacket.pwd[PASS_MAX_NUM]='\0';
+	LoginPacket.login[LOGIN_MAX_LEN]='\0';
+	LoginPacket.passwd[PASSWD_MAX_LEN]='\0';
 
 	if (!Send(sizeof(LoginPacket), &LoginPacket))
 	{
@@ -256,10 +207,10 @@ bool CPythonNetworkStream::SendLoginPacketNew(const char * c_szName, const char 
 {
 	TPacketCGLogin2 LoginPacket;
 	LoginPacket.header = HEADER_CG_LOGIN2;
-	LoginPacket.login_key = m_dwLoginKey;
+	LoginPacket.dwLoginKey = m_dwLoginKey;
 
-	strncpy(LoginPacket.name, c_szName, sizeof(LoginPacket.name)-1);
-	LoginPacket.name[ID_MAX_NUM]='\0';
+	strncpy(LoginPacket.login, c_szName, sizeof(LoginPacket.login)-1);
+	LoginPacket.login[LOGIN_MAX_LEN]='\0';
 
 	extern DWORD g_adwEncryptKey[4];
 	extern DWORD g_adwDecryptKey[4];

@@ -167,9 +167,9 @@ UINT CGuildMarkDownloader::__GetPacketSize(UINT header)
 			return sizeof(TPacketGCMarkIDXList);
 		case HEADER_GC_MARK_BLOCK:
 			return sizeof(TPacketGCMarkBlock);
-		case HEADER_GC_GUILD_SYMBOL_DATA:
+		case HEADER_GC_SYMBOL_DATA:
 			return sizeof(TPacketGCGuildSymbolData);
-		case HEADER_GC_MARK_DIFF_DATA:	// 사용하지 않음
+		case HEADER_CG_MARK_CRCLIST:	// 사용하지 않음
 			return sizeof(BYTE);
 #ifdef _IMPROVED_PACKET_ENCRYPTION_
 		case HEADER_GC_KEY_AGREEMENT:
@@ -196,9 +196,9 @@ bool CGuildMarkDownloader::__DispatchPacket(UINT header)
 			return __LoginState_RecvMarkIndex();
 		case HEADER_GC_MARK_BLOCK:
 			return __LoginState_RecvMarkBlock();
-		case HEADER_GC_GUILD_SYMBOL_DATA:
+		case HEADER_GC_SYMBOL_DATA:
 			return __LoginState_RecvSymbolData();
-		case HEADER_GC_MARK_DIFF_DATA: // 사용하지 않음
+		case HEADER_CG_MARK_CRCLIST: // 사용하지 않음
 			return true;
 #ifdef _IMPROVED_PACKET_ENCRYPTION_
 		case HEADER_GC_KEY_AGREEMENT:
@@ -480,14 +480,14 @@ bool CGuildMarkDownloader::__SendSymbolCRCList()
 	for (DWORD i=0; i<m_kVec_dwGuildID.size(); ++i)
 	{
 		TPacketCGSymbolCRC kSymbolCRCPacket;
-		kSymbolCRCPacket.header = HEADER_CG_GUILD_SYMBOL_CRC;
-		kSymbolCRCPacket.dwGuildID = m_kVec_dwGuildID[i];
+		kSymbolCRCPacket.header = HEADER_CG_SYMBOL_CRC;
+		kSymbolCRCPacket.guild_id = m_kVec_dwGuildID[i];
 
 		std::string strFileName = GetGuildSymbolFileName(m_kVec_dwGuildID[i]);
-		kSymbolCRCPacket.dwCRC = GetFileCRC32(strFileName.c_str());
-		kSymbolCRCPacket.dwSize = GetFileSize(strFileName.c_str());
+		kSymbolCRCPacket.crc = GetFileCRC32(strFileName.c_str());
+		kSymbolCRCPacket.size = GetFileSize(strFileName.c_str());
 #ifdef _DEBUG
-		printf("__SendSymbolCRCList [GuildID:%d / CRC:%u]\n", m_kVec_dwGuildID[i], kSymbolCRCPacket.dwCRC);
+		printf("__SendSymbolCRCList [GuildID:%d / CRC:%u]\n", m_kVec_dwGuildID[i], kSymbolCRCPacket.crc);
 #endif
 		if (!Send(sizeof(kSymbolCRCPacket), &kSymbolCRCPacket))
 			return false;
@@ -498,8 +498,8 @@ bool CGuildMarkDownloader::__SendSymbolCRCList()
 
 bool CGuildMarkDownloader::__LoginState_RecvSymbolData()
 {
-	TPacketGCBlankDynamic packet;
-	if (!Peek(sizeof(TPacketGCBlankDynamic), &packet))
+	TDynamicSizePacketHeader packet;
+	if (!Peek(sizeof(TDynamicSizePacketHeader), &packet))
 		return true;
 
 #ifdef _DEBUG

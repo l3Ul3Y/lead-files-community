@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "../../common/stl.h"
+#include "common/stl.h"
 #include "constants.h"
 #include "packet_info.h"
 
@@ -150,9 +150,9 @@ CPacketInfoCG::CPacketInfoCG()
 	Set(HEADER_CG_CHAT, sizeof(TPacketCGChat), "Chat", true);
 	Set(HEADER_CG_WHISPER, sizeof(TPacketCGWhisper), "Whisper", true);
 
-	Set(HEADER_CG_CHARACTER_SELECT, sizeof(TPacketCGPlayerSelect), "Select", true);
-	Set(HEADER_CG_CHARACTER_CREATE, sizeof(TPacketCGPlayerCreate), "Create", true);
-	Set(HEADER_CG_CHARACTER_DELETE, sizeof(TPacketCGPlayerDelete), "Delete", true);
+	Set(HEADER_CG_CHARACTER_SELECT, sizeof(TPacketCGCharacterSelect), "Select", true);
+	Set(HEADER_CG_CHARACTER_CREATE, sizeof(TPacketCGCharacterCreate), "Create", true);
+	Set(HEADER_CG_CHARACTER_DELETE, sizeof(TPacketCGCharacterDelete), "Delete", true);
 	Set(HEADER_CG_ENTERGAME, sizeof(TPacketCGEnterGame), "EnterGame", true);
 
 	Set(HEADER_CG_ITEM_USE, sizeof(TPacketCGItemUse), "ItemUse", true);
@@ -206,7 +206,7 @@ CPacketInfoCG::CPacketInfoCG()
 	Set(HEADER_CG_ANSWER_MAKE_GUILD, sizeof(TPacketCGAnswerMakeGuild), "AnswerMakeGuild", true);
 
 	Set(HEADER_CG_FISHING, sizeof(TPacketCGFishing), "Fishing", true);
-	Set(HEADER_CG_ITEM_GIVE, sizeof(TPacketCGGiveItem), "ItemGive", true);
+	Set(HEADER_CG_GIVE_ITEM, sizeof(TPacketCGGiveItem), "ItemGive", true);
 	Set(HEADER_CG_HACK, sizeof(TPacketCGHack), "Hack", true);
 	Set(HEADER_CG_MYSHOP, sizeof(TPacketCGMyShop), "MyShop", true);
 

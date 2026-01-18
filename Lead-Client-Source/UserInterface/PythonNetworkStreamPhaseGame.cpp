@@ -130,7 +130,7 @@ void CPythonNetworkStream::__SetGuildID(DWORD id)
 		m_dwGuildID = id;
 		IAbstractPlayer& rkPlayer = IAbstractPlayer::GetSingleton();
 
-		for (int i = 0; i < PLAYER_PER_ACCOUNT4; ++i)
+		for (int i = 0; i < PLAYER_PER_ACCOUNT; ++i)
 			if (!strncmp(m_akSimplePlayerInfo[i].szName, rkPlayer.GetName(), CHARACTER_NAME_MAX_LEN))
 			{
 				m_adwGuildID[i] = id;
@@ -224,15 +224,6 @@ void CPythonNetworkStream::GamePhase()
 
 		switch (header)
 		{
-			case HEADER_GC_OBSERVER_ADD:
-				ret = RecvObserverAddPacket();
-				break;
-			case HEADER_GC_OBSERVER_REMOVE:
-				ret = RecvObserverRemovePacket();
-				break;
-			case HEADER_GC_OBSERVER_MOVE:
-				ret = RecvObserverMovePacket();
-				break;
 			case HEADER_GC_WARP:
 				ret = RecvWarpPacket();
 				break;
@@ -258,16 +249,8 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvCharacterAdditionalInfo();
 				break;
 
-			case HEADER_GC_CHARACTER_ADD2:
-				ret = RecvCharacterAppendPacketNew();
-				break;
-
 			case HEADER_GC_CHARACTER_UPDATE:
 				ret = RecvCharacterUpdatePacket();
-				break;
-
-			case HEADER_GC_CHARACTER_UPDATE2:
-				ret = RecvCharacterUpdatePacketNew();
 				break;
 
 			case HEADER_GC_CHARACTER_DEL:
@@ -290,7 +273,7 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvWhisperPacket();
 				break;
 
-			case HEADER_GC_CHARACTER_MOVE:
+			case HEADER_GC_MOVE:
 				ret = RecvCharacterMovePacket();
 				break;
 
@@ -308,21 +291,17 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvDeadPacket();
 				break;
 
-			case HEADER_GC_PLAYER_POINT_CHANGE:
+			case HEADER_GC_CHARACTER_POINT_CHANGE:
 				ret = RecvPointChange();
 				break;
 
 			// item packet.
+			case HEADER_GC_ITEM_DEL:
+				ret = RecvItemDelPacket();
+				break;
+
 			case HEADER_GC_ITEM_SET:
 				ret = RecvItemSetPacket();
-				break;
-
-			case HEADER_GC_ITEM_SET2:
-				ret = RecvItemSetPacket2();
-				break;
-
-			case HEADER_GC_ITEM_USE:
-				ret = RecvItemUsePacket();
 				break;
 
 			case HEADER_GC_ITEM_UPDATE:
@@ -397,15 +376,11 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvDamageInfoPacket();
 				break;
 
-			case HEADER_GC_MOUNT:
-				ret = RecvMountPacket();
-				break;
-
 			case HEADER_GC_CHANGE_SPEED:
 				ret = RecvChangeSpeedPacket();
 				break;
 
-			case HEADER_GC_PLAYER_POINTS:
+			case HEADER_GC_CHARACTER_POINTS:
 				ret = __RecvPlayerPoints();
 				break;
 
@@ -423,10 +398,6 @@ void CPythonNetworkStream::GamePhase()
 
 			case HEADER_GC_SKILL_LEVEL:
 				ret = RecvSkillLevel();
-				break;
-
-			case HEADER_GC_SKILL_LEVEL_NEW:
-				ret = RecvSkillLevelNew();
 				break;
 
 			case HEADER_GC_MESSENGER:
@@ -481,10 +452,6 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvSafeBoxSizePacket();
 				break;
 
-			case HEADER_GC_SAFEBOX_MONEY_CHANGE:
-				ret = RecvSafeBoxMoneyChangePacket();
-				break;
-
 			case HEADER_GC_FISHING:
 				ret = RecvFishing();
 				break;
@@ -501,7 +468,7 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvWalkModePacket();
 				break;
 
-			case HEADER_GC_CHANGE_SKILL_GROUP:
+			case HEADER_GC_SKILL_GROUP:
 				ret = RecvChangeSkillGroupPacket();
 				break;
 
@@ -509,11 +476,7 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvRefineInformationPacket();
 				break;
 
-			case HEADER_GC_REFINE_INFORMATION_NEW:
-				ret = RecvRefineInformationPacketNew();
-				break;
-
-			case HEADER_GC_SEPCIAL_EFFECT:
+			case HEADER_GC_SPECIAL_EFFECT:
 				ret = RecvSpecialEffect();
 				break;
 
@@ -533,12 +496,8 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvLandPacket();
 				break;
 
-			//case HEADER_GC_TARGET_CREATE:
-			//	ret = RecvTargetCreatePacket();
-			//	break;
-
-			case HEADER_GC_TARGET_CREATE_NEW:
-				ret = RecvTargetCreatePacketNew();
+			case HEADER_GC_TARGET_CREATE:
+				ret = RecvTargetCreatePacket();
 				break;
 
 			case HEADER_GC_TARGET_UPDATE:
@@ -586,7 +545,7 @@ void CPythonNetworkStream::GamePhase()
 				return;
 				break;
 
-			case HEADER_GC_HANDSHAKE_OK:
+			case HEADER_GC_TIME_SYNC:
 				RecvHandshakeOKPacket();
 				return;
 				break;
@@ -870,48 +829,6 @@ void CPythonNetworkStream::SetGamePhase()
 	__RefreshStatus();
 }
 
-bool CPythonNetworkStream::RecvObserverAddPacket()
-{
-	TPacketGCObserverAdd kObserverAddPacket;
-	if (!Recv(sizeof(kObserverAddPacket), &kObserverAddPacket))
-		return false;
-
-	CPythonMiniMap::Instance().AddObserver(
-		kObserverAddPacket.vid, 
-		kObserverAddPacket.x*100.0f, 
-		kObserverAddPacket.y*100.0f);
-
-	return true;
-}
-
-bool CPythonNetworkStream::RecvObserverRemovePacket()
-{
-	TPacketGCObserverAdd kObserverRemovePacket;
-	if (!Recv(sizeof(kObserverRemovePacket), &kObserverRemovePacket))
-		return false;
-
-	CPythonMiniMap::Instance().RemoveObserver(
-		kObserverRemovePacket.vid
-	);
-
-	return true;
-}
-
-bool CPythonNetworkStream::RecvObserverMovePacket()
-{
-	TPacketGCObserverMove kObserverMovePacket;
-	if (!Recv(sizeof(kObserverMovePacket), &kObserverMovePacket))
-		return false;
-
-	CPythonMiniMap::Instance().MoveObserver(
-		kObserverMovePacket.vid, 
-		kObserverMovePacket.x*100.0f, 
-		kObserverMovePacket.y*100.0f);
-
-	return true;
-}
-
-
 bool CPythonNetworkStream::RecvWarpPacket()
 {
 	TPacketGCWarp kWarpPacket;
@@ -1113,7 +1030,7 @@ bool CPythonNetworkStream::SendCharacterStatePacket(const TPixelPosition& c_rkPP
 
 	// TODO: 나중에 패킷이름을 바꾸자
 	TPacketCGMove kStatePacket;
-	kStatePacket.bHeader = HEADER_CG_CHARACTER_MOVE;
+	kStatePacket.bHeader = HEADER_CG_MOVE;
 	kStatePacket.bFunc = eFunc;
 	kStatePacket.bArg = uArg;
 	kStatePacket.bRot = fDstRot/5.0f;
@@ -1146,7 +1063,7 @@ bool CPythonNetworkStream::SendUseSkillPacket(DWORD dwSkillIndex, DWORD dwTarget
 	TPacketCGUseSkill UseSkillPacket;
 	UseSkillPacket.bHeader = HEADER_CG_USE_SKILL;
 	UseSkillPacket.dwVnum = dwSkillIndex;
-	UseSkillPacket.dwTargetVID = dwTargetVID;
+	UseSkillPacket.dwVID = dwTargetVID;
 	if (!Send(sizeof(TPacketCGUseSkill), &UseSkillPacket))
 	{
 		Tracen("CPythonNetworkStream::SendUseSkillPacket - SEND PACKET ERROR");
@@ -1183,7 +1100,7 @@ bool CPythonNetworkStream::SendChatPacket(const char * c_szChat, BYTE byType)
 	int iTextLen = strlen(c_szChat) + 1;
 	TPacketCGChat ChatPacket;
 	ChatPacket.header = HEADER_CG_CHAT;
-	ChatPacket.length = sizeof(ChatPacket) + iTextLen;
+	ChatPacket.size = sizeof(ChatPacket) + iTextLen;
 	ChatPacket.type = byType;
 
 	if (!Send(sizeof(ChatPacket), &ChatPacket))
@@ -1245,7 +1162,7 @@ void CPythonNetworkStream::__ConvertEmpireText(DWORD dwEmpireID, char* szText)
 		{
 			if (pbText[0]>=0xb0 && pbText[0]<=0xc8 && pbText[1]>=0xa1 && pbText[1]<=0xfe)
 			{
-				uHanPos=(pbText[0]-0xb0)*(0xfe-0xa1+1)+(pbText[1]-0xa1);
+				uHanPos = (pbText[0] - 0xb0) * (0xfe - 0xa1 + 1) + (pbText[1] - 0xa1);
 				pbText[0]=rkTextConvTable.aacHan[uHanPos][0];
 				pbText[1]=rkTextConvTable.aacHan[uHanPos][1];
 			}
@@ -1301,10 +1218,10 @@ bool CPythonNetworkStream::RecvChatPacket()
 		return true;
 	}
 
-	if (kChat.dwVID != 0)
+	if (kChat.id != 0)
 	{
 		CPythonCharacterManager& rkChrMgr=CPythonCharacterManager::Instance();
-		CInstanceBase * pkInstChatter = rkChrMgr.GetInstancePtr(kChat.dwVID);
+		CInstanceBase * pkInstChatter = rkChrMgr.GetInstancePtr(kChat.id);
 		if (NULL == pkInstChatter)
 			return true;
 		
@@ -1364,7 +1281,7 @@ bool CPythonNetworkStream::RecvChatPacket()
 
 		if (CHAT_TYPE_SHOUT != kChat.type)
 		{
-			CPythonTextTail::Instance().RegisterChatTail(kChat.dwVID, line);
+			CPythonTextTail::Instance().RegisterChatTail(kChat.id, line);
 		}
 
 		if (pkInstChatter->IsPC())
@@ -1462,7 +1379,7 @@ bool CPythonNetworkStream::RecvPointChange()
 	}
 
 	CPythonCharacterManager& rkChrMgr = CPythonCharacterManager::Instance();
-	rkChrMgr.ShowPointEffect(PointChange.Type, PointChange.dwVID);
+	rkChrMgr.ShowPointEffect(PointChange.type, PointChange.dwVID);
 
 	CInstanceBase * pInstance = CPythonCharacterManager::Instance().GetMainInstancePtr();
 
@@ -1471,9 +1388,9 @@ bool CPythonNetworkStream::RecvPointChange()
 	if (PointChange.dwVID == pInstance->GetVirtualID())
 	{
 		CPythonPlayer & rkPlayer = CPythonPlayer::Instance();
-		rkPlayer.SetStatus(PointChange.Type, PointChange.value);
+		rkPlayer.SetStatus(PointChange.type, PointChange.value);
 
-		switch (PointChange.Type)
+		switch (PointChange.type)
 		{
 			case POINT_STAT_RESET_COUNT:
 				__RefreshStatus();
@@ -1503,7 +1420,7 @@ bool CPythonNetworkStream::RecvPointChange()
 				break;
 		}
 
-		if (POINT_GOLD == PointChange.Type)
+		if (POINT_GOLD == PointChange.type)
 		{
 			if (PointChange.amount > 0)
 			{
@@ -1652,7 +1569,7 @@ bool CPythonNetworkStream::RecvShopPacket()
 	if (iSize > 0)
 	{
 		vecBuffer.resize(iSize);
-		if (!Recv(iSize, &vecBuffer[0]))
+		if (!Recv(iSize, vecBuffer.data()))
 			return false;
 	}
 
@@ -1662,15 +1579,13 @@ bool CPythonNetworkStream::RecvShopPacket()
 			{
 				CPythonShop::Instance().Clear();
 
-				DWORD dwVID = *(DWORD *)&vecBuffer[0];
-
-				TPacketGCShopStart * pShopStartPacket = (TPacketGCShopStart *)&vecBuffer[4];
+				TPacketGCShopStart *pShopStartPacket = (TPacketGCShopStart *)vecBuffer.data();
 				for (BYTE iItemIndex = 0; iItemIndex < SHOP_HOST_ITEM_MAX_NUM; ++iItemIndex)
 				{
 					CPythonShop::Instance().SetItemData(iItemIndex, pShopStartPacket->items[iItemIndex]);
 				}
 
-				PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "StartShop", Py_BuildValue("(i)", dwVID));
+				PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "StartShop", Py_BuildValue("(i)", pShopStartPacket->owner_vid));
 			}
 			break;
 
@@ -1759,7 +1674,7 @@ bool CPythonNetworkStream::RecvExchangePacket()
 	if (!Recv(sizeof(exchange_packet), &exchange_packet))
 		return false;
 
-	switch (exchange_packet.subheader)
+	switch (exchange_packet.sub_header)
 	{
 		case EXCHANGE_SUBHEADER_GC_START:
 			CPythonExchange::Instance().Clear();
@@ -1782,7 +1697,7 @@ bool CPythonNetworkStream::RecvExchangePacket()
 				int iSlotIndex = exchange_packet.arg2.cell;
 				CPythonExchange::Instance().SetItemToSelf(iSlotIndex, exchange_packet.arg1, (BYTE) exchange_packet.arg3);
 				for (int i = 0; i < ITEM_SOCKET_SLOT_MAX_NUM; ++i)
-					CPythonExchange::Instance().SetItemMetinSocketToSelf(iSlotIndex, i, exchange_packet.alValues[i]);
+					CPythonExchange::Instance().SetItemMetinSocketToSelf(iSlotIndex, i, exchange_packet.alSockets[i]);
 				for (int j = 0; j < ITEM_ATTRIBUTE_SLOT_MAX_NUM; ++j)
 					CPythonExchange::Instance().SetItemAttributeToSelf(iSlotIndex, j, exchange_packet.aAttr[j].bType, exchange_packet.aAttr[j].sValue);
 			}
@@ -1791,7 +1706,7 @@ bool CPythonNetworkStream::RecvExchangePacket()
 				int iSlotIndex = exchange_packet.arg2.cell;
 				CPythonExchange::Instance().SetItemToTarget(iSlotIndex, exchange_packet.arg1, (BYTE) exchange_packet.arg3);
 				for (int i = 0; i < ITEM_SOCKET_SLOT_MAX_NUM; ++i)
-					CPythonExchange::Instance().SetItemMetinSocketToTarget(iSlotIndex, i, exchange_packet.alValues[i]);
+					CPythonExchange::Instance().SetItemMetinSocketToTarget(iSlotIndex, i, exchange_packet.alSockets[i]);
 				for (int j = 0; j < ITEM_ATTRIBUTE_SLOT_MAX_NUM; ++j)
 					CPythonExchange::Instance().SetItemAttributeToTarget(iSlotIndex, j, exchange_packet.aAttr[j].bType, exchange_packet.aAttr[j].sValue);
 			}
@@ -1813,7 +1728,7 @@ bool CPythonNetworkStream::RecvExchangePacket()
 			__RefreshInventoryWindow();
 			break;
 
-		case EXCHANGE_SUBHEADER_GC_ELK_ADD:
+		case EXCHANGE_SUBHEADER_GC_GOLD_ADD:
 			if (exchange_packet.is_me)
 				CPythonExchange::Instance().SetElkToSelf(exchange_packet.arg1);
 			else
@@ -1844,7 +1759,7 @@ bool CPythonNetworkStream::RecvExchangePacket()
 			Tracef("trade_already");
 			break;
 
-		case EXCHANGE_SUBHEADER_GC_LESS_ELK:
+		case EXCHANGE_SUBHEADER_GC_LESS_GOLD:
 			Tracef("trade_less_elk");
 			break;
 	};
@@ -1882,7 +1797,7 @@ bool CPythonNetworkStream::RecvQuestInfoPacket()
 
 	BYTE byQuestPacketType = QUEST_PACKET_TYPE_NONE;
 
-	if (0 != (c_rFlag & QUEST_SEND_IS_BEGIN))
+	if (0 != (c_rFlag & QUEST_SEND_ISBEGIN))
 	{
 		BYTE isBegin;
 		if (!Recv(sizeof(isBegin), &isBegin))
@@ -2033,7 +1948,7 @@ bool CPythonNetworkStream::SendExchangeStartPacket(DWORD vid)
 	TPacketCGExchange	packet;
 
 	packet.header		= HEADER_CG_EXCHANGE;
-	packet.subheader	= EXCHANGE_SUBHEADER_CG_START;
+	packet.sub_header	= EXCHANGE_SUBHEADER_CG_START;
 	packet.arg1			= vid;
 
 	if (!Send(sizeof(packet), &packet))
@@ -2054,7 +1969,7 @@ bool CPythonNetworkStream::SendExchangeElkAddPacket(DWORD elk)
 	TPacketCGExchange	packet;
 
 	packet.header		= HEADER_CG_EXCHANGE;
-	packet.subheader	= EXCHANGE_SUBHEADER_CG_ELK_ADD;
+	packet.sub_header	= EXCHANGE_SUBHEADER_CG_ELK_ADD;
 	packet.arg1			= elk;
 
 	if (!Send(sizeof(packet), &packet))
@@ -2074,7 +1989,7 @@ bool CPythonNetworkStream::SendExchangeItemAddPacket(TItemPos ItemPos, BYTE byDi
 	TPacketCGExchange	packet;
 
 	packet.header		= HEADER_CG_EXCHANGE;
-	packet.subheader	= EXCHANGE_SUBHEADER_CG_ITEM_ADD;
+	packet.sub_header	= EXCHANGE_SUBHEADER_CG_ITEM_ADD;
 	packet.Pos			= ItemPos;
 	packet.arg2			= byDisplayPos;
 
@@ -2098,7 +2013,7 @@ bool CPythonNetworkStream::SendExchangeItemDelPacket(BYTE pos)
 	TPacketCGExchange	packet;
 
 	packet.header		= HEADER_CG_EXCHANGE;
-	packet.subheader	= EXCHANGE_SUBHEADER_CG_ITEM_DEL;
+	packet.sub_header	= EXCHANGE_SUBHEADER_CG_ITEM_DEL;
 	packet.arg1			= pos;
 
 	if (!Send(sizeof(packet), &packet))
@@ -2118,7 +2033,7 @@ bool CPythonNetworkStream::SendExchangeAcceptPacket()
 	TPacketCGExchange	packet;
 
 	packet.header		= HEADER_CG_EXCHANGE;
-	packet.subheader	= EXCHANGE_SUBHEADER_CG_ACCEPT;
+	packet.sub_header	= EXCHANGE_SUBHEADER_CG_ACCEPT;
 
 	if (!Send(sizeof(packet), &packet))
 	{
@@ -2137,7 +2052,7 @@ bool CPythonNetworkStream::SendExchangeExitPacket()
 	TPacketCGExchange	packet;
 
 	packet.header		= HEADER_CG_EXCHANGE;
-	packet.subheader	= EXCHANGE_SUBHEADER_CG_CANCEL;
+	packet.sub_header	= EXCHANGE_SUBHEADER_CG_CANCEL;
 
 	if (!Send(sizeof(packet), &packet))
 	{
@@ -2257,8 +2172,8 @@ bool CPythonNetworkStream::SendAnswerMakeGuildPacket(const char * c_szName)
 bool CPythonNetworkStream::SendQuestInputStringPacket(const char * c_szString)
 {
 	TPacketCGQuestInputString Packet;
-	Packet.bHeader = HEADER_CG_QUEST_INPUT_STRING;
-	strncpy(Packet.szString, c_szString, QUEST_INPUT_STRING_MAX_NUM);
+	Packet.header = HEADER_CG_QUEST_INPUT_STRING;
+	strncpy(Packet.msg, c_szString, QUEST_INPUT_STRING_MAX_NUM);
 
 	if (!Send(sizeof(Packet), &Packet))
 	{
@@ -2286,50 +2201,11 @@ bool CPythonNetworkStream::SendQuestConfirmPacket(BYTE byAnswer, DWORD dwPID)
 	return SendSequence();
 }
 
-bool CPythonNetworkStream::RecvSkillCoolTimeEnd()
-{
-	TPacketGCSkillCoolTimeEnd kPacketSkillCoolTimeEnd;
-	if (!Recv(sizeof(kPacketSkillCoolTimeEnd), &kPacketSkillCoolTimeEnd))
-	{
-		Tracen("CPythonNetworkStream::RecvSkillCoolTimeEnd - RecvError");
-		return false;
-	}
-
-	CPythonPlayer::Instance().EndSkillCoolTime(kPacketSkillCoolTimeEnd.bSkill);
-
-	return true;
-}
-
 bool CPythonNetworkStream::RecvSkillLevel()
 {
-	assert(!"CPythonNetworkStream::RecvSkillLevel - 사용하지 않는 함수");
 	TPacketGCSkillLevel packet;
+
 	if (!Recv(sizeof(TPacketGCSkillLevel), &packet))
-	{
-		Tracen("CPythonNetworkStream::RecvSkillLevel - RecvError");
-		return false;
-	}
-
-	DWORD dwSlotIndex;
-
-	CPythonPlayer& rkPlayer=CPythonPlayer::Instance();
-	for (int i = 0; i < SKILL_MAX_NUM; ++i)
-	{
-		if (rkPlayer.GetSkillSlotIndex(i, &dwSlotIndex))
-			rkPlayer.SetSkillLevel(dwSlotIndex, packet.abSkillLevels[i]);
-	}
-
-	__RefreshSkillWindow();
-	__RefreshStatus();
-	Tracef(" >> RecvSkillLevel\n");
-	return true;
-}
-
-bool CPythonNetworkStream::RecvSkillLevelNew()
-{
-	TPacketGCSkillLevelNew packet;
-
-	if (!Recv(sizeof(TPacketGCSkillLevelNew), &packet))
 	{
 		Tracen("CPythonNetworkStream::RecvSkillLevelNew - RecvError");
 		return false;
@@ -2417,40 +2293,6 @@ bool CPythonNetworkStream::RecvTargetPacket()
 	return true;
 }
 
-bool CPythonNetworkStream::RecvMountPacket()
-{
-	TPacketGCMount MountPacket;
-
-	if (!Recv(sizeof(TPacketGCMount), &MountPacket))
-	{
-		Tracen("Recv Mount Packet Error");
-		return false;
-	}
-
-	CInstanceBase * pInstance = CPythonCharacterManager::Instance().GetInstancePtr(MountPacket.vid);
-
-	if (pInstance)
-	{
-		// Mount
-		if (0 != MountPacket.mount_vid)
-		{
-//			pInstance->Ride(MountPacket.pos, MountPacket.mount_vid);
-		}
-		// Unmount
-		else
-		{
-//			pInstance->Unride(MountPacket.pos, MountPacket.x, MountPacket.y);
-		}
-	}
-
-	if (CPythonPlayer::Instance().IsMainCharacterIndex(MountPacket.vid))
-	{
-//		CPythonPlayer::Instance().SetRidingVehicleIndex(MountPacket.mount_vid);
-	}
-
-	return true;
-}
-
 bool CPythonNetworkStream::RecvChangeSpeedPacket()
 {
 	TPacketGCChangeSpeed SpeedPacket;
@@ -2488,9 +2330,9 @@ bool CPythonNetworkStream::SendAttackPacket(UINT uMotAttack, DWORD dwVIDVictim)
 
 	TPacketCGAttack kPacketAtk;
 
-	kPacketAtk.header = HEADER_CG_ATTACK;
+	kPacketAtk.bHeader = HEADER_CG_ATTACK;
 	kPacketAtk.bType = uMotAttack;
-	kPacketAtk.dwVictimVID = dwVIDVictim;
+	kPacketAtk.dwVID = dwVIDVictim;
 
 	if (!SendSpecial(sizeof(kPacketAtk), &kPacketAtk))
 	{
@@ -2526,7 +2368,7 @@ bool CPythonNetworkStream::RecvAddFlyTargetingPacket()
 	if (!Recv(sizeof(kPacket), &kPacket))
 		return false;
 
-	__GlobalPositionToLocalPosition(kPacket.lX, kPacket.lY);
+	__GlobalPositionToLocalPosition(kPacket.x, kPacket.y);
 
 	Tracef("VID [%d]가 타겟을 추가 설정\n",kPacket.dwShooterVID);
 
@@ -2550,8 +2392,8 @@ bool CPythonNetworkStream::RecvAddFlyTargetingPacket()
 	}
 	else
 	{
-		float h = CPythonBackground::Instance().GetHeight(kPacket.lX,kPacket.lY) + 60.0f; // TEMPORARY HEIGHT
-		pShooter->GetGraphicThingInstancePtr()->AddFlyTarget(D3DXVECTOR3(kPacket.lX,kPacket.lY,h));
+		float h = CPythonBackground::Instance().GetHeight(kPacket.x,kPacket.y) + 60.0f; // TEMPORARY HEIGHT
+		pShooter->GetGraphicThingInstancePtr()->AddFlyTarget(D3DXVECTOR3(kPacket.x,kPacket.y,h));
 		//pShooter->GetGraphicThingInstancePtr()->SetFlyTarget(kPacket.kPPosTarget.x,kPacket.kPPosTarget.y,);
 	}
 
@@ -2564,7 +2406,7 @@ bool CPythonNetworkStream::RecvFlyTargetingPacket()
 	if (!Recv(sizeof(kPacket), &kPacket))
 		return false;
 
-	__GlobalPositionToLocalPosition(kPacket.lX, kPacket.lY);
+	__GlobalPositionToLocalPosition(kPacket.x, kPacket.y);
 
 	//Tracef("CPythonNetworkStream::RecvFlyTargetingPacket - VID [%d]\n",kPacket.dwShooterVID);
 
@@ -2588,8 +2430,8 @@ bool CPythonNetworkStream::RecvFlyTargetingPacket()
 	}
 	else
 	{
-		float h = CPythonBackground::Instance().GetHeight(kPacket.lX, kPacket.lY) + 60.0f; // TEMPORARY HEIGHT
-		pShooter->GetGraphicThingInstancePtr()->SetFlyTarget(D3DXVECTOR3(kPacket.lX,kPacket.lY,h));
+		float h = CPythonBackground::Instance().GetHeight(kPacket.x, kPacket.y) + 60.0f; // TEMPORARY HEIGHT
+		pShooter->GetGraphicThingInstancePtr()->SetFlyTarget(D3DXVECTOR3(kPacket.x,kPacket.y,h));
 		//pShooter->GetGraphicThingInstancePtr()->SetFlyTarget(kPacket.kPPosTarget.x,kPacket.kPPosTarget.y,);
 	}
 
@@ -2619,10 +2461,10 @@ bool CPythonNetworkStream::SendAddFlyTargetingPacket(DWORD dwTargetVID, const TP
 
 	packet.bHeader	= HEADER_CG_ADD_FLY_TARGETING;
 	packet.dwTargetVID = dwTargetVID;
-	packet.lX = kPPosTarget.x;
-	packet.lY = kPPosTarget.y;
+	packet.x = kPPosTarget.x;
+	packet.y = kPPosTarget.y;
 
-	__LocalPositionToGlobalPosition(packet.lX, packet.lY);
+	__LocalPositionToGlobalPosition(packet.x, packet.y);
 	
 	if (!Send(sizeof(packet), &packet))
 	{
@@ -2642,10 +2484,10 @@ bool CPythonNetworkStream::SendFlyTargetingPacket(DWORD dwTargetVID, const TPixe
 
 	packet.bHeader	= HEADER_CG_FLY_TARGETING;
 	packet.dwTargetVID = dwTargetVID;
-	packet.lX = kPPosTarget.x;
-	packet.lY = kPPosTarget.y;
+	packet.x = kPPosTarget.x;
+	packet.y = kPPosTarget.y;
 
-	__LocalPositionToGlobalPosition(packet.lX, packet.lY);
+	__LocalPositionToGlobalPosition(packet.x, packet.y);
 	
 	if (!Send(sizeof(packet), &packet))
 	{
@@ -2794,7 +2636,7 @@ bool CPythonNetworkStream::SendPartyInviteAnswerPacket(DWORD dwLeaderVID, BYTE b
 {
 	TPacketCGPartyInviteAnswer kPartyInviteAnswerPacket;
 	kPartyInviteAnswerPacket.header = HEADER_CG_PARTY_INVITE_ANSWER;
-	kPartyInviteAnswerPacket.leader_pid = dwLeaderVID;
+	kPartyInviteAnswerPacket.leader_vid = dwLeaderVID;
 	kPartyInviteAnswerPacket.accept = byAnswer;
 
 	if (!Send(sizeof(kPartyInviteAnswerPacket), &kPartyInviteAnswerPacket))
@@ -2826,10 +2668,10 @@ bool CPythonNetworkStream::SendPartyRemovePacket(DWORD dwPID)
 bool CPythonNetworkStream::SendPartySetStatePacket(DWORD dwVID, BYTE byState, BYTE byFlag)
 {
 	TPacketCGPartySetState kPartySetState;
-	kPartySetState.byHeader = HEADER_CG_PARTY_SET_STATE;
-	kPartySetState.dwVID = dwVID;
-	kPartySetState.byState = byState;
-	kPartySetState.byFlag = byFlag;
+	kPartySetState.header = HEADER_CG_PARTY_SET_STATE;
+	kPartySetState.pid = dwVID;
+	kPartySetState.byRole = byState;
+	kPartySetState.flag = byFlag;
 
 	if (!Send(sizeof(kPartySetState), &kPartySetState))
 	{
@@ -2844,9 +2686,9 @@ bool CPythonNetworkStream::SendPartySetStatePacket(DWORD dwVID, BYTE byState, BY
 bool CPythonNetworkStream::SendPartyUseSkillPacket(BYTE bySkillIndex, DWORD dwVID)
 {
 	TPacketCGPartyUseSkill kPartyUseSkill;
-	kPartyUseSkill.byHeader = HEADER_CG_PARTY_USE_SKILL;
+	kPartyUseSkill.header = HEADER_CG_PARTY_USE_SKILL;
 	kPartyUseSkill.bySkillIndex = bySkillIndex;
-	kPartyUseSkill.dwTargetVID = dwVID;
+	kPartyUseSkill.vid = dwVID;
 
 	if (!Send(sizeof(kPartyUseSkill), &kPartyUseSkill))
 	{
@@ -2880,15 +2722,15 @@ bool CPythonNetworkStream::RecvPartyInvite()
 	if (!Recv(sizeof(kPartyInvitePacket), &kPartyInvitePacket))
 		return false;
 
-	CInstanceBase * pInstance = CPythonCharacterManager::Instance().GetInstancePtr(kPartyInvitePacket.leader_pid);
+	CInstanceBase * pInstance = CPythonCharacterManager::Instance().GetInstancePtr(kPartyInvitePacket.leader_vid);
 	if (!pInstance)
 	{
-		TraceError(" CPythonNetworkStream::RecvPartyInvite - Failed to find leader instance [%d]\n", kPartyInvitePacket.leader_pid);
+		TraceError(" CPythonNetworkStream::RecvPartyInvite - Failed to find leader instance [%d]\n", kPartyInvitePacket.leader_vid);
 		return true;
 	}
 
-	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "RecvPartyInviteQuestion", Py_BuildValue("(is)", kPartyInvitePacket.leader_pid, pInstance->GetNameString()));
-	Tracef(" >> RecvPartyInvite : %d, %s\n", kPartyInvitePacket.leader_pid, pInstance->GetNameString());
+	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "RecvPartyInviteQuestion", Py_BuildValue("(is)", kPartyInvitePacket.leader_vid, pInstance->GetNameString()));
+	Tracef(" >> RecvPartyInvite : %d, %s\n", kPartyInvitePacket.leader_vid, pInstance->GetNameString());
 
 	return true;
 }
@@ -2918,8 +2760,8 @@ bool CPythonNetworkStream::RecvPartyUpdate()
 
 	BYTE byOldState = pPartyMemberInfo->byState;
 
-	CPythonPlayer::Instance().UpdatePartyMemberInfo(kPartyUpdatePacket.pid, kPartyUpdatePacket.state, kPartyUpdatePacket.percent_hp);
-	for (int i = 0; i < PARTY_AFFECT_SLOT_MAX_NUM; ++i)
+	CPythonPlayer::Instance().UpdatePartyMemberInfo(kPartyUpdatePacket.pid, kPartyUpdatePacket.role, kPartyUpdatePacket.percent_hp);
+	for (int i = 0; i < SAffects::PARTY_AFFECT_SLOT_MAX_NUM; ++i)
 	{
 		CPythonPlayer::Instance().UpdatePartyMemberAffect(kPartyUpdatePacket.pid, i, kPartyUpdatePacket.affects[i]);
 	}
@@ -2929,7 +2771,7 @@ bool CPythonNetworkStream::RecvPartyUpdate()
 	// 만약 리더가 바뀌었다면, TargetBoard 의 버튼을 업데이트 한다.
 	DWORD dwVID;
 	if (CPythonPlayer::Instance().PartyMemberPIDToVID(kPartyUpdatePacket.pid, &dwVID))
-	if (byOldState != kPartyUpdatePacket.state)
+	if (byOldState != kPartyUpdatePacket.role)
 	{
 		__RefreshTargetBoardByVID(dwVID);
 	}
@@ -3008,8 +2850,8 @@ bool CPythonNetworkStream::RecvPartyParameter()
 bool CPythonNetworkStream::SendGuildAddMemberPacket(DWORD dwVID)
 {
 	TPacketCGGuild GuildPacket;
-	GuildPacket.byHeader = HEADER_CG_GUILD;
-	GuildPacket.bySubHeader = GUILD_SUBHEADER_CG_ADD_MEMBER;
+	GuildPacket.header = HEADER_CG_GUILD;
+	GuildPacket.subheader = GUILD_SUBHEADER_CG_ADD_MEMBER;
 	if (!Send(sizeof(GuildPacket), &GuildPacket))
 		return false;
 	if (!Send(sizeof(dwVID), &dwVID))
@@ -3022,8 +2864,8 @@ bool CPythonNetworkStream::SendGuildAddMemberPacket(DWORD dwVID)
 bool CPythonNetworkStream::SendGuildRemoveMemberPacket(DWORD dwPID)
 {
 	TPacketCGGuild GuildPacket;
-	GuildPacket.byHeader = HEADER_CG_GUILD;
-	GuildPacket.bySubHeader = GUILD_SUBHEADER_CG_REMOVE_MEMBER;
+	GuildPacket.header = HEADER_CG_GUILD;
+	GuildPacket.subheader = GUILD_SUBHEADER_CG_REMOVE_MEMBER;
 	if (!Send(sizeof(GuildPacket), &GuildPacket))
 		return false;
 	if (!Send(sizeof(dwPID), &dwPID))
@@ -3036,8 +2878,8 @@ bool CPythonNetworkStream::SendGuildRemoveMemberPacket(DWORD dwPID)
 bool CPythonNetworkStream::SendGuildChangeGradeNamePacket(BYTE byGradeNumber, const char * c_szName)
 {
 	TPacketCGGuild GuildPacket;
-	GuildPacket.byHeader = HEADER_CG_GUILD;
-	GuildPacket.bySubHeader = GUILD_SUBHEADER_CG_CHANGE_GRADE_NAME;
+	GuildPacket.header = HEADER_CG_GUILD;
+	GuildPacket.subheader = GUILD_SUBHEADER_CG_CHANGE_GRADE_NAME;
 	if (!Send(sizeof(GuildPacket), &GuildPacket))
 		return false;
 	if (!Send(sizeof(byGradeNumber), &byGradeNumber))
@@ -3057,8 +2899,8 @@ bool CPythonNetworkStream::SendGuildChangeGradeNamePacket(BYTE byGradeNumber, co
 bool CPythonNetworkStream::SendGuildChangeGradeAuthorityPacket(BYTE byGradeNumber, BYTE byAuthority)
 {
 	TPacketCGGuild GuildPacket;
-	GuildPacket.byHeader = HEADER_CG_GUILD;
-	GuildPacket.bySubHeader = GUILD_SUBHEADER_CG_CHANGE_GRADE_AUTHORITY;
+	GuildPacket.header = HEADER_CG_GUILD;
+	GuildPacket.subheader = GUILD_SUBHEADER_CG_CHANGE_GRADE_AUTHORITY;
 	if (!Send(sizeof(GuildPacket), &GuildPacket))
 		return false;
 	if (!Send(sizeof(byGradeNumber), &byGradeNumber))
@@ -3073,8 +2915,8 @@ bool CPythonNetworkStream::SendGuildChangeGradeAuthorityPacket(BYTE byGradeNumbe
 bool CPythonNetworkStream::SendGuildOfferPacket(DWORD dwExperience)
 {
 	TPacketCGGuild GuildPacket;
-	GuildPacket.byHeader = HEADER_CG_GUILD;
-	GuildPacket.bySubHeader = GUILD_SUBHEADER_CG_OFFER;
+	GuildPacket.header = HEADER_CG_GUILD;
+	GuildPacket.subheader = GUILD_SUBHEADER_CG_OFFER;
 	if (!Send(sizeof(GuildPacket), &GuildPacket))
 		return false;
 	if (!Send(sizeof(dwExperience), &dwExperience))
@@ -3087,8 +2929,8 @@ bool CPythonNetworkStream::SendGuildOfferPacket(DWORD dwExperience)
 bool CPythonNetworkStream::SendGuildPostCommentPacket(const char * c_szMessage)
 {
 	TPacketCGGuild GuildPacket;
-	GuildPacket.byHeader = HEADER_CG_GUILD;
-	GuildPacket.bySubHeader = GUILD_SUBHEADER_CG_POST_COMMENT;
+	GuildPacket.header = HEADER_CG_GUILD;
+	GuildPacket.subheader = GUILD_SUBHEADER_CG_POST_COMMENT;
 	if (!Send(sizeof(GuildPacket), &GuildPacket))
 		return false;
 
@@ -3105,8 +2947,8 @@ bool CPythonNetworkStream::SendGuildPostCommentPacket(const char * c_szMessage)
 bool CPythonNetworkStream::SendGuildDeleteCommentPacket(DWORD dwIndex)
 {
 	TPacketCGGuild GuildPacket;
-	GuildPacket.byHeader = HEADER_CG_GUILD;
-	GuildPacket.bySubHeader = GUILD_SUBHEADER_CG_DELETE_COMMENT;
+	GuildPacket.header = HEADER_CG_GUILD;
+	GuildPacket.subheader = GUILD_SUBHEADER_CG_DELETE_COMMENT;
 	if (!Send(sizeof(GuildPacket), &GuildPacket))
 		return false;
 
@@ -3126,8 +2968,8 @@ bool CPythonNetworkStream::SendGuildRefreshCommentsPacket(DWORD dwHighestIndex)
 	s_LastTime = timeGetTime();
 
 	TPacketCGGuild GuildPacket;
-	GuildPacket.byHeader = HEADER_CG_GUILD;
-	GuildPacket.bySubHeader = GUILD_SUBHEADER_CG_REFRESH_COMMENT;
+	GuildPacket.header = HEADER_CG_GUILD;
+	GuildPacket.subheader = GUILD_SUBHEADER_CG_REFRESH_COMMENT;
 	if (!Send(sizeof(GuildPacket), &GuildPacket))
 		return false;
 
@@ -3138,8 +2980,8 @@ bool CPythonNetworkStream::SendGuildRefreshCommentsPacket(DWORD dwHighestIndex)
 bool CPythonNetworkStream::SendGuildChangeMemberGradePacket(DWORD dwPID, BYTE byGrade)
 {
 	TPacketCGGuild GuildPacket;
-	GuildPacket.byHeader = HEADER_CG_GUILD;
-	GuildPacket.bySubHeader = GUILD_SUBHEADER_CG_CHANGE_MEMBER_GRADE;
+	GuildPacket.header = HEADER_CG_GUILD;
+	GuildPacket.subheader = GUILD_SUBHEADER_CG_CHANGE_MEMBER_GRADE;
 	if (!Send(sizeof(GuildPacket), &GuildPacket))
 		return false;
 
@@ -3155,8 +2997,8 @@ bool CPythonNetworkStream::SendGuildChangeMemberGradePacket(DWORD dwPID, BYTE by
 bool CPythonNetworkStream::SendGuildUseSkillPacket(DWORD dwSkillID, DWORD dwTargetVID)
 {
 	TPacketCGGuild GuildPacket;
-	GuildPacket.byHeader = HEADER_CG_GUILD;
-	GuildPacket.bySubHeader = GUILD_SUBHEADER_CG_USE_SKILL;
+	GuildPacket.header = HEADER_CG_GUILD;
+	GuildPacket.subheader = GUILD_SUBHEADER_CG_USE_SKILL;
 	if (!Send(sizeof(GuildPacket), &GuildPacket))
 		return false;
 
@@ -3172,8 +3014,8 @@ bool CPythonNetworkStream::SendGuildUseSkillPacket(DWORD dwSkillID, DWORD dwTarg
 bool CPythonNetworkStream::SendGuildChangeMemberGeneralPacket(DWORD dwPID, BYTE byFlag)
 {
 	TPacketCGGuild GuildPacket;
-	GuildPacket.byHeader = HEADER_CG_GUILD;
-	GuildPacket.bySubHeader = GUILD_SUBHEADER_CG_CHANGE_MEMBER_GENERAL;
+	GuildPacket.header = HEADER_CG_GUILD;
+	GuildPacket.subheader = GUILD_SUBHEADER_CG_CHANGE_MEMBER_GENERAL;
 	if (!Send(sizeof(GuildPacket), &GuildPacket))
 		return false;
 
@@ -3189,8 +3031,8 @@ bool CPythonNetworkStream::SendGuildChangeMemberGeneralPacket(DWORD dwPID, BYTE 
 bool CPythonNetworkStream::SendGuildInviteAnswerPacket(DWORD dwGuildID, BYTE byAnswer)
 {
 	TPacketCGGuild GuildPacket;
-	GuildPacket.byHeader = HEADER_CG_GUILD;
-	GuildPacket.bySubHeader = GUILD_SUBHEADER_CG_GUILD_INVITE_ANSWER;
+	GuildPacket.header = HEADER_CG_GUILD;
+	GuildPacket.subheader = GUILD_SUBHEADER_CG_GUILD_INVITE_ANSWER;
 	if (!Send(sizeof(GuildPacket), &GuildPacket))
 		return false;
 
@@ -3206,8 +3048,8 @@ bool CPythonNetworkStream::SendGuildInviteAnswerPacket(DWORD dwGuildID, BYTE byA
 bool CPythonNetworkStream::SendGuildChargeGSPPacket(DWORD dwMoney)
 {
 	TPacketCGGuild GuildPacket;
-	GuildPacket.byHeader = HEADER_CG_GUILD;
-	GuildPacket.bySubHeader = GUILD_SUBHEADER_CG_CHARGE_GSP;
+	GuildPacket.header = HEADER_CG_GUILD;
+	GuildPacket.subheader = GUILD_SUBHEADER_CG_CHARGE_GSP;
 	if (!Send(sizeof(GuildPacket), &GuildPacket))
 		return false;
 
@@ -3221,8 +3063,8 @@ bool CPythonNetworkStream::SendGuildChargeGSPPacket(DWORD dwMoney)
 bool CPythonNetworkStream::SendGuildDepositMoneyPacket(DWORD dwMoney)
 {
 	TPacketCGGuild GuildPacket;
-	GuildPacket.byHeader = HEADER_CG_GUILD;
-	GuildPacket.bySubHeader = GUILD_SUBHEADER_CG_DEPOSIT_MONEY;
+	GuildPacket.header = HEADER_CG_GUILD;
+	GuildPacket.subheader = GUILD_SUBHEADER_CG_DEPOSIT_MONEY;
 	if (!Send(sizeof(GuildPacket), &GuildPacket))
 		return false;
 	if (!Send(sizeof(dwMoney), &dwMoney))
@@ -3235,8 +3077,8 @@ bool CPythonNetworkStream::SendGuildDepositMoneyPacket(DWORD dwMoney)
 bool CPythonNetworkStream::SendGuildWithdrawMoneyPacket(DWORD dwMoney)
 {
 	TPacketCGGuild GuildPacket;
-	GuildPacket.byHeader = HEADER_CG_GUILD;
-	GuildPacket.bySubHeader = GUILD_SUBHEADER_CG_WITHDRAW_MONEY;
+	GuildPacket.header = HEADER_CG_GUILD;
+	GuildPacket.subheader = GUILD_SUBHEADER_CG_WITHDRAW_MONEY;
 	if (!Send(sizeof(GuildPacket), &GuildPacket))
 		return false;
 	if (!Send(sizeof(dwMoney), &dwMoney))
@@ -3450,7 +3292,7 @@ bool CPythonNetworkStream::RecvGuild()
 			rGuildInfo.dwCurrentMemberCount = GuildInfo.member_count;
 			rGuildInfo.dwMaxMemberCount = GuildInfo.max_member_count;
 			rGuildInfo.dwGuildMoney = GuildInfo.gold;
-			rGuildInfo.bHasLand = GuildInfo.hasLand;
+			rGuildInfo.bHasLand = GuildInfo.has_land;
 
 			//Tracef(" <Info> %s, %d, %d : %d\n", GuildInfo.name, GuildInfo.master_pid, GuildInfo.level, rGuildInfo.bHasLand);
 			__RefreshGuildWindowInfoPage();
@@ -3475,7 +3317,7 @@ bool CPythonNetworkStream::RecvGuild()
 				if (!Recv(sizeof(szName), &szName))
 					return false;
 
-				char szComment[GULID_COMMENT_MAX_LEN+1] = "";
+				char szComment[GUILD_COMMENT_MAX_LEN+1] = "";
 				if (!Recv(sizeof(szComment), &szComment))
 					return false;
 
@@ -3674,18 +3516,6 @@ bool CPythonNetworkStream::RecvGuild()
 				CPythonCharacterManager::Instance().ChangeGVG(dwSrcGuildID, dwDstGuildID);
 				iPacketSize -= nItemSize;
 			}
-			break;
-		}
-		case GUILD_SUBHEADER_GC_WAR_POINT:
-		{
-			TPacketGuildWarPoint GuildWarPoint;
-			if (!Recv(sizeof(GuildWarPoint), &GuildWarPoint))
-				return false;
-
-			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], 
-				"BINARY_GuildWar_OnRecvPoint", 
-				Py_BuildValue("(iii)", GuildWarPoint.dwGainGuildID, GuildWarPoint.dwOpponentGuildID, GuildWarPoint.lPoint)
-			);
 			break;
 		}
 		case GUILD_SUBHEADER_GC_MONEY_CHANGE:
@@ -3985,61 +3815,20 @@ bool CPythonNetworkStream::RecvRefineInformationPacket()
 	if (!Recv(sizeof(kRefineInfoPacket), &kRefineInfoPacket))
 		return false;
 
-	TRefineTable & rkRefineTable = kRefineInfoPacket.refine_table;
-	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], 
-		"OpenRefineDialog", 
-		Py_BuildValue("(iiii)", 
-			kRefineInfoPacket.pos, 
-			kRefineInfoPacket.refine_table.result_vnum, 
-			rkRefineTable.cost, 
-			rkRefineTable.prob));
-
-	for (int i = 0; i < rkRefineTable.material_count; ++i)
-	{
-		PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "AppendMaterialToRefineDialog", Py_BuildValue("(ii)", rkRefineTable.materials[i].vnum, rkRefineTable.materials[i].count));
-	}
-
-#ifdef _DEBUG
-	Tracef(" >> RecvRefineInformationPacket(pos=%d, result_vnum=%d, cost=%d, prob=%d)\n",
-														kRefineInfoPacket.pos,
-														kRefineInfoPacket.refine_table.result_vnum,
-														rkRefineTable.cost,
-														rkRefineTable.prob);
-#endif
-
-	return true;
-}
-
-bool CPythonNetworkStream::RecvRefineInformationPacketNew()
-{
-	TPacketGCRefineInformationNew kRefineInfoPacket;
-	if (!Recv(sizeof(kRefineInfoPacket), &kRefineInfoPacket))
-		return false;
-
-	TRefineTable & rkRefineTable = kRefineInfoPacket.refine_table;
 	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], 
 		"OpenRefineDialog", 
 		Py_BuildValue("(iiiii)", 
 			kRefineInfoPacket.pos, 
-			kRefineInfoPacket.refine_table.result_vnum, 
-			rkRefineTable.cost, 
-			rkRefineTable.prob, 
+			kRefineInfoPacket.result_vnum,
+			kRefineInfoPacket.cost,
+			kRefineInfoPacket.prob,
 			kRefineInfoPacket.type)
 		);
 
-	for (int i = 0; i < rkRefineTable.material_count; ++i)
+	for (int i = 0; i < kRefineInfoPacket.material_count; ++i)
 	{
-		PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "AppendMaterialToRefineDialog", Py_BuildValue("(ii)", rkRefineTable.materials[i].vnum, rkRefineTable.materials[i].count));
+		PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "AppendMaterialToRefineDialog", Py_BuildValue("(ii)", kRefineInfoPacket.materials[i].vnum, kRefineInfoPacket.materials[i].count));
 	}
-
-#ifdef _DEBUG
-	Tracef(" >> RecvRefineInformationPacketNew(pos=%d, result_vnum=%d, cost=%d, prob=%d, type=%d)\n",
-														kRefineInfoPacket.pos,
-														kRefineInfoPacket.refine_table.result_vnum,
-														rkRefineTable.cost,
-														rkRefineTable.prob,
-														kRefineInfoPacket.type);
-#endif
 
 	return true;
 }
@@ -4137,12 +3926,12 @@ bool CPythonNetworkStream::RecvAffectAddPacket()
 		return false;
 
 	TPacketAffectElement & rkElement = kAffectAdd.elem;
-	if (rkElement.bPointIdxApplyOn == POINT_ENERGY)
+	if (rkElement.bApplyOn == POINT_ENERGY)
 	{
 		CPythonPlayer::instance().SetStatus (POINT_ENERGY_END_TIME, CPythonApplication::Instance().GetServerTimeStamp() + rkElement.lDuration);
 		__RefreshStatus();
 	}
-	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "BINARY_NEW_AddAffect", Py_BuildValue("(iiii)", rkElement.dwType, rkElement.bPointIdxApplyOn, rkElement.lApplyValue, rkElement.lDuration));
+	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "BINARY_NEW_AddAffect", Py_BuildValue("(iiii)", rkElement.dwType, rkElement.bApplyOn, rkElement.lApplyValue, rkElement.lDuration));
 
 	return true;
 }
@@ -4175,18 +3964,18 @@ bool CPythonNetworkStream::RecvViewEquipPacket()
 	if (!Recv(sizeof(kViewEquipPacket), &kViewEquipPacket))
 		return false;
 
-	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "OpenEquipmentDialog", Py_BuildValue("(i)", kViewEquipPacket.dwVID));
+	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "OpenEquipmentDialog", Py_BuildValue("(i)", kViewEquipPacket.vid));
 
 	for (int i = 0; i < WEAR_MAX_NUM; ++i)
 	{
 		TEquipmentItemSet & rItemSet = kViewEquipPacket.equips[i];
-		PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "SetEquipmentDialogItem", Py_BuildValue("(iiii)", kViewEquipPacket.dwVID, i, rItemSet.vnum, rItemSet.count));
+		PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "SetEquipmentDialogItem", Py_BuildValue("(iiii)", kViewEquipPacket.vid, i, rItemSet.vnum, rItemSet.count));
 
 		for (int j = 0; j < ITEM_SOCKET_SLOT_MAX_NUM; ++j)
-			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "SetEquipmentDialogSocket", Py_BuildValue("(iiii)", kViewEquipPacket.dwVID, i, j, rItemSet.alSockets[j]));
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "SetEquipmentDialogSocket", Py_BuildValue("(iiii)", kViewEquipPacket.vid, i, j, rItemSet.alSockets[j]));
 
 		for (int k = 0; k < ITEM_ATTRIBUTE_SLOT_MAX_NUM; ++k)
-			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "SetEquipmentDialogAttr", Py_BuildValue("(iiiii)", kViewEquipPacket.dwVID, i, k, rItemSet.aAttr[k].bType, rItemSet.aAttr[k].sValue));
+			PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "SetEquipmentDialogAttr", Py_BuildValue("(iiiii)", kViewEquipPacket.vid, i, k, rItemSet.aAttr[k].bType, rItemSet.aAttr[k].sValue));
 	}
 
 	return true;
@@ -4246,34 +4035,15 @@ bool CPythonNetworkStream::RecvTargetCreatePacket()
 		return false;
 
 	CPythonMiniMap & rkpyMiniMap = CPythonMiniMap::Instance();
-	rkpyMiniMap.CreateTarget(kTargetCreate.lID, kTargetCreate.szTargetName);
-
-//#ifdef _DEBUG
-//	char szBuf[256+1];
-//	_snprintf(szBuf, sizeof(szBuf), "타겟이 생성 되었습니다 [%d:%s]", kTargetCreate.lID, kTargetCreate.szTargetName);
-//	CPythonChat::Instance().AppendChat(CHAT_TYPE_NOTICE, szBuf);
-//	Tracef(" >> RecvTargetCreatePacket %d : %s\n", kTargetCreate.lID, kTargetCreate.szTargetName);
-//#endif
-
-	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "BINARY_OpenAtlasWindow", Py_BuildValue("()"));
-	return true;
-}
-
-bool CPythonNetworkStream::RecvTargetCreatePacketNew()
-{
-	TPacketGCTargetCreateNew kTargetCreate;
-	if (!Recv(sizeof(kTargetCreate), &kTargetCreate))
-		return false;
-
-	CPythonMiniMap & rkpyMiniMap = CPythonMiniMap::Instance();
 	CPythonBackground & rkpyBG = CPythonBackground::Instance();
-	if (CREATE_TARGET_TYPE_LOCATION == kTargetCreate.byType)
+
+	if (CREATE_TARGET_TYPE_LOCATION == kTargetCreate.bType)
 	{
-		rkpyMiniMap.CreateTarget(kTargetCreate.lID, kTargetCreate.szTargetName);
+		rkpyMiniMap.CreateTarget(kTargetCreate.lID, kTargetCreate.szName);
 	}
 	else
 	{
-		rkpyMiniMap.CreateTarget(kTargetCreate.lID, kTargetCreate.szTargetName, kTargetCreate.dwVID);
+		rkpyMiniMap.CreateTarget(kTargetCreate.lID, kTargetCreate.szName, kTargetCreate.dwVID);
 		rkpyBG.CreateTargetEffect(kTargetCreate.lID, kTargetCreate.dwVID);
 	}
 
@@ -4335,9 +4105,9 @@ bool CPythonNetworkStream::RecvLoverInfoPacket()
 	if (!Recv(sizeof(kLoverInfo), &kLoverInfo))
 		return false;
 
-	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "BINARY_LoverInfo", Py_BuildValue("(si)", kLoverInfo.szName, kLoverInfo.byLovePoint));
+	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "BINARY_LoverInfo", Py_BuildValue("(si)", kLoverInfo.name, kLoverInfo.love_point));
 #ifdef _DEBUG
-	Tracef("RECV LOVER INFO : %s, %d\n", kLoverInfo.szName, kLoverInfo.byLovePoint);
+	Tracef("RECV LOVER INFO : %s, %d\n", kLoverInfo.name, kLoverInfo.love_point);
 #endif
 	return true;
 }
@@ -4348,9 +4118,9 @@ bool CPythonNetworkStream::RecvLovePointUpdatePacket()
 	if (!Recv(sizeof(kLovePointUpdate), &kLovePointUpdate))
 		return false;
 
-	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "BINARY_UpdateLovePoint", Py_BuildValue("(i)", kLovePointUpdate.byLovePoint));
+	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "BINARY_UpdateLovePoint", Py_BuildValue("(i)", kLovePointUpdate.love_point));
 #ifdef _DEBUG
-	Tracef("RECV LOVE POINT UPDATE : %d\n", kLovePointUpdate.byLovePoint);
+	Tracef("RECV LOVE POINT UPDATE : %d\n", kLovePointUpdate.love_point);
 #endif
 	return true;
 }
@@ -4387,7 +4157,7 @@ bool CPythonNetworkStream::SendDragonSoulRefinePacket(BYTE bRefineType, TItemPos
 	TPacketCGDragonSoulRefine pk;
 	pk.header = HEADER_CG_DRAGON_SOUL_REFINE;
 	pk.bSubType = bRefineType;
-	memcpy (pk.ItemGrid, pos, sizeof (TItemPos) * DS_REFINE_WINDOW_MAX_NUM);
+	memcpy (pk.ItemGrid, pos, sizeof (TItemPos) * DRAGON_SOUL_REFINE_WINDOW_MAX_NUM);
 	if (!Send(sizeof (pk), &pk))
 	{
 		return false;

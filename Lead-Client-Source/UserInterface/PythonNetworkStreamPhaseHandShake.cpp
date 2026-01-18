@@ -120,7 +120,7 @@ bool CPythonNetworkStream::RecvHandshakePacket()
 
 	Tracenf("HANDSHAKE SEND %u", kHandshakeData.dwTime);
 
-	kHandshakeData.header = HEADER_CG_TIME_SYNC;
+	kHandshakeData.bHeader = HEADER_CG_TIME_SYNC;
 	if (!Send(sizeof(TPacketGCHandshake), &kHandshakeData))
 	{
 		assert(!"Failed Sending Handshake");
@@ -159,7 +159,7 @@ bool CPythonNetworkStream::RecvHybridCryptKeyPacket()
 	if (!Recv(iFixedHeaderSize, &kPacket))
 		return false;
 
-	if (!Recv(kPacket.iKeyStreamLen, kPacket.m_pStream))
+	if (!Recv(kPacket.KeyStreamLen, kPacket.m_pStream))
 		return false;
 
 	CEterPackManager::Instance().RetrieveHybridCryptPackKeys( kPacket.m_pStream ); 
@@ -168,18 +168,18 @@ bool CPythonNetworkStream::RecvHybridCryptKeyPacket()
 
 bool CPythonNetworkStream::RecvHybridCryptSDBPacket()
 {
-	int iFixedHeaderSize = TPacketGCHybridSDB::GetFixedHeaderSize();
+	int iFixedHeaderSize = TPacketGCPackageSDB::GetFixedHeaderSize();
 
 	TDynamicSizePacketHeader header;
 	if( !Peek( sizeof(header), &header) )
 		return false;
 
-	TPacketGCHybridSDB kPacket(header.size-iFixedHeaderSize);
+	TPacketGCPackageSDB kPacket(header.size-iFixedHeaderSize);
 
 	if (!Recv(iFixedHeaderSize, &kPacket))
 		return false;
 
-	if (!Recv(kPacket.iSDBStreamLen, kPacket.m_pStream))
+	if (!Recv(kPacket.iStreamLen, kPacket.m_pStream))
 		return false;
 
 	CEterPackManager::Instance().RetrieveHybridCryptPackSDB( kPacket.m_pStream ); 

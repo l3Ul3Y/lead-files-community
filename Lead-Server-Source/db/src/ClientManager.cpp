@@ -1,8 +1,8 @@
 
 #include "stdafx.h"
 
-#include "../../common/building.h"
-#include "../../common/VnumHelper.h"
+#include "common/building.h"
+#include "common/VnumHelper.h"
 #include "../../libgame/include/grid.h"
 
 #include "ClientManager.h"

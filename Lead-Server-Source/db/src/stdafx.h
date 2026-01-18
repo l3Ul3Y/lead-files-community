@@ -12,12 +12,12 @@
 #define isspace iswspace
 #endif
 
-#include "../../common/length.h"
-#include "../../common/tables.h"
-#include "../../common/singleton.h"
-#include "../../common/utils.h"
-#include "../../common/stl.h"
-#include "../../common/service.h"
+#include "common/length.h"
+#include "common/tables.h"
+#include "common/singleton.h"
+#include "common/utils.h"
+#include "common/stl.h"
+#include "common/service.h"
 
 // TODO: Remove workaround by using mysqlclient build from vcpkg
 //       This is just needed to make the compiler shut up for now.

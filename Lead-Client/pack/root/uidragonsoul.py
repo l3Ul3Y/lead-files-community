@@ -415,7 +415,7 @@ class DragonSoulWindow(ui.ScriptWindow):
 	## ªÛ¡°ø° ∆»±‚
 	def SellItem(self):
 
-		net.SendShopSellPacketNew(self.sellingSlotNumber, self.questionDialog.count, player.DRAGON_SOUL_INVENTORY)
+		net.SendShopSellPacket(self.sellingSlotNumber, self.questionDialog.count, player.DRAGON_SOUL_INVENTORY)
 		snd.PlaySound("sound/ui/money.wav")
 		self.OnCloseQuestionDialog()
 

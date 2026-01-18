@@ -4,6 +4,11 @@
 #define WORD_MAX 0xffff
 enum EMisc
 {
+	// TODO: private code length is 7, refactor this later on
+	PRIVATE_CODE_LENGTH		= 8,
+	QUEST_INPUT_STRING_MAX_NUM = 64,
+
+	ITEM_SOCKET_SLOT_MAX_NUM = 3,
 	MAX_HOST_LENGTH			= 15,
 	IP_ADDRESS_LENGTH		= 15,
 	LOGIN_MAX_LEN			= 30,
@@ -24,6 +29,11 @@ enum EMisc
 	SHOP_GUEST_ITEM_MAX_NUM = 18,	/* 게스트의 최대 아이템 개수 */
 
 	SHOP_PRICELIST_MAX_NUM	= 40,	///< 개인상점 가격정보 리스트에서 유지할 가격정보의 최대 갯수
+
+	QUICKSLOT_MAX_LINE = 4,
+	QUICKSLOT_MAX_COUNT_PER_LINE = 10,
+	QUICKSLOT_MAX_COUNT = QUICKSLOT_MAX_LINE * QUICKSLOT_MAX_COUNT_PER_LINE,
+
 
 	CHAT_MAX_LEN			= 512,
 
@@ -206,6 +216,74 @@ enum ERaceFlags
 	RACE_FLAG_ATT_WIND	= (1 << 14),
 	RACE_FLAG_ATT_EARTH	= (1 << 15),
 	RACE_FLAG_ATT_DARK	= (1 << 16),
+};
+
+enum EPKModes
+{
+	PK_MODE_PEACE,
+	PK_MODE_REVENGE,
+	PK_MODE_FREE,
+	PK_MODE_PROTECT,
+	PK_MODE_GUILD,
+	PK_MODE_MAX_NUM
+};
+
+enum EBlockAction
+{
+	BLOCK_EXCHANGE		= (1 << 0),
+	BLOCK_PARTY_INVITE		= (1 << 1),
+	BLOCK_GUILD_INVITE		= (1 << 2),
+	BLOCK_WHISPER		= (1 << 3),
+	BLOCK_MESSENGER_INVITE	= (1 << 4),
+	BLOCK_PARTY_REQUEST		= (1 << 5),
+};
+
+enum
+{
+	QUEST_SEND_ISBEGIN		= (1 << 0),
+	QUEST_SEND_TITLE		= (1 << 1),  // 30ÀÚ ±îÁö
+	QUEST_SEND_CLOCK_NAME		= (1 << 2),  // 16ÀÚ ±îÁö
+	QUEST_SEND_CLOCK_VALUE		= (1 << 3),
+	QUEST_SEND_COUNTER_NAME		= (1 << 4),  // 16ÀÚ ±îÁö
+	QUEST_SEND_COUNTER_VALUE	= (1 << 5),
+	QUEST_SEND_ICON_FILE		= (1 << 6),  // 24ÀÚ ±îÁö
+};
+
+enum
+{
+	MESSENGER_CONNECTED_STATE_OFFLINE,
+	MESSENGER_CONNECTED_STATE_ONLINE,
+};
+
+enum
+{
+	GUILD_AUTH_ADD_MEMBER	= (1 << 0),
+	GUILD_AUTH_REMOVE_MEMBER	= (1 << 1),
+	GUILD_AUTH_NOTICE		= (1 << 2),
+	GUILD_AUTH_USE_SKILL	= (1 << 3),
+};
+
+enum
+{
+	GUILD_GRADE_NAME_MAX_LEN = 8,
+	GUILD_GRADE_COUNT = 15,
+	GUILD_COMMENT_MAX_COUNT = 12,
+	GUILD_COMMENT_MAX_LEN = 50,
+	GUILD_LEADER_GRADE = 1,
+	GUILD_BASE_POWER = 400,
+	GUILD_POWER_PER_SKILL_LEVEL = 200,
+	GUILD_POWER_PER_LEVEL = 100,
+	GUILD_MINIMUM_LEADERSHIP = 40,
+	GUILD_WAR_MIN_MEMBER_COUNT = 8,
+	GUILD_LADDER_POINT_PER_LEVEL = 1000,
+	GUILD_CREATE_ITEM_VNUM = 70101,
+};
+
+enum
+{
+	CREATE_TARGET_TYPE_NONE,
+	CREATE_TARGET_TYPE_LOCATION,
+	CREATE_TARGET_TYPE_CHARACTER,
 };
 
 enum ELoads
@@ -422,6 +500,201 @@ enum EApplyTypes
 	MAX_APPLY_NUM,              // 
 };
 
+enum EPointTypes
+{
+	POINT_NONE,                 // 0
+	POINT_LEVEL,                // 1
+	POINT_VOICE,                // 2
+	POINT_EXP,                  // 3
+	POINT_NEXT_EXP,             // 4
+	POINT_HP,                   // 5
+	POINT_MAX_HP,               // 6
+	POINT_SP,                   // 7
+	POINT_MAX_SP,               // 8
+	POINT_STAMINA,              // 9  ½ºÅ×¹Ì³Ê
+	POINT_MAX_STAMINA,          // 10 ÃÖ´ë ½ºÅ×¹Ì³Ê
+
+	POINT_GOLD,                 // 11
+	POINT_ST,                   // 12 ±Ù·Â
+	POINT_HT,                   // 13 Ã¼·Â
+	POINT_DX,                   // 14 ¹ÎÃ¸¼º
+	POINT_IQ,                   // 15 Á¤½Å·Â
+	POINT_DEF_GRADE,		// 16 ...
+	POINT_ATT_SPEED,            // 17 °ø°Ý¼Óµµ
+	POINT_ATT_GRADE,		// 18 °ø°Ý·Â MAX
+	POINT_MOV_SPEED,            // 19 ÀÌµ¿¼Óµµ
+	POINT_CLIENT_DEF_GRADE,	// 20 ¹æ¾îµî±Þ
+	POINT_CASTING_SPEED,        // 21 ÁÖ¹®¼Óµµ (Äð´Ù¿îÅ¸ÀÓ*100) / (100 + ÀÌ°ª) = ÃÖÁ¾ Äð´Ù¿î Å¸ÀÓ
+	POINT_MAGIC_ATT_GRADE,      // 22 ¸¶¹ý°ø°Ý·Â
+	POINT_MAGIC_DEF_GRADE,      // 23 ¸¶¹ý¹æ¾î·Â
+	POINT_EMPIRE_POINT,         // 24 Á¦±¹Á¡¼ö
+	POINT_LEVEL_STEP,           // 25 ÇÑ ·¹º§¿¡¼­ÀÇ ´Ü°è.. (1 2 3 µÉ ¶§ º¸»ó, 4 µÇ¸é ·¹º§ ¾÷)
+	POINT_STAT,                 // 26 ´É·ÂÄ¡ ¿Ã¸± ¼ö ÀÖ´Â °³¼ö
+	POINT_SUB_SKILL,		// 27 º¸Á¶ ½ºÅ³ Æ÷ÀÎÆ®
+	POINT_SKILL,		// 28 ¾×Æ¼ºê ½ºÅ³ Æ÷ÀÎÆ®
+	POINT_WEAPON_MIN,		// 29 ¹«±â ÃÖ¼Ò µ¥¹ÌÁö
+	POINT_WEAPON_MAX,		// 30 ¹«±â ÃÖ´ë µ¥¹ÌÁö
+	POINT_PLAYTIME,             // 31 ÇÃ·¹ÀÌ½Ã°£
+	POINT_HP_REGEN,             // 32 HP È¸º¹·ü
+	POINT_SP_REGEN,             // 33 SP È¸º¹·ü
+
+	POINT_BOW_DISTANCE,         // 34 È° »çÁ¤°Å¸® Áõ°¡Ä¡ (meter)
+
+	POINT_HP_RECOVERY,          // 35 Ã¼·Â È¸º¹ Áõ°¡·®
+	POINT_SP_RECOVERY,          // 36 Á¤½Å·Â È¸º¹ Áõ°¡·®
+
+	POINT_POISON_PCT,           // 37 µ¶ È®·ü
+	POINT_STUN_PCT,             // 38 ±âÀý È®·ü
+	POINT_SLOW_PCT,             // 39 ½½·Î¿ì È®·ü
+	POINT_CRITICAL_PCT,         // 40 Å©¸®Æ¼ÄÃ È®·ü
+	POINT_PENETRATE_PCT,        // 41 °üÅëÅ¸°Ý È®·ü
+	POINT_CURSE_PCT,            // 42 ÀúÁÖ È®·ü
+
+	POINT_ATTBONUS_HUMAN,       // 43 ÀÎ°£¿¡°Ô °­ÇÔ
+	POINT_ATTBONUS_ANIMAL,      // 44 µ¿¹°¿¡°Ô µ¥¹ÌÁö % Áõ°¡
+	POINT_ATTBONUS_ORC,         // 45 ¿õ±Í¿¡°Ô µ¥¹ÌÁö % Áõ°¡
+	POINT_ATTBONUS_MILGYO,      // 46 ¹Ð±³¿¡°Ô µ¥¹ÌÁö % Áõ°¡
+	POINT_ATTBONUS_UNDEAD,      // 47 ½ÃÃ¼¿¡°Ô µ¥¹ÌÁö % Áõ°¡
+	POINT_ATTBONUS_DEVIL,       // 48 ¸¶±Í(¾Ç¸¶)¿¡°Ô µ¥¹ÌÁö % Áõ°¡
+	POINT_ATTBONUS_INSECT,      // 49 ¹ú·¹Á·
+	POINT_ATTBONUS_FIRE,        // 50 È­¿°Á·
+	POINT_ATTBONUS_ICE,         // 51 ºù¼³Á·
+	POINT_ATTBONUS_DESERT,      // 52 »ç¸·Á·
+	POINT_ATTBONUS_MONSTER,     // 53 ¸ðµç ¸ó½ºÅÍ¿¡°Ô °­ÇÔ
+	POINT_ATTBONUS_WARRIOR,     // 54 ¹«»ç¿¡°Ô °­ÇÔ
+	POINT_ATTBONUS_ASSASSIN,	// 55 ÀÚ°´¿¡°Ô °­ÇÔ
+	POINT_ATTBONUS_SURA,		// 56 ¼ö¶ó¿¡°Ô °­ÇÔ
+	POINT_ATTBONUS_SHAMAN,		// 57 ¹«´ç¿¡°Ô °­ÇÔ
+	POINT_ATTBONUS_TREE,     	// 58 ³ª¹«¿¡°Ô °­ÇÔ 20050729.myevan UNUSED5
+
+	POINT_RESIST_WARRIOR,		// 59 ¹«»ç¿¡°Ô ÀúÇ×
+	POINT_RESIST_ASSASSIN,		// 60 ÀÚ°´¿¡°Ô ÀúÇ×
+	POINT_RESIST_SURA,			// 61 ¼ö¶ó¿¡°Ô ÀúÇ×
+	POINT_RESIST_SHAMAN,		// 62 ¹«´ç¿¡°Ô ÀúÇ×
+
+	POINT_STEAL_HP,             // 63 »ý¸í·Â Èí¼ö
+	POINT_STEAL_SP,             // 64 Á¤½Å·Â Èí¼ö
+
+	POINT_MANA_BURN_PCT,        // 65 ¸¶³ª ¹ø
+
+	/// ÇÇÇØ½Ã º¸³Ê½º ///
+
+	POINT_DAMAGE_SP_RECOVER,    // 66 °ø°Ý´çÇÒ ½Ã Á¤½Å·Â È¸º¹ È®·ü
+
+	POINT_BLOCK,                // 67 ºí·°À²
+	POINT_DODGE,                // 68 È¸ÇÇÀ²
+
+	POINT_RESIST_SWORD,         // 69
+	POINT_RESIST_TWOHAND,       // 70
+	POINT_RESIST_DAGGER,        // 71
+	POINT_RESIST_BELL,          // 72
+	POINT_RESIST_FAN,           // 73
+	POINT_RESIST_BOW,           // 74  È­»ì   ÀúÇ×   : ´ë¹ÌÁö °¨¼Ò
+	POINT_RESIST_FIRE,          // 75  È­¿°   ÀúÇ×   : È­¿°°ø°Ý¿¡ ´ëÇÑ ´ë¹ÌÁö °¨¼Ò
+	POINT_RESIST_ELEC,          // 76  Àü±â   ÀúÇ×   : Àü±â°ø°Ý¿¡ ´ëÇÑ ´ë¹ÌÁö °¨¼Ò
+	POINT_RESIST_MAGIC,         // 77  ¼ú¹ý   ÀúÇ×   : ¸ðµç¼ú¹ý¿¡ ´ëÇÑ ´ë¹ÌÁö °¨¼Ò
+	POINT_RESIST_WIND,          // 78  ¹Ù¶÷   ÀúÇ×   : ¹Ù¶÷°ø°Ý¿¡ ´ëÇÑ ´ë¹ÌÁö °¨¼Ò
+
+	POINT_REFLECT_MELEE,        // 79 °ø°Ý ¹Ý»ç
+
+	/// Æ¯¼ö ÇÇÇØ½Ã ///
+	POINT_REFLECT_CURSE,		// 80 ÀúÁÖ ¹Ý»ç
+	POINT_POISON_REDUCE,		// 81 µ¶µ¥¹ÌÁö °¨¼Ò
+
+	/// Àû ¼Ò¸ê½Ã ///
+	POINT_KILL_SP_RECOVER,		// 82 Àû ¼Ò¸ê½Ã MP È¸º¹
+	POINT_EXP_DOUBLE_BONUS,		// 83
+	POINT_GOLD_DOUBLE_BONUS,		// 84
+	POINT_ITEM_DROP_BONUS,		// 85
+
+	/// È¸º¹ °ü·Ã ///
+	POINT_POTION_BONUS,			// 86
+	POINT_KILL_HP_RECOVERY,		// 87
+
+	POINT_IMMUNE_STUN,			// 88
+	POINT_IMMUNE_SLOW,			// 89
+	POINT_IMMUNE_FALL,			// 90
+	//////////////////
+
+	POINT_PARTY_ATTACKER_BONUS,		// 91
+	POINT_PARTY_TANKER_BONUS,		// 92
+
+	POINT_ATT_BONUS,			// 93
+	POINT_DEF_BONUS,			// 94
+
+	POINT_ATT_GRADE_BONUS,		// 95
+	POINT_DEF_GRADE_BONUS,		// 96
+	POINT_MAGIC_ATT_GRADE_BONUS,	// 97
+	POINT_MAGIC_DEF_GRADE_BONUS,	// 98
+
+	POINT_RESIST_NORMAL_DAMAGE,		// 99
+
+	POINT_HIT_HP_RECOVERY,		// 100
+	POINT_HIT_SP_RECOVERY, 		// 101
+	POINT_MANASHIELD,			// 102 Èæ½Å¼öÈ£ ½ºÅ³¿¡ ÀÇÇÑ ¸¶³ª½¯µå È¿°ú Á¤µµ
+
+	POINT_PARTY_BUFFER_BONUS,		// 103
+	POINT_PARTY_SKILL_MASTER_BONUS,	// 104
+
+	POINT_HP_RECOVER_CONTINUE,		// 105
+	POINT_SP_RECOVER_CONTINUE,		// 106
+
+	POINT_STEAL_GOLD,			// 107
+	POINT_POLYMORPH,			// 108 º¯½ÅÇÑ ¸ó½ºÅÍ ¹øÈ£
+	POINT_MOUNT,			// 109 Å¸°íÀÖ´Â ¸ó½ºÅÍ ¹øÈ£
+
+	POINT_PARTY_HASTE_BONUS,		// 110
+	POINT_PARTY_DEFENDER_BONUS,		// 111
+	POINT_STAT_RESET_COUNT,		// 112 ÇÇÀÇ ´Ü¾à »ç¿ëÀ» ÅëÇÑ ½ºÅÝ ¸®¼Â Æ÷ÀÎÆ® (1´ç 1Æ÷ÀÎÆ® ¸®¼Â°¡´É)
+
+	POINT_HORSE_SKILL,			// 113
+
+	POINT_MALL_ATTBONUS,		// 114 °ø°Ý·Â +x%
+	POINT_MALL_DEFBONUS,		// 115 ¹æ¾î·Â +x%
+	POINT_MALL_EXPBONUS,		// 116 °æÇèÄ¡ +x%
+	POINT_MALL_ITEMBONUS,		// 117 ¾ÆÀÌÅÛ µå·ÓÀ² x/10¹è
+	POINT_MALL_GOLDBONUS,		// 118 µ· µå·ÓÀ² x/10¹è
+
+	POINT_MAX_HP_PCT,			// 119 ÃÖ´ë»ý¸í·Â +x%
+	POINT_MAX_SP_PCT,			// 120 ÃÖ´ëÁ¤½Å·Â +x%
+
+	POINT_SKILL_DAMAGE_BONUS,		// 121 ½ºÅ³ µ¥¹ÌÁö *(100+x)%
+	POINT_NORMAL_HIT_DAMAGE_BONUS,	// 122 ÆòÅ¸ µ¥¹ÌÁö *(100+x)%
+
+	// DEFEND_BONUS_ATTRIBUTES
+	POINT_SKILL_DEFEND_BONUS,		// 123 ½ºÅ³ ¹æ¾î µ¥¹ÌÁö
+	POINT_NORMAL_HIT_DEFEND_BONUS,	// 124 ÆòÅ¸ ¹æ¾î µ¥¹ÌÁö
+	// END_OF_DEFEND_BONUS_ATTRIBUTES
+
+	POINT_RAMADAN_CANDY_BONUS_EXP,			// ¶ó¸¶´Ü »çÅÁ °æÇèÄ¡ Áõ°¡¿ë
+
+	POINT_ENERGY = 128,					// 128 ±â·Â
+
+	// ±â·Â ui ¿ë.
+	// ¼­¹ö¿¡¼­ ¾²Áö ¾Ê±â¸¸, Å¬¶óÀÌ¾ðÆ®¿¡¼­ ±â·ÂÀÇ ³¡ ½Ã°£À» POINT·Î °ü¸®ÇÏ±â ¶§¹®¿¡ ÀÌ·¸°Ô ÇÑ´Ù.
+	// ¾Æ ºÎ²ô·´´Ù
+	POINT_ENERGY_END_TIME = 129,					// 129 ±â·Â Á¾·á ½Ã°£
+
+	POINT_COSTUME_ATTR_BONUS = 130,
+	POINT_MAGIC_ATT_BONUS_PER = 131,
+	POINT_MELEE_MAGIC_ATT_BONUS_PER = 132,
+
+	// Ãß°¡ ¼Ó¼º ÀúÇ×
+	POINT_RESIST_ICE = 133,          //   ³Ã±â ÀúÇ×   : ¾óÀ½°ø°Ý¿¡ ´ëÇÑ ´ë¹ÌÁö °¨¼Ò
+	POINT_RESIST_EARTH = 134,        //   ´ëÁö ÀúÇ×   : ¾óÀ½°ø°Ý¿¡ ´ëÇÑ ´ë¹ÌÁö °¨¼Ò
+	POINT_RESIST_DARK = 135,         //   ¾îµÒ ÀúÇ×   : ¾óÀ½°ø°Ý¿¡ ´ëÇÑ ´ë¹ÌÁö °¨¼Ò
+
+	POINT_RESIST_CRITICAL = 136,		// Å©¸®Æ¼ÄÃ ÀúÇ×	: »ó´ëÀÇ Å©¸®Æ¼ÄÃ È®·üÀ» °¨¼Ò
+	POINT_RESIST_PENETRATE = 137,		// °üÅëÅ¸°Ý ÀúÇ×	: »ó´ëÀÇ °üÅëÅ¸°Ý È®·üÀ» °¨¼Ò
+
+	// TODO: This exists only in the client, remove?
+	POINT_MIN_WEP = 200,
+	POINT_MAX_WEP,
+	POINT_MIN_MAGIC_WEP,
+	POINT_MAX_MAGIC_WEP,
+	POINT_HIT_RATE,
+};
+
 enum EOnClickEvents
 {
 	ON_CLICK_NONE,
@@ -446,7 +719,8 @@ enum EWindows
 	MALL,
 	DRAGON_SOUL_INVENTORY,
 	BELT_INVENTORY,
-	GROUND
+	GROUND,					// Only used by client
+	WINDOW_TYPE_MAX,
 };
 
 enum EMobSizes
@@ -542,6 +816,13 @@ enum
 	SKILL_MASTER,
 	SKILL_GRAND_MASTER,
 	SKILL_PERFECT_MASTER,
+};
+
+enum EPartyExpDistributionType
+{
+	PARTY_EXP_DISTRIBUTION_NON_PARITY,
+	PARTY_EXP_DISTRIBUTION_PARITY,
+	PARTY_EXP_DISTRIBUTION_MAX_NUM
 };
 
 enum EGuildWarType

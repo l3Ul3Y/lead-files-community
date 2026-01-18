@@ -180,10 +180,10 @@ bool CAccountConnector::__AuthState_RecvPhase()
 		TPacketCGLogin3 LoginPacket;
 		LoginPacket.header = HEADER_CG_LOGIN3;
 
-		strncpy(LoginPacket.name, m_strID.c_str(), ID_MAX_NUM);
-		strncpy(LoginPacket.pwd, m_strPassword.c_str(), PASS_MAX_NUM);
-		LoginPacket.name[ID_MAX_NUM] = '\0';
-		LoginPacket.pwd[PASS_MAX_NUM] = '\0';
+		strncpy(LoginPacket.login, m_strID.c_str(), LOGIN_MAX_LEN);
+		strncpy(LoginPacket.passwd, m_strPassword.c_str(), PASSWD_MAX_LEN);
+		LoginPacket.login[LOGIN_MAX_LEN] = '\0';
+		LoginPacket.passwd[PASSWD_MAX_LEN] = '\0';
 
 		ClearLoginInfo();
 		CPythonNetworkStream& rkNetStream=CPythonNetworkStream::Instance();
@@ -261,7 +261,7 @@ bool CAccountConnector::__AuthState_RecvHybridCryptKeys(int iTotalSize)
 	if (!Recv(iFixedHeaderSize, &kPacket))
 		return false;
 
-	if (!Recv(kPacket.iKeyStreamLen, kPacket.m_pStream))
+	if (!Recv(kPacket.KeyStreamLen, kPacket.m_pStream))
 		return false;
 
 	CEterPackManager::Instance().RetrieveHybridCryptPackKeys( kPacket.m_pStream ); 
@@ -270,14 +270,14 @@ bool CAccountConnector::__AuthState_RecvHybridCryptKeys(int iTotalSize)
 
 bool CAccountConnector::__AuthState_RecvHybridCryptSDB(int iTotalSize)
 {
-	int iFixedHeaderSize = TPacketGCHybridSDB::GetFixedHeaderSize();
+	int iFixedHeaderSize = TPacketGCPackageSDB::GetFixedHeaderSize();
 
-	TPacketGCHybridSDB kPacket(iTotalSize-iFixedHeaderSize);
+	TPacketGCPackageSDB kPacket(iTotalSize-iFixedHeaderSize);
 
 	if (!Recv(iFixedHeaderSize, &kPacket))
 		return false;
 
-	if (!Recv(kPacket.iSDBStreamLen, kPacket.m_pStream))
+	if (!Recv(kPacket.iStreamLen, kPacket.m_pStream))
 		return false;
 
 	CEterPackManager::Instance().RetrieveHybridCryptPackSDB( kPacket.m_pStream ); 

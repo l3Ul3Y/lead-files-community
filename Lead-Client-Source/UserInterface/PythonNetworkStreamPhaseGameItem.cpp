@@ -60,9 +60,9 @@ bool CPythonNetworkStream::SendSafeBoxItemMovePacket(BYTE bySourcePos, BYTE byTa
 
 	TPacketCGItemMove kItemMove;
 	kItemMove.header = HEADER_CG_SAFEBOX_ITEM_MOVE;
-	kItemMove.pos = TItemPos(INVENTORY, bySourcePos);
-	kItemMove.num = byCount;
-	kItemMove.change_pos = TItemPos(INVENTORY, byTargetPos);
+	kItemMove.Cell = TItemPos(INVENTORY, bySourcePos);
+	kItemMove.CellTo = TItemPos(INVENTORY, byTargetPos);
+	kItemMove.count = byCount;
 	if (!Send(sizeof(kItemMove), &kItemMove))
 		return false;
 
@@ -71,7 +71,7 @@ bool CPythonNetworkStream::SendSafeBoxItemMovePacket(BYTE bySourcePos, BYTE byTa
 
 bool CPythonNetworkStream::RecvSafeBoxSetPacket()
 {
-	TPacketGCItemSet2 kItemSet;
+	TPacketGCItemSet kItemSet;
 	if (!Recv(sizeof(kItemSet), &kItemSet))
 		return false;
 
@@ -129,18 +129,6 @@ bool CPythonNetworkStream::RecvSafeBoxSizePacket()
 	return true;
 }
 
-bool CPythonNetworkStream::RecvSafeBoxMoneyChangePacket()
-{
-	TPacketGCSafeboxMoneyChange kMoneyChange;
-	if (!Recv(sizeof(kMoneyChange), &kMoneyChange))
-		return false;
-
-	CPythonSafeBox::Instance().SetMoney(kMoneyChange.dwMoney);
-	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "RefreshSafeboxMoney", Py_BuildValue("()"));
-
-	return true;
-}
-
 // SafeBox
 //////////////////////////////////////////////////////////////////////////
 
@@ -150,9 +138,9 @@ bool CPythonNetworkStream::SendMallCheckoutPacket(BYTE byMallPos, TItemPos Inven
 {
 	__PlayMallItemDropSound(byMallPos);
 
-	TPacketCGMallCheckout kMallCheckoutPacket;
+	TPacketCGSafeboxCheckout kMallCheckoutPacket;
 	kMallCheckoutPacket.bHeader = HEADER_CG_MALL_CHECKOUT;
-	kMallCheckoutPacket.bMallPos = byMallPos;
+	kMallCheckoutPacket.bSafePos = byMallPos;
 	kMallCheckoutPacket.ItemPos = InventoryPos;
 	if (!Send(sizeof(kMallCheckoutPacket), &kMallCheckoutPacket))
 		return false;
@@ -162,7 +150,7 @@ bool CPythonNetworkStream::SendMallCheckoutPacket(BYTE byMallPos, TItemPos Inven
 
 bool CPythonNetworkStream::RecvMallOpenPacket()
 {
-	TPacketGCMallOpen kMallOpen;
+	TPacketGCSafeboxSize kMallOpen;
 	if (!Recv(sizeof(kMallOpen), &kMallOpen))
 		return false;
 
@@ -173,7 +161,7 @@ bool CPythonNetworkStream::RecvMallOpenPacket()
 }
 bool CPythonNetworkStream::RecvMallItemSetPacket()
 {
-	TPacketGCItemSet2 kItemSet;
+	TPacketGCItemSet kItemSet;
 	if (!Recv(sizeof(kItemSet), &kItemSet))
 		return false;
 
@@ -211,11 +199,11 @@ bool CPythonNetworkStream::RecvMallItemDelPacket()
 
 // Item
 // Recieve
-bool CPythonNetworkStream::RecvItemSetPacket()
+bool CPythonNetworkStream::RecvItemDelPacket()
 {
-	TPacketGCItemSet packet_item_set;
+	TPacketGCItemDelDeprecated packet_item_set;
 
-	if (!Recv(sizeof(TPacketGCItemSet), &packet_item_set))
+	if (!Recv(sizeof(TPacketGCItemDelDeprecated), &packet_item_set))
 		return false;
 
 	TItemData kItemData;
@@ -235,11 +223,11 @@ bool CPythonNetworkStream::RecvItemSetPacket()
 	return true;
 }
 
-bool CPythonNetworkStream::RecvItemSetPacket2()
+bool CPythonNetworkStream::RecvItemSetPacket()
 {
-	TPacketGCItemSet2 packet_item_set;
+	TPacketGCItemSet packet_item_set;
 
-	if (!Recv(sizeof(TPacketGCItemSet2), &packet_item_set))
+	if (!Recv(sizeof(TPacketGCItemSet), &packet_item_set))
 		return false;
 
 	TItemData kItemData;
@@ -258,18 +246,6 @@ bool CPythonNetworkStream::RecvItemSetPacket2()
 
 	if (packet_item_set.highlight)
 		PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "BINARY_Highlight_Item", Py_BuildValue("(ii)", packet_item_set.Cell.window_type, packet_item_set.Cell.cell));
-
-	__RefreshInventoryWindow();
-	return true;
-}
-
-
-bool CPythonNetworkStream::RecvItemUsePacket()
-{
-	TPacketGCItemUse packet_item_use;
-
-	if (!Recv(sizeof(TPacketGCItemUse), &packet_item_use))
-		return false;
 
 	__RefreshInventoryWindow();
 	return true;
@@ -300,13 +276,13 @@ bool CPythonNetworkStream::RecvItemGroundAddPacket()
 	if (!Recv(sizeof(TPacketGCItemGroundAdd), &packet_item_ground_add))
 		return false;
 
-	__GlobalPositionToLocalPosition(packet_item_ground_add.lX, packet_item_ground_add.lY);
+	__GlobalPositionToLocalPosition(packet_item_ground_add.x, packet_item_ground_add.y);
 
 	CPythonItem::Instance().CreateItem(packet_item_ground_add.dwVID, 
 									   packet_item_ground_add.dwVnum,
-									   packet_item_ground_add.lX,
-									   packet_item_ground_add.lY,
-									   packet_item_ground_add.lZ);
+									   packet_item_ground_add.x,
+									   packet_item_ground_add.y,
+									   packet_item_ground_add.z);
 	return true;
 }
 
@@ -329,19 +305,19 @@ bool CPythonNetworkStream::RecvItemGroundDelPacket()
 	if (!Recv(sizeof(TPacketGCItemGroundDel), &packet_item_ground_del))
 		return false;
 
-	CPythonItem::Instance().DeleteItem(packet_item_ground_del.vid);
+	CPythonItem::Instance().DeleteItem(packet_item_ground_del.dwVID);
 	return true;
 }
 
 bool CPythonNetworkStream::RecvQuickSlotAddPacket()
 {
-	TPacketGCQuickSlotAdd packet_quick_slot_add;
+	TPacketGCQuickslotAdd packet_quick_slot_add;
 
-	if (!Recv(sizeof(TPacketGCQuickSlotAdd), &packet_quick_slot_add))
+	if (!Recv(sizeof(TPacketGCQuickslotAdd), &packet_quick_slot_add))
 		return false;
 
 	IAbstractPlayer& rkPlayer=IAbstractPlayer::GetSingleton();
-	rkPlayer.AddQuickSlot(packet_quick_slot_add.pos, packet_quick_slot_add.slot.Type, packet_quick_slot_add.slot.Position);
+	rkPlayer.AddQuickSlot(packet_quick_slot_add.pos, packet_quick_slot_add.slot.type, packet_quick_slot_add.slot.pos);
 
 	__RefreshInventoryWindow();
 
@@ -350,9 +326,9 @@ bool CPythonNetworkStream::RecvQuickSlotAddPacket()
 
 bool CPythonNetworkStream::RecvQuickSlotDelPacket()
 {
-	TPacketGCQuickSlotDel packet_quick_slot_del;
+	TPacketGCQuickslotDel packet_quick_slot_del;
 
-	if (!Recv(sizeof(TPacketGCQuickSlotDel), &packet_quick_slot_del))
+	if (!Recv(sizeof(TPacketGCQuickslotDel), &packet_quick_slot_del))
 		return false;
 
 	IAbstractPlayer& rkPlayer=IAbstractPlayer::GetSingleton();
@@ -371,7 +347,7 @@ bool CPythonNetworkStream::RecvQuickSlotMovePacket()
 		return false;
 
 	IAbstractPlayer& rkPlayer=IAbstractPlayer::GetSingleton();
-	rkPlayer.MoveQuickSlot(packet_quick_slot_swap.pos, packet_quick_slot_swap.change_pos);
+	rkPlayer.MoveQuickSlot(packet_quick_slot_swap.pos, packet_quick_slot_swap.pos_to);
 
 	__RefreshInventoryWindow();
 
@@ -429,7 +405,7 @@ bool CPythonNetworkStream::SendShopBuyPacket(BYTE bPos)
 	return SendSequence();
 }
 
-bool CPythonNetworkStream::SendShopSellPacket(BYTE bySlot)
+bool CPythonNetworkStream::SendShopSellPacket(BYTE bySlot, BYTE byCount)
 {
 	if (!__CanActMainInstance())
 		return true;
@@ -437,29 +413,6 @@ bool CPythonNetworkStream::SendShopSellPacket(BYTE bySlot)
 	TPacketCGShop PacketShop;
 	PacketShop.header = HEADER_CG_SHOP;
 	PacketShop.subheader = SHOP_SUBHEADER_CG_SELL;
-
-	if (!Send(sizeof(TPacketCGShop), &PacketShop))
-	{
-		Tracef("SendShopSellPacket Error\n");
-		return false;
-	}
-	if (!Send(sizeof(BYTE), &bySlot))
-	{
-		Tracef("SendShopAddSellPacket Error\n");
-		return false;
-	}
-
-	return SendSequence();
-}
-
-bool CPythonNetworkStream::SendShopSellPacketNew(BYTE bySlot, BYTE byCount)
-{
-	if (!__CanActMainInstance())
-		return true;
-
-	TPacketCGShop PacketShop;
-	PacketShop.header = HEADER_CG_SHOP;
-	PacketShop.subheader = SHOP_SUBHEADER_CG_SELL2;
 
 	if (!Send(sizeof(TPacketCGShop), &PacketShop))
 	{
@@ -510,7 +463,7 @@ bool CPythonNetworkStream::SendItemUsePacket(TItemPos pos)
 
 	TPacketCGItemUse itemUsePacket;
 	itemUsePacket.header = HEADER_CG_ITEM_USE;
-	itemUsePacket.pos = pos;
+	itemUsePacket.Cell = pos;
 
 	if (!Send(sizeof(TPacketCGItemUse), &itemUsePacket))
 	{
@@ -528,8 +481,8 @@ bool CPythonNetworkStream::SendItemUseToItemPacket(TItemPos source_pos, TItemPos
 
 	TPacketCGItemUseToItem itemUseToItemPacket;
 	itemUseToItemPacket.header = HEADER_CG_ITEM_USE_TO_ITEM;
-	itemUseToItemPacket.source_pos = source_pos;
-	itemUseToItemPacket.target_pos = target_pos;
+	itemUseToItemPacket.Cell = source_pos;
+	itemUseToItemPacket.TargetCell = target_pos;
 
 	if (!Send(sizeof(TPacketCGItemUseToItem), &itemUseToItemPacket))
 	{
@@ -551,8 +504,8 @@ bool CPythonNetworkStream::SendItemDropPacket(TItemPos pos, DWORD elk)
 
 	TPacketCGItemDrop itemDropPacket;
 	itemDropPacket.header = HEADER_CG_ITEM_DROP;
-	itemDropPacket.pos = pos;
-	itemDropPacket.elk = elk;
+	itemDropPacket.Cell = pos;
+	itemDropPacket.gold = elk;
 
 	if (!Send(sizeof(TPacketCGItemDrop), &itemDropPacket))
 	{
@@ -570,7 +523,7 @@ bool CPythonNetworkStream::SendItemDropPacketNew(TItemPos pos, DWORD elk, DWORD 
 
 	TPacketCGItemDrop2 itemDropPacket;
 	itemDropPacket.header = HEADER_CG_ITEM_DROP2;
-	itemDropPacket.pos = pos;
+	itemDropPacket.Cell = pos;
 	itemDropPacket.gold = elk;
 	itemDropPacket.count = count;
 
@@ -649,7 +602,7 @@ bool CPythonNetworkStream::SendItemMovePacket(TItemPos pos, TItemPos change_pos,
 	{
 		if (CPythonExchange::Instance().isTrading())
 		{
-			if (pos.IsEquipCell() || change_pos.IsEquipCell())
+			if (pos.IsEquipPosition() || change_pos.IsEquipPosition())
 			{
 				PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "BINARY_AppendNotifyMessage", Py_BuildValue("(s)", "CANNOT_EQUIP_EXCHANGE"));
 				return true;
@@ -658,7 +611,7 @@ bool CPythonNetworkStream::SendItemMovePacket(TItemPos pos, TItemPos change_pos,
 
 		if (CPythonShop::Instance().IsOpen())
 		{
-			if (pos.IsEquipCell() || change_pos.IsEquipCell())
+			if (pos.IsEquipPosition() || change_pos.IsEquipPosition())
 			{
 				PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "BINARY_AppendNotifyMessage", Py_BuildValue("(s)", "CANNOT_EQUIP_SHOP"));
 				return true;
@@ -673,9 +626,9 @@ bool CPythonNetworkStream::SendItemMovePacket(TItemPos pos, TItemPos change_pos,
 
 	TPacketCGItemMove	itemMovePacket;
 	itemMovePacket.header = HEADER_CG_ITEM_MOVE;
-	itemMovePacket.pos = pos;
-	itemMovePacket.change_pos = change_pos;
-	itemMovePacket.num = num;
+	itemMovePacket.Cell = pos;
+	itemMovePacket.CellTo = change_pos;
+	itemMovePacket.count = num;
 
 	if (!Send(sizeof(TPacketCGItemMove), &itemMovePacket))
 	{
@@ -691,11 +644,11 @@ bool CPythonNetworkStream::SendItemPickUpPacket(DWORD vid)
 	if (!__CanActMainInstance())
 		return true;
 
-	TPacketCGItemPickUp	itemPickUpPacket;
+	TPacketCGItemPickup	itemPickUpPacket;
 	itemPickUpPacket.header = HEADER_CG_ITEM_PICKUP;
 	itemPickUpPacket.vid = vid;
 
-	if (!Send(sizeof(TPacketCGItemPickUp), &itemPickUpPacket))
+	if (!Send(sizeof(TPacketCGItemPickup), &itemPickUpPacket))
 	{
 		Tracen("SendItemPickUpPacket Error");
 		return false;
@@ -710,14 +663,14 @@ bool CPythonNetworkStream::SendQuickSlotAddPacket(BYTE wpos, BYTE type, BYTE pos
 	if (!__CanActMainInstance())
 		return true;
 
-	TPacketCGQuickSlotAdd quickSlotAddPacket;
+	TPacketCGQuickslotAdd quickSlotAddPacket;
 
 	quickSlotAddPacket.header		= HEADER_CG_QUICKSLOT_ADD;
 	quickSlotAddPacket.pos			= wpos;
-	quickSlotAddPacket.slot.Type	= type;
-	quickSlotAddPacket.slot.Position = pos;
+	quickSlotAddPacket.slot.type	= type;
+	quickSlotAddPacket.slot.pos		= pos;
 
-	if (!Send(sizeof(TPacketCGQuickSlotAdd), &quickSlotAddPacket))
+	if (!Send(sizeof(TPacketCGQuickslotAdd), &quickSlotAddPacket))
 	{
 		Tracen("SendQuickSlotAddPacket Error");
 		return false;
@@ -731,12 +684,12 @@ bool CPythonNetworkStream::SendQuickSlotDelPacket(BYTE pos)
 	if (!__CanActMainInstance())
 		return true;
 
-	TPacketCGQuickSlotDel quickSlotDelPacket;
+	TPacketCGQuickslotDel quickSlotDelPacket;
 
 	quickSlotDelPacket.header = HEADER_CG_QUICKSLOT_DEL;
 	quickSlotDelPacket.pos = pos;
 
-	if (!Send(sizeof(TPacketCGQuickSlotDel), &quickSlotDelPacket))
+	if (!Send(sizeof(TPacketCGQuickslotDel), &quickSlotDelPacket))
 	{
 		Tracen("SendQuickSlotDelPacket Error");
 		return false;
@@ -750,13 +703,13 @@ bool CPythonNetworkStream::SendQuickSlotMovePacket(BYTE pos, BYTE change_pos)
 	if (!__CanActMainInstance())
 		return true;
 
-	TPacketCGQuickSlotSwap quickSlotSwapPacket;
+	TPacketCGQuickslotSwap quickSlotSwapPacket;
 
 	quickSlotSwapPacket.header = HEADER_CG_QUICKSLOT_SWAP;
 	quickSlotSwapPacket.pos = pos;
 	quickSlotSwapPacket.change_pos = change_pos;
 
-	if (!Send(sizeof(TPacketCGQuickSlotSwap), &quickSlotSwapPacket))
+	if (!Send(sizeof(TPacketCGQuickslotSwap), &quickSlotSwapPacket))
 	{
 		Tracen("SendQuickSlotSwapPacket Error");
 		return false;

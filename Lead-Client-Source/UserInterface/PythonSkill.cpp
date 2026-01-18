@@ -971,12 +971,12 @@ CPythonSkill::CPythonSkill()
 	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("MaxMWEP"), POINT_MAX_WEP));
 	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("MinWEP"), POINT_MIN_WEP));
 	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("MaxWEP"), POINT_MAX_WEP));
-	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("MinATK"), POINT_MIN_ATK));
-	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("MaxATK"), POINT_MAX_ATK));
+	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("MinATK"), POINT_WEAPON_MIN));
+	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("MaxATK"), POINT_WEAPON_MAX));
 	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("ATKSPD"), POINT_ATT_SPEED));
-	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("AttackPower"), POINT_MIN_ATK));	
-	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("AtkMin"), POINT_MIN_ATK));
-	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("AtkMax"), POINT_MAX_ATK));
+	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("AttackPower"), POINT_WEAPON_MIN));
+	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("AtkMin"), POINT_WEAPON_MIN));
+	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("AtkMax"), POINT_WEAPON_MAX));
 	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("DefencePower"), POINT_DEF_GRADE));
 	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("DEF"), POINT_DEF_GRADE));
 	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("MWEP"), POINT_MAGIC_ATT_GRADE));
@@ -987,8 +987,8 @@ CPythonSkill::CPythonSkill()
 	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("DEX"), POINT_DX));
 	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("CON"), POINT_HT));
 
-	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("minatk"), POINT_MIN_ATK));
-	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("maxatk"), POINT_MAX_ATK));
+	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("minatk"), POINT_WEAPON_MIN));
+	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("maxatk"), POINT_WEAPON_MAX));
 	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("minmtk"), POINT_MIN_WEP));
 	SSkillData::ms_StatusNameMap.insert(std::make_pair(std::string("maxmtk"), POINT_MAX_WEP));
 
@@ -1011,7 +1011,7 @@ CPythonSkill::CPythonSkill()
 	
 	/////
 
-	SSkillData::ms_NewMinStatusNameMap.insert(std::make_pair(std::string("atk"), POINT_MIN_ATK));
+	SSkillData::ms_NewMinStatusNameMap.insert(std::make_pair(std::string("atk"), POINT_WEAPON_MIN));
 	SSkillData::ms_NewMinStatusNameMap.insert(std::make_pair(std::string("mtk"), POINT_MIN_WEP));
 	SSkillData::ms_NewMinStatusNameMap.insert(std::make_pair(std::string("wep"), POINT_MIN_WEP));
 	SSkillData::ms_NewMinStatusNameMap.insert(std::make_pair(std::string("lv"), POINT_LEVEL));
@@ -1021,7 +1021,7 @@ CPythonSkill::CPythonSkill()
 	SSkillData::ms_NewMinStatusNameMap.insert(std::make_pair(std::string("dex"), POINT_DX));
 	SSkillData::ms_NewMinStatusNameMap.insert(std::make_pair(std::string("con"), POINT_HT));
 
-	SSkillData::ms_NewMaxStatusNameMap.insert(std::make_pair(std::string("atk"), POINT_MAX_ATK));
+	SSkillData::ms_NewMaxStatusNameMap.insert(std::make_pair(std::string("atk"), POINT_WEAPON_MAX));
 	SSkillData::ms_NewMaxStatusNameMap.insert(std::make_pair(std::string("mtk"), POINT_MAX_WEP));
 	SSkillData::ms_NewMinStatusNameMap.insert(std::make_pair(std::string("wep"), POINT_MAX_WEP));
 	SSkillData::ms_NewMaxStatusNameMap.insert(std::make_pair(std::string("lv"), POINT_LEVEL));

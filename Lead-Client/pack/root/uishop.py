@@ -336,7 +336,7 @@ class ShopDialog(ui.ScriptWindow):
 		mouseModule.mouseController.DeattachObject()
 
 	def OnSellItem(self, slotPos, count, itemtype):
-		net.SendShopSellPacketNew(slotPos, count, itemtype)
+		net.SendShopSellPacket(slotPos, count, itemtype)
 		snd.PlaySound("sound/ui/money.wav")
 		self.OnCloseQuestionDialog()
 

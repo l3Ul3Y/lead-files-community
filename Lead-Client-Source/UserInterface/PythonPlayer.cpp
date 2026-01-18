@@ -413,14 +413,14 @@ DWORD CPythonPlayer::__GetEvadeRate()
 void CPythonPlayer::__UpdateBattleStatus()
 {
 	m_playerStatus.SetPoint(POINT_NONE, 0);
-	m_playerStatus.SetPoint(POINT_EVADE_RATE, __GetEvadeRate());
+	m_playerStatus.SetPoint(POINT_ATT_GRADE, __GetEvadeRate());
 	m_playerStatus.SetPoint(POINT_HIT_RATE, __GetHitRate());
 	m_playerStatus.SetPoint(POINT_MIN_WEP, m_dwWeaponMinPower+m_dwWeaponAddPower);
 	m_playerStatus.SetPoint(POINT_MAX_WEP, m_dwWeaponMaxPower+m_dwWeaponAddPower);
 	m_playerStatus.SetPoint(POINT_MIN_MAGIC_WEP, m_dwWeaponMinMagicPower+m_dwWeaponAddPower);
 	m_playerStatus.SetPoint(POINT_MAX_MAGIC_WEP, m_dwWeaponMaxMagicPower+m_dwWeaponAddPower);
-	m_playerStatus.SetPoint(POINT_MIN_ATK, __GetTotalAtk(m_dwWeaponMinPower, m_dwWeaponAddPower));
-	m_playerStatus.SetPoint(POINT_MAX_ATK, __GetTotalAtk(m_dwWeaponMaxPower, m_dwWeaponAddPower));	
+	m_playerStatus.SetPoint(POINT_WEAPON_MIN, __GetTotalAtk(m_dwWeaponMinPower, m_dwWeaponAddPower));
+	m_playerStatus.SetPoint(POINT_WEAPON_MAX, __GetTotalAtk(m_dwWeaponMaxPower, m_dwWeaponAddPower));
 }
 
 void CPythonPlayer::SetStatus(DWORD dwType, long lValue)
@@ -444,10 +444,10 @@ void CPythonPlayer::SetStatus(DWORD dwType, long lValue)
 	{
 		case POINT_MIN_WEP:
 		case POINT_MAX_WEP:
-		case POINT_MIN_ATK:
-		case POINT_MAX_ATK:
+		case POINT_WEAPON_MIN:
+		case POINT_WEAPON_MAX:
 		case POINT_HIT_RATE:
-		case POINT_EVADE_RATE:
+		case POINT_ATT_GRADE:
 		case POINT_LEVEL:
 		case POINT_ST:
 		case POINT_DX:
@@ -531,7 +531,7 @@ void CPythonPlayer::NotifyChangePKMode()
 
 void CPythonPlayer::MoveItemData(TItemPos SrcCell, TItemPos DstCell)
 {
-	if (!SrcCell.IsValidCell() || !DstCell.IsValidCell())
+	if (!SrcCell.IsValidItemPosition() || !DstCell.IsValidItemPosition())
 		return;
 
 	TItemData src_item(*GetItemData(SrcCell));
@@ -542,7 +542,7 @@ void CPythonPlayer::MoveItemData(TItemPos SrcCell, TItemPos DstCell)
 
 const TItemData * CPythonPlayer::GetItemData(TItemPos Cell) const
 {
-	if (!Cell.IsValidCell())
+	if (!Cell.IsValidItemPosition())
 		return NULL;
 
 	switch (Cell.window_type)
@@ -559,7 +559,7 @@ const TItemData * CPythonPlayer::GetItemData(TItemPos Cell) const
 
 void CPythonPlayer::SetItemData(TItemPos Cell, const TItemData & c_rkItemInst)
 {
-	if (!Cell.IsValidCell())
+	if (!Cell.IsValidItemPosition())
 		return;
 
 	if (c_rkItemInst.vnum != 0)
@@ -586,7 +586,7 @@ void CPythonPlayer::SetItemData(TItemPos Cell, const TItemData & c_rkItemInst)
 
 DWORD CPythonPlayer::GetItemIndex(TItemPos Cell)
 {
-	if (!Cell.IsValidCell())
+	if (!Cell.IsValidItemPosition())
 		return 0;
 
 	return GetItemData(Cell)->vnum;
@@ -594,7 +594,7 @@ DWORD CPythonPlayer::GetItemIndex(TItemPos Cell)
 
 DWORD CPythonPlayer::GetItemFlags(TItemPos Cell)
 {
-	if (!Cell.IsValidCell())
+	if (!Cell.IsValidItemPosition())
 		return 0;
 	const TItemData * pItem = GetItemData(Cell);
 	assert (pItem != NULL);
@@ -603,7 +603,7 @@ DWORD CPythonPlayer::GetItemFlags(TItemPos Cell)
 
 DWORD CPythonPlayer::GetItemCount(TItemPos Cell)
 {
-	if (!Cell.IsValidCell())
+	if (!Cell.IsValidItemPosition())
 		return 0;
 	const TItemData * pItem = GetItemData(Cell);
 	if (pItem == NULL)
@@ -630,7 +630,7 @@ DWORD CPythonPlayer::GetItemCountByVnum(DWORD dwVnum)
 
 DWORD CPythonPlayer::GetItemMetinSocket(TItemPos Cell, DWORD dwMetinSocketIndex)
 {
-	if (!Cell.IsValidCell())
+	if (!Cell.IsValidItemPosition())
 		return 0;
 
 	if (dwMetinSocketIndex >= ITEM_SOCKET_SLOT_MAX_NUM)
@@ -644,7 +644,7 @@ void CPythonPlayer::GetItemAttribute(TItemPos Cell, DWORD dwAttrSlotIndex, BYTE 
 	*pbyType = 0;
 	*psValue = 0;
 
-	if (!Cell.IsValidCell())
+	if (!Cell.IsValidItemPosition())
 		return;
 
 	if (dwAttrSlotIndex >= ITEM_ATTRIBUTE_SLOT_MAX_NUM)
@@ -656,7 +656,7 @@ void CPythonPlayer::GetItemAttribute(TItemPos Cell, DWORD dwAttrSlotIndex, BYTE 
 
 void CPythonPlayer::SetItemCount(TItemPos Cell, BYTE byCount)
 {
-	if (!Cell.IsValidCell())
+	if (!Cell.IsValidItemPosition())
 		return;
 
 	(const_cast <TItemData *>(GetItemData(Cell)))->count = byCount;
@@ -665,7 +665,7 @@ void CPythonPlayer::SetItemCount(TItemPos Cell, BYTE byCount)
 
 void CPythonPlayer::SetItemMetinSocket(TItemPos Cell, DWORD dwMetinSocketIndex, DWORD dwMetinNumber)
 {
-	if (!Cell.IsValidCell())
+	if (!Cell.IsValidItemPosition())
 		return;
 	if (dwMetinSocketIndex >= ITEM_SOCKET_SLOT_MAX_NUM)
 		return;
@@ -675,7 +675,7 @@ void CPythonPlayer::SetItemMetinSocket(TItemPos Cell, DWORD dwMetinSocketIndex, 
 
 void CPythonPlayer::SetItemAttribute(TItemPos Cell, DWORD dwAttrIndex, BYTE byType, short sValue)
 {
-	if (!Cell.IsValidCell())
+	if (!Cell.IsValidItemPosition())
 		return;
 	if (dwAttrIndex >= ITEM_ATTRIBUTE_SLOT_MAX_NUM)
 		return;
@@ -708,30 +708,30 @@ DWORD	CPythonPlayer::LocalQuickSlotIndexToGlobalQuickSlotIndex(DWORD dwLocalSlot
 
 void	CPythonPlayer::GetGlobalQuickSlotData(DWORD dwGlobalSlotIndex, DWORD* pdwWndType, DWORD* pdwWndItemPos)
 {
-	TQuickSlot& rkQuickSlot=__RefGlobalQuickSlot(dwGlobalSlotIndex);
-	*pdwWndType=rkQuickSlot.Type;
-	*pdwWndItemPos=rkQuickSlot.Position;
+	TQuickslot& rkQuickSlot=__RefGlobalQuickSlot(dwGlobalSlotIndex);
+	*pdwWndType=rkQuickSlot.type;
+	*pdwWndItemPos=rkQuickSlot.pos;
 }
 
 void	CPythonPlayer::GetLocalQuickSlotData(DWORD dwSlotPos, DWORD* pdwWndType, DWORD* pdwWndItemPos)
 {
-	TQuickSlot& rkQuickSlot=__RefLocalQuickSlot(dwSlotPos);
-	*pdwWndType=rkQuickSlot.Type;
-	*pdwWndItemPos=rkQuickSlot.Position;
+	TQuickslot& rkQuickSlot=__RefLocalQuickSlot(dwSlotPos);
+	*pdwWndType=rkQuickSlot.type;
+	*pdwWndItemPos=rkQuickSlot.pos;
 }
 
-TQuickSlot & CPythonPlayer::__RefLocalQuickSlot(int SlotIndex)
+TQuickslot & CPythonPlayer::__RefLocalQuickSlot(int SlotIndex)
 {
 	return __RefGlobalQuickSlot(LocalQuickSlotIndexToGlobalQuickSlotIndex(SlotIndex));
 }
 
-TQuickSlot & CPythonPlayer::__RefGlobalQuickSlot(int SlotIndex)
+TQuickslot & CPythonPlayer::__RefGlobalQuickSlot(int SlotIndex)
 {
 	if (SlotIndex < 0 || SlotIndex >= QUICKSLOT_MAX_NUM)
 	{
-		static TQuickSlot s_kQuickSlot;
-		s_kQuickSlot.Type = 0;
-		s_kQuickSlot.Position = 0;
+		static TQuickslot s_kQuickSlot;
+		s_kQuickSlot.type = 0;
+		s_kQuickSlot.pos = 0;
 		return s_kQuickSlot;
 	}
 
@@ -742,15 +742,15 @@ void CPythonPlayer::RemoveQuickSlotByValue(int iType, int iPosition)
 {
 	for (BYTE i = 0; i < QUICKSLOT_MAX_NUM; ++i)
 	{
-		if (iType == m_playerStatus.aQuickSlot[i].Type)
-			if (iPosition == m_playerStatus.aQuickSlot[i].Position)
+		if (iType == m_playerStatus.aQuickSlot[i].type)
+			if (iPosition == m_playerStatus.aQuickSlot[i].pos)
 				CPythonNetworkStream::Instance().SendQuickSlotDelPacket(i);
 	}
 }
 
 char CPythonPlayer::IsItem(TItemPos Cell)
 {
-	if (!Cell.IsValidCell())
+	if (!Cell.IsValidItemPosition())
 		return 0;
 
 	return 0 != GetItemData(Cell)->vnum;
@@ -780,9 +780,9 @@ void CPythonPlayer::RequestAddToEmptyLocalQuickSlot(DWORD dwWndType, DWORD dwWnd
 {
     for (int i = 0; i < QUICKSLOT_MAX_COUNT_PER_LINE; ++i)
     {
-        TQuickSlot& rkQuickSlot=__RefLocalQuickSlot(i);
+        TQuickslot& rkQuickSlot=__RefLocalQuickSlot(i);
 
-        if (0 == rkQuickSlot.Type)
+        if (0 == rkQuickSlot.type)
         {
             DWORD dwGlobalQuickSlotIndex=LocalQuickSlotIndexToGlobalQuickSlotIndex(i);
             CPythonNetworkStream& rkNetStream=CPythonNetworkStream::Instance();
@@ -842,8 +842,8 @@ void CPythonPlayer::AddQuickSlot(int QuickSlotIndex, char IconType, char IconPos
 	if (QuickSlotIndex < 0 || QuickSlotIndex >= QUICKSLOT_MAX_NUM)
 		return;
 
-	m_playerStatus.aQuickSlot[QuickSlotIndex].Type = IconType;
-	m_playerStatus.aQuickSlot[QuickSlotIndex].Position = IconPosition;
+	m_playerStatus.aQuickSlot[QuickSlotIndex].type = IconType;
+	m_playerStatus.aQuickSlot[QuickSlotIndex].pos = IconPosition;
 }
 
 void CPythonPlayer::DeleteQuickSlot(int QuickSlotIndex)
@@ -851,8 +851,8 @@ void CPythonPlayer::DeleteQuickSlot(int QuickSlotIndex)
 	if (QuickSlotIndex < 0 || QuickSlotIndex >= QUICKSLOT_MAX_NUM)
 		return;
 
-	m_playerStatus.aQuickSlot[QuickSlotIndex].Type = 0;
-	m_playerStatus.aQuickSlot[QuickSlotIndex].Position = 0;
+	m_playerStatus.aQuickSlot[QuickSlotIndex].type = 0;
+	m_playerStatus.aQuickSlot[QuickSlotIndex].pos = 0;
 }
 
 void CPythonPlayer::MoveQuickSlot(int Source, int Target)
@@ -863,8 +863,8 @@ void CPythonPlayer::MoveQuickSlot(int Source, int Target)
 	if (Target < 0 || Target >= QUICKSLOT_MAX_NUM)
 		return;
 
-	TQuickSlot& rkSrcSlot=__RefGlobalQuickSlot(Source);
-	TQuickSlot& rkDstSlot=__RefGlobalQuickSlot(Target);
+	TQuickslot& rkSrcSlot=__RefGlobalQuickSlot(Source);
+	TQuickslot& rkDstSlot=__RefGlobalQuickSlot(Target);
 
 	std::swap(rkSrcSlot, rkDstSlot);
 }
@@ -878,17 +878,17 @@ bool CPythonPlayer::IsBeltInventorySlot(TItemPos Cell)
 
 bool CPythonPlayer::IsInventorySlot(TItemPos Cell)
 {
-	return !Cell.IsEquipCell() && Cell.IsValidCell();
+	return !Cell.IsEquipPosition() && Cell.IsValidItemPosition();
 }
 
 bool CPythonPlayer::IsEquipmentSlot(TItemPos Cell)
 {
-	return Cell.IsEquipCell();
+	return Cell.IsEquipPosition();
 }
 
 bool CPythonPlayer::IsEquipItemInSlot(TItemPos Cell)
 {
-	if (!Cell.IsEquipCell())
+	if (!Cell.IsEquipPosition())
 	{
 		return false;
 	}
@@ -1336,7 +1336,7 @@ void CPythonPlayer::UpdatePartyMemberInfo(DWORD dwPID, BYTE byState, BYTE byHPPe
 
 void CPythonPlayer::UpdatePartyMemberAffect(DWORD dwPID, BYTE byAffectSlotIndex, short sAffectNumber)
 {
-	if (byAffectSlotIndex >= PARTY_AFFECT_SLOT_MAX_NUM)
+	if (byAffectSlotIndex >= SAffects::PARTY_AFFECT_SLOT_MAX_NUM)
 	{
 		TraceError(" CPythonPlayer::UpdatePartyMemberAffect(dwPID=%d, byAffectSlotIndex=%d, sAffectNumber=%d) - Strange affect slot index", dwPID, byAffectSlotIndex, sAffectNumber);
 		return;

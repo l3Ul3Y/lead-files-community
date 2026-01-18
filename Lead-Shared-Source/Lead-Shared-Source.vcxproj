@@ -13,13 +13,14 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{cc5ac3ba-11ec-4369-b19b-fd435b9d9c9c}</ProjectGuid>
-    <RootNamespace>channel99</RootNamespace>
+    <ProjectGuid>{76c68fb7-46a0-464f-b0d2-eedb6e2a450b}</ProjectGuid>
+    <RootNamespace>LeadSharedSource</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>shared</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>Utility</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -42,9 +43,6 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)..\Lead-Serverfiles\channel99\</OutDir>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -72,6 +70,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="common\building.h" />
+    <ClInclude Include="common\cache.h" />
+    <ClInclude Include="common\d3dtype.h" />
+    <ClInclude Include="common\item_length.h" />
+    <ClInclude Include="common\length.h" />
+    <ClInclude Include="common\pool.h" />
+    <ClInclude Include="common\service.h" />
+    <ClInclude Include="common\singleton.h" />
+    <ClInclude Include="common\stl.h" />
+    <ClInclude Include="common\tables.h" />
+    <ClInclude Include="common\utils.h" />
+    <ClInclude Include="common\VnumHelper.h" />
+    <ClInclude Include="packet.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

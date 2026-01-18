@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <sstream>
-#include "../../common/length.h"
+#include "common/length.h"
 
 #include "db.h"
 

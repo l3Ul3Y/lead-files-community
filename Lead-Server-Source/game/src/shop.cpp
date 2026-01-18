@@ -410,13 +410,10 @@ bool CShop::AddGuest(LPCHARACTER ch, DWORD owner_vid, bool bOtherEmpire)
 	m_map_guest.insert(GuestMapType::value_type(ch, bOtherEmpire));
 
 	TPacketGCShop pack;
-
 	pack.header		= HEADER_GC_SHOP;
 	pack.subheader	= SHOP_SUBHEADER_GC_START;
 
-	TPacketGCShopStart pack2;
-
-	memset(&pack2, 0, sizeof(pack2));
+	TPacketGCShopStart pack2 = {};
 	pack2.owner_vid = owner_vid;
 
 	for (DWORD i = 0; i < m_itemVector.size() && i < SHOP_HOST_ITEM_MAX_NUM; ++i)

@@ -10,9 +10,9 @@
 
 #include "../../libthecore/include/stdafx.h"
 
-#include "../../common/singleton.h"
-#include "../../common/utils.h"
-#include "../../common/service.h"
+#include "common/singleton.h"
+#include "common/utils.h"
+#include "common/service.h"
 
 #include <algorithm>
 #include <math.h>

@@ -53,6 +53,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "channel99", "channel99\chan
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "auth", "auth\auth.vcxproj", "{2ED3F4F2-545C-4150-AA5A-E321908B1B10}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "shared", "..\Lead-Shared-Source\Lead-Shared-Source.vcxproj", "{76C68FB7-46A0-464F-B0D2-EEDB6E2A450B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -82,6 +84,8 @@ Global
 		{CC5AC3BA-11EC-4369-B19B-FD435B9D9C9C}.Debug|Win32.Build.0 = Debug|Win32
 		{2ED3F4F2-545C-4150-AA5A-E321908B1B10}.Debug|Win32.ActiveCfg = Debug|Win32
 		{2ED3F4F2-545C-4150-AA5A-E321908B1B10}.Debug|Win32.Build.0 = Debug|Win32
+		{76C68FB7-46A0-464F-B0D2-EEDB6E2A450B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{76C68FB7-46A0-464F-B0D2-EEDB6E2A450B}.Debug|Win32.Build.0 = Debug|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,6 +103,7 @@ Global
 		{1DA78FB2-1AA7-4A8E-9E4E-95296646D450} = {2BC50D5E-7B54-4762-A81C-8F55697BC32A}
 		{CC5AC3BA-11EC-4369-B19B-FD435B9D9C9C} = {2BC50D5E-7B54-4762-A81C-8F55697BC32A}
 		{2ED3F4F2-545C-4150-AA5A-E321908B1B10} = {2BC50D5E-7B54-4762-A81C-8F55697BC32A}
+		{76C68FB7-46A0-464F-B0D2-EEDB6E2A450B} = {A168341F-FAE3-4DE6-858E-1A0479986B90}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A8F92E3E-882B-4664-9906-7D47D9E7CD10}

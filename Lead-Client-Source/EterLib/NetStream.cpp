@@ -501,10 +501,10 @@ const char * GetSendHeaderName(BYTE header)
 		stringList[1] = "HEADER_CG_LOGIN";
 		stringList[2] = "HEADER_CG_ATTACK";
 		stringList[3] = "HEADER_CG_CHAT";
-		stringList[4] = "HEADER_CG_PLAYER_CREATE";
+		stringList[4] = "HEADER_CG_CHARACTER_CREATE";
 		stringList[5] = "HEADER_CG_PLAYER_DESTROY";
-		stringList[6] = "HEADER_CG_PLAYER_SELECT";
-		stringList[7] = "HEADER_CG_CHARACTER_MOVE";
+		stringList[6] = "HEADER_CG_CHARACTER_SELECT";
+		stringList[7] = "HEADER_CG_MOVE";
 		stringList[8] = "HEADER_CG_SYNC_POSITION";
 		stringList[9] = "HEADER_CG_DIRECT_ENTER";
 		stringList[10] = "HEADER_CG_ENTERGAME";
@@ -561,7 +561,7 @@ const char * GetSendHeaderName(BYTE header)
 		stringList[110] = "HEADER_CG_DUNGEON";
 		stringList[111] = "HEADER_CG_LOGIN3";
 		stringList[112] = "HEADER_CG_GUILD_SYMBOL_UPLOAD";
-		stringList[113] = "HEADER_CG_GUILD_SYMBOL_CRC";
+		stringList[113] = "HEADER_CG_SYMBOL_CRC";
 		stringList[114] = "HEADER_CG_SCRIPT_SELECT_ITEM";
 #ifdef _IMPROVED_PACKET_ENCRYPTION_
 		stringList[0xfb] = "HEADER_CG_KEY_AGREEMENT";
@@ -588,25 +588,23 @@ const char * GetRecvHeaderName(BYTE header)
 		}
 		stringList[1] = "HEADER_GC_CHARACTER_ADD";
 		stringList[2] = "HEADER_GC_CHARACTER_DEL";
-		stringList[3] = "HEADER_GC_CHARACTER_MOVE";
+		stringList[3] = "HEADER_GC_MOVE";
 		stringList[4] = "HEADER_GC_CHAT";
 		stringList[5] = "HEADER_GC_SYNC_POSITION";
 		stringList[6] = "HEADER_GC_LOGIN_SUCCESS";
 		stringList[7] = "HEADER_GC_LOGIN_FAILURE";
-		stringList[8] = "HEADER_GC_PLAYER_CREATE_SUCCESS";
-		stringList[9] = "HEADER_GC_PLAYER_CREATE_FAILURE";
-		stringList[10] = "HEADER_GC_PLAYER_DELETE_SUCCESS";
-		stringList[11] = "HEADER_GC_PLAYER_DELETE_WRONG_SOCIAL_ID";
+		stringList[8] = "HEADER_GC_CHARACTER_CREATE_SUCCESS";
+		stringList[9] = "HEADER_GC_CHARACTER_CREATE_FAILURE";
+		stringList[10] = "HEADER_GC_CHARACTER_DELETE_SUCCESS";
+		stringList[11] = "HEADER_GC_CHARACTER_DELETE_WRONG_SOCIAL_ID";
 
 		stringList[13] = "HEADER_GC_STUN";
 		stringList[14] = "HEADER_GC_DEAD";
-		stringList[15] = "HEADER_GC_MAIN_CHARACTER";
-		stringList[16] = "HEADER_GC_PLAYER_POINTS";
-		stringList[17] = "HEADER_GC_PLAYER_POINT_CHANGE";
+		stringList[16] = "HEADER_GC_CHARACTER_POINTS";
+		stringList[17] = "HEADER_GC_CHARACTER_POINT_CHANGE";
 		stringList[18] = "HEADER_GC_CHANGE_SPEED";
 		stringList[19] = "HEADER_GC_CHARACTER_UPDATE";
-		stringList[20] = "HEADER_GC_ITEM_SET";
-		stringList[22] = "HEADER_GC_ITEM_USE";
+		stringList[20] = "HEADER_GC_ITEM_DEL";
 		stringList[23] = "HEADER_GC_ITEM_DROP";
 		stringList[25] = "HEADER_GC_ITEM_UPDATE";
 		stringList[26] = "HEADER_GC_ITEM_GROUND_ADD";
@@ -628,19 +626,16 @@ const char * GetRecvHeaderName(BYTE header)
 		stringList[45] = "HEADER_GC_SCRIPT";
 		stringList[46] = "HEADER_GC_QUEST_CONFIRM";
 
-		stringList[61] = "HEADER_GC_MOUNT";
-		stringList[62] = "HEADER_GC_OWNERSHIP"; 
+		stringList[62] = "HEADER_GC_OWNERSHIP";
 		stringList[63] = "HEADER_GC_TARGET";
 		stringList[65] = "HEADER_GC_WARP"; 
 		stringList[69] = "HEADER_GC_ADD_FLY_TARGETING";
 
 		stringList[70] = "HEADER_GC_CREATE_FLY";
 		stringList[71] = "HEADER_GC_FLY_TARGETING";
-		stringList[72] = "HEADER_GC_SKILL_LEVEL";
-		stringList[73] = "HEADER_GC_SKILL_COOLTIME_END";
 		stringList[74] = "HEADER_GC_MESSENGER";
 		stringList[75] = "HEADER_GC_GUILD";
-		stringList[76] = "HEADER_GC_SKILL_LEVEL_NEW";
+		stringList[76] = "HEADER_GC_SKILL_LEVEL";
 		stringList[77] = "HEADER_GC_PARTY_INVITE";
 		stringList[78] = "HEADER_GC_PARTY_ADD";
 		stringList[79] = "HEADER_GC_PARTY_UPDATE";
@@ -648,7 +643,6 @@ const char * GetRecvHeaderName(BYTE header)
 		stringList[81] = "HEADER_GC_QUEST_INFO";
 		stringList[82] = "HEADER_GC_REQUEST_MAKE_GUILD";
 		stringList[83] = "HEADER_GC_PARTY_PARAMETER";
-		stringList[84] = "HEADER_GC_SAFEBOX_MONEY_CHANGE";
 		stringList[85] = "HEADER_GC_SAFEBOX_SET";
 		stringList[86] = "HEADER_GC_SAFEBOX_DEL";
 		stringList[87] = "HEADER_GC_SAFEBOX_WRONG_PASSWORD";
@@ -658,31 +652,26 @@ const char * GetRecvHeaderName(BYTE header)
 		stringList[91] = "HEADER_GC_PARTY_LINK";
 		stringList[92] = "HEADER_GC_PARTY_UNLINK";
 
-		stringList[95] = "HEADER_GC_REFINE_INFORMATION";
-		stringList[96] = "HEADER_GC_OBSERVER_ADD";
-		stringList[97] = "HEADER_GC_OBSERVER_REMOVE";
-		stringList[98] = "HEADER_GC_OBSERVER_MOVE";
 		stringList[99] = "HEADER_GC_VIEW_EQUIP";
 		stringList[100] = "HEADER_GC_MARK_BLOCK";
-		stringList[101] = "HEADER_GC_MARK_DIFF_DATA";
+		stringList[101] = "HEADER_CG_MARK_CRCLIST";
 
 		stringList[106] = "HEADER_GC_TIME";
 		stringList[107] = "HEADER_GC_CHANGE_NAME";
 		stringList[110] = "HEADER_GC_DUNGEON";
 		stringList[111] = "HEADER_GC_WALK_MODE"; 
-		stringList[112] = "HEADER_GC_CHANGE_SKILL_GROUP";
+		stringList[112] = "HEADER_GC_SKILL_GROUP";
 		stringList[113] = "HEADER_GC_MAIN_CHARACTER_NEW";
 		stringList[114] = "HEADER_GC_USE_POTION";
 		stringList[115] = "HEADER_GC_NPC_POSITION";
 		stringList[117] = "HEADER_GC_CHARACTER_UPDATE2";
 		stringList[118] = "HEADER_GC_LOGIN_KEY";
-		stringList[119] = "HEADER_GC_REFINE_INFORMATION_NEW";
-		stringList[120] = "HEADER_GC_CHARACTER_ADD2";
+		stringList[119] = "HEADER_GC_REFINE_INFORMATION";
 		stringList[121] = "HEADER_GC_CHANNEL";
 		stringList[122] = "HEADER_GC_MALL_OPEN";
 		stringList[123] = "HEADER_GC_TARGET_UPDATE";
 		stringList[124] = "HEADER_GC_TARGET_DELETE";
-		stringList[125] = "HEADER_GC_TARGET_CREATE_NEW";
+		stringList[125] = "HEADER_GC_TARGET_CREATE";
 		stringList[126] = "HEADER_GC_AFFECT_ADD";
 		stringList[127] = "HEADER_GC_AFFECT_REMOVE";
 		stringList[128] = "HEADER_GC_MALL_SET";
@@ -699,7 +688,7 @@ const char * GetRecvHeaderName(BYTE header)
 		stringList[0xfa] = "HEADER_GC_KEY_AGREEMENT_COMPLETED";
 		stringList[0xfb] = "HEADER_GC_KEY_AGREEMENT";
 #endif
-		stringList[0xfc] = "HEADER_GC_HANDSHAKE_OK";
+		stringList[0xfc] = "HEADER_GC_TIME_SYNC";
 		stringList[0xfd] = "HEADER_GC_PHASE";
 		stringList[0xff] = "HEADER_GC_HANDSHAKE";
 	}

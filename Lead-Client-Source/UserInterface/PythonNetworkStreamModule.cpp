@@ -840,21 +840,11 @@ PyObject* netSendShopSellPacket(PyObject* poSelf, PyObject* poArgs)
 	int iSlotNumber;
 	if (!PyTuple_GetInteger(poArgs, 0, &iSlotNumber))
 		return Py_BuildException();
-	CPythonNetworkStream& rkNetStream=CPythonNetworkStream::Instance();
-	rkNetStream.SendShopSellPacket(iSlotNumber);
-	return Py_BuildNone();
-}
-
-PyObject* netSendShopSellPacketNew(PyObject* poSelf, PyObject* poArgs)
-{
-	int iSlotNumber;
-	if (!PyTuple_GetInteger(poArgs, 0, &iSlotNumber))
-		return Py_BuildException();
 	int iCount;
 	if (!PyTuple_GetInteger(poArgs, 1, &iCount))
 		return Py_BuildException();
 	CPythonNetworkStream& rkNetStream=CPythonNetworkStream::Instance();
-	rkNetStream.SendShopSellPacketNew(iSlotNumber, iCount);
+	rkNetStream.SendShopSellPacket(iSlotNumber, iCount);
 	return Py_BuildNone();
 }
 
@@ -1722,8 +1712,7 @@ void initnet()
 
 		{ "SendShopEndPacket",					netSendShopEndPacket,					METH_VARARGS },
 		{ "SendShopBuyPacket",					netSendShopBuyPacket,					METH_VARARGS },
-		{ "SendShopSellPacket",					netSendShopSellPacket,					METH_VARARGS },
-		{ "SendShopSellPacketNew",				netSendShopSellPacketNew,				METH_VARARGS },
+		{ "SendShopSellPacket",				netSendShopSellPacket,				METH_VARARGS },
 
 		{ "SendExchangeStartPacket",			netSendExchangeStartPacket,				METH_VARARGS },
 		{ "SendExchangeItemAddPacket",			netSendExchangeItemAddPacket,			METH_VARARGS },
