@@ -41,13 +41,11 @@
 #include "locale_service.h"
 #include "arena.h"
 #include "OXEvent.h"
-#include "monarch.h"
 #include "polymorph.h"
 #include "blend_item.h"
 #include "ani.h"
 #include "BattleArena.h"
 #include "horsename_manager.h"
-#include "pcbang.h"
 #include "MarkManager.h"
 #include "spam.h"
 #include "panama.h"
@@ -340,9 +338,7 @@ int main(int argc, char **argv)
 	CItemAddonManager	item_addon_manager;
 	CArenaManager arena_manager;
 	COXEventManager OXEvent_manager;
-	CMonarch		Monarch;
 	CHorseNameManager horsename_manager;
-	CPCBangManager pcbang_manager;
 
 	DESC_MANAGER	desc_manager;
 

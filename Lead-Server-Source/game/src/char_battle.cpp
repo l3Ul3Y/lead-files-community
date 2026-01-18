@@ -25,7 +25,6 @@
 #include "marriage.h"
 #include "arena.h"
 #include "regen.h"
-#include "monarch.h"
 #include "exchange.h"
 #include "shop_manager.h"
 #include "dev_log.h"
@@ -2106,21 +2105,6 @@ bool CHARACTER::Damage(LPCHARACTER pAttacker, int dam, EDamageType type) // retu
 			Stun();
 			return true;
 		}
-
-		//
-		// 군주의 금강권 & 사자후 
-		//
-		if (pAttacker->IsPC() && CMonarch::instance().IsPowerUp(pAttacker->GetEmpire()))
-		{
-			// 10% 피해 증가
-			dam += dam / 10;
-		}
-
-		if (IsPC() && CMonarch::instance().IsDefenceUp(GetEmpire()))
-		{
-			// 10% 피해 감소
-			dam -= dam / 10;
-		}
 	}
 	//puAttr.Pop();
 
@@ -2369,13 +2353,6 @@ static void GiveExp(LPCHARACTER from, LPCHARACTER to, int iExp)
 			iExp += (iExp * 50 / 100);
 		}
 
-		// PC방 아템 경치 보너스
-		if (to->GetPoint(POINT_PC_BANG_EXP_BONUS) > 0)
-		{
-			if (to->IsPCBang() == true)
-				iExp += (iExp * to->GetPoint(POINT_PC_BANG_EXP_BONUS)/100);
-		}
-
 		// 결혼 보너스
 		iExp += iExp * to->GetMarriageBonus(UNIQUE_ITEM_MARRIAGE_EXP_BONUS) / 100;
 	}
@@ -2390,13 +2367,6 @@ static void GiveExp(LPCHARACTER from, LPCHARACTER to, int iExp)
 		if (to->IsEquipUniqueGroup(UNIQUE_GROUP_RING_OF_EXP) == true)
 		{
 			iExp += (iExp * 20 / 100);
-		}
-
-		// PC방 아템 경치 보너스
-		if (to->GetPoint(POINT_PC_BANG_EXP_BONUS) > 0)
-		{
-			if (to->IsPCBang() == true)
-				iExp += (iExp * to->GetPoint(POINT_PC_BANG_EXP_BONUS)/100);
 		}
 
 		// 결혼 보너스

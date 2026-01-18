@@ -28,13 +28,11 @@
 #include "war_map.h"
 #include "xmas_event.h"
 #include "marriage.h"
-#include "monarch.h"
 #include "polymorph.h"
 #include "blend_item.h"
 #include "BattleArena.h"
 #include "arena.h"
 #include "dev_log.h"
-#include "pcbang.h"
 
 #include "safebox.h"
 #include "shop.h"
@@ -2215,19 +2213,6 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 							}
 							else
 							{
-								// PC_BANG_ITEM_ADD
-								if (item->IsPCBangItem() == true)
-								{
-									// PC방인지 체크해서 처리
-									if (CPCBangManager::instance().IsPCBangIP(GetDesc()->GetHostName()) == false)
-									{
-										// PC방이 아님!
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("이 아이템은 PC방에서만 사용할 수 있습니다."));
-										return false;
-									}
-								}
-								// END_PC_BANG_ITEM_ADD
-
 								AddAffect(AFFECT_EXP_BONUS_EURO_FREE, aApplyInfo[item->GetValue(1)].bPointType, item->GetValue(2), 0, item->GetValue(3), 0, false, true);
 								item->SetCount(item->GetCount() - 1);
 							}
@@ -3732,11 +3717,6 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								item->SetCount(item->GetCount()-1);
 								break;
 
-							case 90008: // VCARD
-							case 90009: // VCARD
-								VCardUse(this, this, item);
-								break;
-
 							case ITEM_ELK_VNUM: // 돈꾸러미
 								{
 									int iGold = item->GetSocket(0);
@@ -3746,30 +3726,12 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								}
 								break;
 
-								//군주의 증표 
-							case 70021:
-								{
-									int HealPrice = quest::CQuestManager::instance().GetEventFlag("MonarchHealGold");
-									if (HealPrice == 0)
-										HealPrice = 2000000;
-
-									if (CMonarch::instance().HealMyEmpire(this, HealPrice))
-									{
-										char szNotice[256];
-										snprintf(szNotice, sizeof(szNotice), LC_TEXT("군주의 축복으로 이지역 %s 유저는 HP,SP가 모두 채워집니다."), EMPIRE_NAME(GetEmpire()));
-										SendNoticeMap(szNotice, GetMapIndex(), false);
-										
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("군주의 축복을 사용하였습니다."));
-									}
-								}
-								break;
-
 							case 27995:
 								{
 								}
 								break;
 
-							case 71092 : // 변신 해체부 임시
+							case 71092 :
 								{
 									if (m_pkChrTarget != NULL)
 									{
@@ -4847,19 +4809,6 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 							}
 							else
 							{
-								// PC_BANG_ITEM_ADD
-								if (item->IsPCBangItem() == true)
-								{
-									// PC방인지 체크해서 처리
-									if (CPCBangManager::instance().IsPCBangIP(GetDesc()->GetHostName()) == false)
-									{
-										// PC방이 아님!
-										ChatPacket(CHAT_TYPE_INFO, LC_TEXT("이 아이템은 PC방에서만 사용할 수 있습니다."));
-										return false;
-									}
-								}
-								// END_PC_BANG_ITEM_ADD
-
 								AddAffect(item->GetValue(0), aApplyInfo[item->GetValue(1)].bPointType, item->GetValue(2), 0, item->GetValue(3), 0, false);
 								item->SetCount(item->GetCount() - 1);
 							}
