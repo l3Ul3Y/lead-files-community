@@ -358,11 +358,6 @@ bool Main(HINSTANCE hInstance, LPSTR lpCmdLine)
 
 	SetLogLevel(1);
 
-#ifdef LOCALE_SERVICE_VIETNAM_MILD
-	extern BOOL USE_VIETNAM_CONVERT_WEAPON_VNUM;
-	USE_VIETNAM_CONVERT_WEAPON_VNUM = true;
-#endif
-
 	if (_access("perf_game_update.txt", 0)==0)
 	{
 		DeleteFile("perf_game_update.txt");
