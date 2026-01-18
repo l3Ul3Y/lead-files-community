@@ -653,9 +653,6 @@ const char * GetRecvHeaderName(BYTE header)
 		stringList[91] = "HEADER_GC_PARTY_LINK";
 		stringList[92] = "HEADER_GC_PARTY_UNLINK";
 
-		stringList[96] = "HEADER_GC_OBSERVER_ADD";
-		stringList[97] = "HEADER_GC_OBSERVER_REMOVE";
-		stringList[98] = "HEADER_GC_OBSERVER_MOVE";
 		stringList[99] = "HEADER_GC_VIEW_EQUIP";
 		stringList[100] = "HEADER_GC_MARK_BLOCK";
 		stringList[101] = "HEADER_CG_MARK_CRCLIST";
