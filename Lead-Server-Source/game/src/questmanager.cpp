@@ -579,7 +579,7 @@ namespace quest
 				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pc);
 
 				if (ch)
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("퀘스트를 로드하는 중입니다. 잠시만 기다려 주십시오."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your request is loading. Please wait."));
 
 				return;
 			}
@@ -604,7 +604,7 @@ namespace quest
 				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pc);
 				if (ch)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("퀘스트를 로드하는 중입니다. 잠시만 기다려 주십시오."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your request is loading. Please wait."));
 				}
 				return;
 			}
@@ -629,7 +629,7 @@ namespace quest
 				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pc);
 				if (ch)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("퀘스트를 로드하는 중입니다. 잠시만 기다려 주십시오."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your request is loading. Please wait."));
 				}
 				return false;
 			}
@@ -657,7 +657,7 @@ namespace quest
 				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pc);
 				if (ch)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("퀘스트를 로드하는 중입니다. 잠시만 기다려 주십시오."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your request is loading. Please wait."));
 				}
 				return false;
 			}
@@ -701,7 +701,7 @@ namespace quest
 				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pc);
 				if (ch)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("퀘스트를 로드하는 중입니다. 잠시만 기다려 주십시오."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your request is loading. Please wait."));
 				}
 				return false;
 			}
@@ -755,7 +755,7 @@ namespace quest
 				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pc);
 
 				if (ch)
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("퀘스트를 로드하는 중입니다. 잠시만 기다려 주십시오."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your request is loading. Please wait."));
 
 				return false;
 			}
@@ -1142,13 +1142,13 @@ namespace quest
 			int value = it->second;
 
 			if (!test_server && value == 1 && flagname == "valentine_drop")
-				ch->ChatPacket(CHAT_TYPE_INFO, "%s %d prob 800", flagname.c_str(), value);
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s %d prob 800"), flagname.c_str(), value);
 			else if (!test_server && value == 1 && flagname == "newyear_wonso")
-				ch->ChatPacket(CHAT_TYPE_INFO, "%s %d prob 500", flagname.c_str(), value);
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s %d prob 500"), flagname.c_str(), value);
 			else if (!test_server && value == 1 && flagname == "newyear_fire")
-				ch->ChatPacket(CHAT_TYPE_INFO, "%s %d prob 1000", flagname.c_str(), value);
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s %d prob 1000"), flagname.c_str(), value);
 			else
-				ch->ChatPacket(CHAT_TYPE_INFO, "%s %d", flagname.c_str(), value);
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s %d"), flagname.c_str(), value);
 		}
 	}
 
@@ -1648,7 +1648,7 @@ namespace quest
 
 		sys_err("LUA_ERROR: quest %s.%s %s", GetCurrentQuestName().c_str(), state_name, event_index_name.c_str() );
 		if (GetCurrentCharacterPtr() && test_server)
-			GetCurrentCharacterPtr()->ChatPacket(CHAT_TYPE_PARTY, "LUA_ERROR: quest %s.%s %s", GetCurrentQuestName().c_str(), state_name, event_index_name.c_str() );
+			GetCurrentCharacterPtr()->ChatPacket(CHAT_TYPE_PARTY, LC_TEXT("LUA_ERROR: quest %s.%s %s"), GetCurrentQuestName().c_str(), state_name, event_index_name.c_str() );
 	}
 
 #ifndef __WIN32__
@@ -1667,8 +1667,8 @@ namespace quest
 			LPCHARACTER ch = GetCurrentCharacterPtr();
 			if (ch)
 			{
-				ch->ChatPacket(CHAT_TYPE_PARTY, "error occurred on [%s:%d]", func,line);
-				ch->ChatPacket(CHAT_TYPE_PARTY, "%s", szMsg);
+				ch->ChatPacket(CHAT_TYPE_PARTY, LC_TEXT("error occurred on [%s:%d]"), func,line);
+				ch->ChatPacket(CHAT_TYPE_PARTY, LC_TEXT("%s"), szMsg);
 			}
 		}
 	}
@@ -1688,8 +1688,8 @@ namespace quest
 			LPCHARACTER ch = GetCurrentCharacterPtr();
 			if (ch)
 			{
-				ch->ChatPacket(CHAT_TYPE_PARTY, "error occurred on [%s:%d]", func,line);
-				ch->ChatPacket(CHAT_TYPE_PARTY, "%s", szMsg);
+				ch->ChatPacket(CHAT_TYPE_PARTY, LC_TEXT("error occurred on [%s:%d]"), func,line);
+				ch->ChatPacket(CHAT_TYPE_PARTY, LC_TEXT("%s"), szMsg);
 			}
 		}
 	}
@@ -1761,7 +1761,7 @@ namespace quest
 				LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pc);
 				if (ch)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("퀘스트를 로드하는 중입니다. 잠시만 기다려 주십시오."));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Your request is loading. Please wait."));
 				}
 				return false;
 			}
