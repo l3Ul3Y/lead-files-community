@@ -2097,8 +2097,7 @@ teleport_area:
 		}
 
 		DWORD pid = ch->GetPlayerID();
-		db_clientdesc->DBPacketHeader(HEADER_GD_FLUSH_CACHE, 0, sizeof(DWORD));
-		db_clientdesc->Packet(&pid, sizeof(DWORD));
+		ch->Save();
 
 		/* delete messenger list */
 		MessengerManager::instance().RemoveAllList(ch->GetName());

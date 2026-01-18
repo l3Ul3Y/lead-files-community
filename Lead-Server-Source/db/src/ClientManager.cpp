@@ -1525,24 +1525,6 @@ void CClientManager::QUERY_ITEM_DESTROY(CPeer * pkPeer, const char * c_pData)
 	}
 }
 
-void CClientManager::QUERY_FLUSH_CACHE(CPeer * pkPeer, const char * c_pData)
-{
-	DWORD dwPID = *(DWORD *) c_pData;
-
-	CPlayerTableCache * pkCache = GetPlayerCache(dwPID);
-
-	if (!pkCache)
-		return;
-
-	sys_log(0, "FLUSH_CACHE: %u", dwPID);
-
-	pkCache->Flush();
-	FlushItemCacheSet(dwPID);
-
-	m_map_playerCache.erase(dwPID);
-	delete pkCache;
-}
-
 void CClientManager::QUERY_RELOAD_PROTO()
 {
 	if (!InitializeTables())
@@ -2124,10 +2106,6 @@ void CClientManager::ProcessPackets(CPeer * peer)
 
 			case HEADER_GD_GUILD_USE_SKILL:
 				GuildUseSkill((TPacketGuildUseSkill*) data);
-				break;
-
-			case HEADER_GD_FLUSH_CACHE:
-				QUERY_FLUSH_CACHE(peer, data);
 				break;
 
 			case HEADER_GD_ITEM_SAVE:
