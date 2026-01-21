@@ -144,7 +144,7 @@ const char*	CPythonNonPlayer::GetMonsterName(DWORD dwVnum)
 
 BYTE CPythonNonPlayer::GetMobLevel(DWORD dwVnum)
 {
-	const CPythonNonPlayer::TMobTable* c_pTable = GetTable(dwVnum);
+	const CPythonNonPlayer::TMobTable * c_pTable = GetTable(dwVnum);
 	if (!c_pTable)
 		return 0;
 

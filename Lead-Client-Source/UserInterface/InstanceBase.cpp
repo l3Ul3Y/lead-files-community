@@ -758,7 +758,7 @@ bool CInstanceBase::Create(const SCreateData& c_rkCreateData)
 
 	__Create_SetName(c_rkCreateData);
 
-	if (GetInstanceType() == CActorInstance::TYPE_ENEMY || GetInstanceType() == CActorInstance::TYPE_STONE)
+	if (IsEnemy() || IsStone())
 		m_dwLevel = CPythonNonPlayer::Instance().GetMobLevel(GetRace());
 	else
 		m_dwLevel = c_rkCreateData.m_dwLevel;
