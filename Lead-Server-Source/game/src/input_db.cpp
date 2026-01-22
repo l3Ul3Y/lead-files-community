@@ -352,12 +352,6 @@ void CInputDB::PlayerLoad(LPDESC d, const char * data)
 		snprintf(buf, sizeof(buf), "%s %d %d %ld %d", 
 				inet_ntoa(ch->GetDesc()->GetAddr().sin_addr), ch->GetGold(), g_bChannel, ch->GetMapIndex(), ch->GetAlignment());
 		LogManager::instance().CharLog(ch, 0, "LOGIN", buf);
-
-		if (LC_IsYMIR() || LC_IsKorea())
-		{
-			LogManager::instance().LoginLog(true, 
-					ch->GetDesc()->GetAccountTable().id, ch->GetPlayerID(), ch->GetLevel(), ch->GetJob(), ch->GetRealPoint(POINT_PLAYTIME));
-		}
 	}
 
 	d->SetPhase(PHASE_LOADING);
@@ -2215,14 +2209,11 @@ void CInputDB::GuildChangeMaster(TPacketChangeGuildMaster* p)
 
 void CInputDB::DetailLog(const TPacketNeedLoginLogInfo* info)
 {
-	if (true == LC_IsEurope() || true == LC_IsYMIR() || true == LC_IsKorea() )
-	{
-		LPCHARACTER pChar = CHARACTER_MANAGER::instance().FindByPID( info->dwPlayerID );
+	LPCHARACTER pChar = CHARACTER_MANAGER::instance().FindByPID( info->dwPlayerID );
 
-		if (NULL != pChar)
-		{
-			LogManager::instance().DetailLoginLog(true, pChar);
-		}
+	if (NULL != pChar)
+	{
+		LogManager::instance().DetailLoginLog(true, pChar);
 	}
 }
 

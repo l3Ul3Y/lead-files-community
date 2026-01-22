@@ -2042,19 +2042,6 @@ teleport_area:
 	
 	int pc_change_name(lua_State* L)
 	{
-		// 리턴값
-		//		0: 새이름을 설정한 뒤 로그아웃을 안했음
-		//		1: 스크립트에서 문자열이 넘어오지 않았음
-		//		2: check_name 을 통과하지 못했음
-		//		3: 이미 같은 이름이 사용중
-		//		4: 성공
-		//		5: 해당 기능 지원하지 않음
-		if ( LC_IsEurope() )
-		{
-			lua_pushnumber(L, 5);
-			return 1;
-		}
-
 		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
 
 		if ( ch->GetNewName().size() != 0 )
