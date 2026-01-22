@@ -314,7 +314,7 @@ bool CExchange::CheckSpace()
 			continue;
 
 		const int page = i / INVENTORY_SLOT_PER_PAGE; // 0..INVENTORY_PAGE_COUNT-1
-		const int localPos = i % INVENTORY_SLOT_PER_PAGE; // Slot innerhalb der Seite
+		const int localPos = i % INVENTORY_SLOT_PER_PAGE; // Slot within a single page
 
 		s_grids[page].Put(localPos, 1, item->GetSize());
 	}
