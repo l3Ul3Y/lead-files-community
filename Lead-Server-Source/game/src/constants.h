@@ -97,13 +97,10 @@ extern TBattleTypeStat		BattleTypeStats[BATTLE_TYPE_MAX_NUM];
 
 extern const DWORD		party_exp_distribute_table[PLAYER_MAX_LEVEL_CONST + 1];
 
-extern const DWORD		exp_table_euckr[PLAYER_EXP_TABLE_MAX + 1];
 extern const DWORD		exp_table_common[PLAYER_EXP_TABLE_MAX + 1];
-extern const DWORD		exp_table_newcibn[PLAYER_EXP_TABLE_MAX + 1];
 
 extern const DWORD*		exp_table;
 
-extern const DWORD		guild_exp_table[GUILD_MAX_LEVEL + 1];
 extern const DWORD		guild_exp_table[GUILD_MAX_LEVEL + 1];
 
 #define MAX_EXP_DELTA_OF_LEV	31

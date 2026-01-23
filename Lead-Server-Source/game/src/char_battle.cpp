@@ -2024,7 +2024,9 @@ bool CHARACTER::Damage(LPCHARACTER pAttacker, int dam, EDamageType type) // retu
 
 			if (iEmpire && iMapEmpire && iEmpire != iMapEmpire)
 			{
-				dam = dam * 9 / 10;
+				int percent = 9;
+
+				dam = dam * percent / 10;
 			}
 
 			if (!IsPC() && GetMonsterDrainSPPoint())
@@ -3156,7 +3158,9 @@ void CHARACTER::UpdateKillerMode()
 	if (!IsKillerMode())
 		return;
 
-	if (thecore_pulse() - m_iKillerModePulse >= PASSES_PER_SEC(30))
+	int iKillerSeconds = 30;
+
+	if (thecore_pulse() - m_iKillerModePulse >= PASSES_PER_SEC(iKillerSeconds))
 		SetKillerMode(false);
 }
 
