@@ -938,6 +938,11 @@ EVENTFUNC(quest_login_event)
 	}
 	else if (d->IsPhase(PHASE_GAME))
 	{
+		if (!ch->IsLoadedAffect())
+		{
+			return PASSES_PER_SEC(1);
+		}
+
 		sys_log(0, "QUEST_LOAD: Login pc %d by event", ch->GetPlayerID());
 		quest::CQuestManager::instance().Login(ch->GetPlayerID());
 		return 0;
@@ -1001,19 +1006,11 @@ void CInputDB::QuestLoad(LPDESC d, const char * c_pData)
 		pkPC->SetLoaded();
 		pkPC->Build();
 
-		if (ch->GetDesc()->IsPhase(PHASE_GAME))
-		{
-			sys_log(0, "QUEST_LOAD: Login pc %d", pQuestTable[0].dwPID);
-			quest::CQuestManager::instance().Login(pQuestTable[0].dwPID);
-		}
-		else
-		{
-			quest_login_event_info* info = AllocEventInfo<quest_login_event_info>();
-			info->dwPID = ch->GetPlayerID();
+		quest_login_event_info* info = AllocEventInfo<quest_login_event_info>();
+		info->dwPID = ch->GetPlayerID();
 
-			event_create(quest_login_event, info, PASSES_PER_SEC(1));
-		}
-	}	
+		event_create(quest_login_event, info, PASSES_PER_SEC(1));
+	}
 }
 
 void CInputDB::SafeboxLoad(LPDESC d, const char * c_pData)
