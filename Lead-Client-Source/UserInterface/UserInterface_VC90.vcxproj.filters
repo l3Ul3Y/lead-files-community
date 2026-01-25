@@ -158,6 +158,5 @@
     <None Include="Cursors\cursor_sell.cur" />
     <None Include="Cursors\cursor_talk.cur" />
     <None Include="Cursors\cursor_vsize.cur" />
-    <None Include="HISTORY" />
   </ItemGroup>
 </Project>

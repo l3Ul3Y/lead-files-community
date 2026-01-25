@@ -21,9 +21,6 @@
     <ClCompile Include="poly\SymTable.cpp">
       <Filter>Poly</Filter>
     </ClCompile>
-    <ClCompile Include="cipher.cpp">
-      <Filter>Code</Filter>
-    </ClCompile>
     <ClCompile Include="CPostIt.cpp">
       <Filter>Code</Filter>
     </ClCompile>
@@ -86,9 +83,6 @@
     <ClInclude Include="poly\SymTable.h">
       <Filter>Poly</Filter>
     </ClInclude>
-    <ClInclude Include="cipher.h">
-      <Filter>Code</Filter>
-    </ClInclude>
     <ClInclude Include="CPostIt.h">
       <Filter>Code</Filter>
     </ClInclude>
@@ -120,9 +114,6 @@
       <Filter>Code</Filter>
     </ClInclude>
     <ClInclude Include="Random.h">
-      <Filter>Code</Filter>
-    </ClInclude>
-    <ClInclude Include="ServiceDefs.h">
       <Filter>Code</Filter>
     </ClInclude>
     <ClInclude Include="Singleton.h">

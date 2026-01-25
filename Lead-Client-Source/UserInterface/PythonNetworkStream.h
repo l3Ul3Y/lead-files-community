@@ -262,11 +262,7 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 
 		bool RecvHybridCryptKeyPacket();
 		bool RecvHybridCryptSDBPacket();
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-		bool RecvKeyAgreementPacket();
-		bool RecvKeyAgreementCompletedPacket();
 
-#endif
 		// ETC
 		DWORD GetMainActorVID();
 		DWORD GetMainActorRace();

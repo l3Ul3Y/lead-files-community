@@ -17,9 +17,7 @@ void CPythonNetworkStream::SetSelectPhase()
 
 	m_strPhase = "Select";	
 
-#ifndef _IMPROVED_PACKET_ENCRYPTION_
 	SetSecurityMode(true, (const char *) g_adwEncryptKey, (const char *) g_adwDecryptKey);
-#endif
 
 	m_dwChangingPhaseTime = ELTimer_GetMSec();
 	m_phaseProcessFunc.Set(this, &CPythonNetworkStream::SelectPhase);
@@ -106,19 +104,6 @@ void CPythonNetworkStream::SelectPhase()
 			RecvHybridCryptSDBPacket();
 			return;
 			break;
-
-
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-		case HEADER_GC_KEY_AGREEMENT:
-			RecvKeyAgreementPacket();
-			return;
-			break;
-
-		case HEADER_GC_KEY_AGREEMENT_COMPLETED:
-			RecvKeyAgreementCompletedPacket();
-			return;
-			break;
-#endif
 
 		case HEADER_GC_CHARACTER_POINT_CHANGE:
 			TPacketGCPointChange PointChange;

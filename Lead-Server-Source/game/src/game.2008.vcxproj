@@ -101,7 +101,6 @@
     <ClCompile Include="char_resist.cpp" />
     <ClCompile Include="char_skill.cpp" />
     <ClCompile Include="char_state.cpp" />
-    <ClCompile Include="cipher.cpp" />
     <ClCompile Include="ClientPackageCryptInfo.cpp" />
     <ClCompile Include="cmd.cpp" />
     <ClCompile Include="cmd_emotion.cpp" />
@@ -246,7 +245,6 @@
     <ClInclude Include="building.h" />
     <ClInclude Include="char.h" />
     <ClInclude Include="char_manager.h" />
-    <ClInclude Include="cipher.h" />
     <ClInclude Include="ClientPackageCryptInfo.h" />
     <ClInclude Include="cmd.h" />
     <ClInclude Include="config.h" />

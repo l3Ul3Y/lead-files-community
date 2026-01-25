@@ -1,8 +1,4 @@
 #pragma once
-
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-#include "../eterBase/cipher.h"
-#endif
 #include "../eterBase/tea.h"
 #include "NetAddress.h"
 
@@ -15,10 +11,8 @@ class CNetworkStream
 		void SetRecvBufferSize(int recvBufSize);
 		void SetSendBufferSize(int sendBufSize);
 
-#ifndef _IMPROVED_PACKET_ENCRYPTION_
 		void SetSecurityMode(bool isSecurityMode, const char* c_szTeaKey);
 		void SetSecurityMode(bool isSecurityMode, const char* c_szTeaEncryptKey, const char* c_szTeaDecryptKey);
-#endif
 		bool IsSecurityMode();
 
 		int	GetRecvBufferSize();
@@ -64,12 +58,6 @@ class CNetworkStream
 
 		int __GetSendBufferSize();
 
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-		size_t Prepare(void* buffer, size_t* length);
-		bool Activate(size_t agreed_length, const void* buffer, size_t length);
-		void ActivateCipher();
-#endif
-
 	private:
 		time_t	m_connectLimitTime;
 
@@ -93,14 +81,10 @@ class CNetworkStream
 
 		bool	m_isOnline;
 
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-		Cipher	m_cipher;
-#else
 		// Obsolete encryption stuff here
 		bool	m_isSecurityMode;
 		char	m_szEncryptKey[TEA_KEY_LENGTH]; // Client 에서 보낼 패킷을 Encrypt 할때 사용하는 Key
 		char	m_szDecryptKey[TEA_KEY_LENGTH]; // Server 에서 전송된 패킷을 Decrypt 할때 사용하는 Key
-#endif
 
 		SOCKET	m_sock;
 

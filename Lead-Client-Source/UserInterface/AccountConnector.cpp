@@ -29,9 +29,7 @@ void CAccountConnector::ClearLoginInfo( void )
 
 bool CAccountConnector::Connect(const char * c_szAddr, int iPort, const char * c_szAccountAddr, int iAccountPort)
 {
-#ifndef _IMPROVED_PACKET_ENCRYPTION_
 	__BuildClientKey();
-#endif
 
 	m_strAddr = c_szAddr;
 	m_iPort = iPort;
@@ -101,14 +99,6 @@ bool CAccountConnector::__HandshakeState_Process()
 	if (!__AnalyzeVarSizePacket(HEADER_GC_HYBRIDCRYPT_SDB, &CAccountConnector::__AuthState_RecvHybridCryptSDB))
 		return false;
 
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-	if (!__AnalyzePacket(HEADER_GC_KEY_AGREEMENT, sizeof(TPacketKeyAgreement), &CAccountConnector::__AuthState_RecvKeyAgreement))
-		return false;
-
-	if (!__AnalyzePacket(HEADER_GC_KEY_AGREEMENT_COMPLETED, sizeof(TPacketKeyAgreementCompleted), &CAccountConnector::__AuthState_RecvKeyAgreementCompleted))
-		return false;
-#endif
-
 	return true;
 }
 
@@ -131,14 +121,6 @@ bool CAccountConnector::__AuthState_Process()
 
 	if (!__AnalyzePacket(HEADER_GC_HANDSHAKE, sizeof(TPacketGCHandshake), &CAccountConnector::__AuthState_RecvHandshake))
 		return false;
-
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-	if (!__AnalyzePacket(HEADER_GC_KEY_AGREEMENT, sizeof(TPacketKeyAgreement), &CAccountConnector::__AuthState_RecvKeyAgreement))
-		return false;
-
-	if (!__AnalyzePacket(HEADER_GC_KEY_AGREEMENT_COMPLETED, sizeof(TPacketKeyAgreementCompleted), &CAccountConnector::__AuthState_RecvKeyAgreementCompleted))
-		return false;
-#endif
 
 	//  TODO :  차후 서버와 동일하게 가변길이 data serialize & deserialize  작업해야 한다.
 	if (!__AnalyzeVarSizePacket(HEADER_GC_HYBRIDCRYPT_KEYS, &CAccountConnector::__AuthState_RecvHybridCryptKeys))
@@ -169,10 +151,8 @@ bool CAccountConnector::__AuthState_RecvPhase()
 	}
 	else if (kPacketPhase.phase == PHASE_AUTH)
 	{
-#ifndef _IMPROVED_PACKET_ENCRYPTION_
 		const char* key = LocaleService_GetSecurityKey();
 		SetSecurityMode(true, key);
-#endif
 
 		TPacketCGLogin3 LoginPacket;
 		LoginPacket.header = HEADER_CG_LOGIN3;
@@ -336,68 +316,6 @@ bool CAccountConnector::__AuthState_RecvAuthFailure()
 #define ROW(rows, i) ((rows >> ((4 - i - 1) * 8)) & 0x000000FF)
 #define COL(cols, i) ((cols >> ((4 - i - 1) * 8)) & 0x000000FF)
 
-
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-bool CAccountConnector::__AuthState_RecvKeyAgreement()
-{
-	TPacketKeyAgreement packet;
-	if (!Recv(sizeof(packet), &packet))
-	{
-		return false;
-	}
-
-	Tracenf("KEY_AGREEMENT RECV %u", packet.wDataLength);
-
-	TPacketKeyAgreement packetToSend;
-	size_t dataLength = TPacketKeyAgreement::MAX_DATA_LEN;
-	size_t agreedLength = Prepare(packetToSend.data, &dataLength);
-	if (agreedLength == 0)
-	{
-		// 초기화 실패
-		Disconnect();
-		return false;
-	}
-	assert(dataLength <= TPacketKeyAgreement::MAX_DATA_LEN);
-
-	if (Activate(packet.wAgreedLength, packet.data, packet.wDataLength))
-	{
-		// Key agreement 성공, 응답 전송
-		packetToSend.bHeader = HEADER_CG_KEY_AGREEMENT;
-		packetToSend.wAgreedLength = (WORD)agreedLength;
-		packetToSend.wDataLength = (WORD)dataLength;
-
-		if (!Send(sizeof(packetToSend), &packetToSend))
-		{
-			Tracen(" CAccountConnector::__AuthState_RecvKeyAgreement - SendKeyAgreement Error");
-			return false;
-		}
-		Tracenf("KEY_AGREEMENT SEND %u", packetToSend.wDataLength);
-	}
-	else
-	{
-		// 키 협상 실패
-		Disconnect();
-		return false;
-	}
-	return true;
-}
-
-bool CAccountConnector::__AuthState_RecvKeyAgreementCompleted()
-{
-	TPacketKeyAgreementCompleted packet;
-	if (!Recv(sizeof(packet), &packet))
-	{
-		return false;
-	}
-
-	Tracenf("KEY_AGREEMENT_COMPLETED RECV");
-
-	ActivateCipher();
-
-	return true;
-}
-#endif // _IMPROVED_PACKET_ENCRYPTION_
-
 bool CAccountConnector::__AnalyzePacket(UINT uHeader, UINT uPacketSize, bool (CAccountConnector::*pfnDispatchPacket)())
 {
 	BYTE bHeader;
@@ -482,7 +400,6 @@ void CAccountConnector::OnDisconnect()
 	__OfflineState_Set();
 }
 
-#ifndef _IMPROVED_PACKET_ENCRYPTION_
 void CAccountConnector::__BuildClientKey()
 {
 	for (DWORD i = 0; i < 4; ++i)
@@ -491,7 +408,6 @@ void CAccountConnector::__BuildClientKey()
 	const BYTE * c_pszKey = (const BYTE *) "JyTxtHljHJlVJHorRM301vf@4fvj10-v";
 	tea_encrypt((DWORD *) g_adwDecryptKey, (const DWORD *) g_adwEncryptKey, (const DWORD *) c_pszKey, 16);
 }
-#endif
 
 void CAccountConnector::__Inialize()
 {

@@ -170,13 +170,6 @@ UINT CGuildMarkDownloader::__GetPacketSize(UINT header)
 			return sizeof(TPacketGCGuildSymbolData);
 		case HEADER_CG_MARK_CRCLIST:	// 사용하지 않음
 			return sizeof(BYTE);
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-		case HEADER_GC_KEY_AGREEMENT:
-			return sizeof(TPacketKeyAgreement);
-		case HEADER_GC_KEY_AGREEMENT_COMPLETED:
-			return sizeof(TPacketKeyAgreementCompleted);
-
-#endif
 	}
 	return 0;
 }
@@ -199,12 +192,6 @@ bool CGuildMarkDownloader::__DispatchPacket(UINT header)
 			return __LoginState_RecvSymbolData();
 		case HEADER_CG_MARK_CRCLIST: // 사용하지 않음
 			return true;
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-		case HEADER_GC_KEY_AGREEMENT:
-			return __LoginState_RecvKeyAgreement();
-		case HEADER_GC_KEY_AGREEMENT_COMPLETED:
-			return __LoginState_RecvKeyAgreementCompleted();
-#endif
 	}
 	return false;	
 }
@@ -256,10 +243,8 @@ bool CGuildMarkDownloader::__LoginState_RecvPhase()
 
 	if (kPacketPhase.phase == PHASE_LOGIN)
 	{
-#ifndef _IMPROVED_PACKET_ENCRYPTION_
 		const char* key = LocaleService_GetSecurityKey();
 		SetSecurityMode(true, key);
-#endif
 
 		switch (m_dwTodo)
 		{
@@ -412,67 +397,6 @@ bool CGuildMarkDownloader::__LoginState_RecvMarkBlock()
 	return true;
 }
 // END_OF_MARK_BUG_FIX
-
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-bool CGuildMarkDownloader::__LoginState_RecvKeyAgreement()
-{
-	TPacketKeyAgreement packet;
-	if (!Recv(sizeof(packet), &packet))
-	{
-		return false;
-	}
-
-	Tracenf("KEY_AGREEMENT RECV %u", packet.wDataLength);
-
-	TPacketKeyAgreement packetToSend;
-	size_t dataLength = TPacketKeyAgreement::MAX_DATA_LEN;
-	size_t agreedLength = Prepare(packetToSend.data, &dataLength);
-	if (agreedLength == 0)
-	{
-		// 초기화 실패
-		Disconnect();
-		return false;
-	}
-	assert(dataLength <= TPacketKeyAgreement::MAX_DATA_LEN);
-
-	if (Activate(packet.wAgreedLength, packet.data, packet.wDataLength))
-	{
-		// Key agreement 성공, 응답 전송
-		packetToSend.bHeader = HEADER_CG_KEY_AGREEMENT;
-		packetToSend.wAgreedLength = (WORD)agreedLength;
-		packetToSend.wDataLength = (WORD)dataLength;
-
-		if (!Send(sizeof(packetToSend), &packetToSend))
-		{
-			Tracen(" CAccountConnector::__AuthState_RecvKeyAgreement - SendKeyAgreement Error");
-			return false;
-		}
-		Tracenf("KEY_AGREEMENT SEND %u", packetToSend.wDataLength);
-	}
-	else
-	{
-		// 키 협상 실패
-		Disconnect();
-		return false;
-	}
-	return true;
-}
-
-bool CGuildMarkDownloader::__LoginState_RecvKeyAgreementCompleted()
-{
-	TPacketKeyAgreementCompleted packet;
-	if (!Recv(sizeof(packet), &packet))
-	{
-		return false;
-	}
-
-	Tracenf("KEY_AGREEMENT_COMPLETED RECV");
-
-	ActivateCipher();
-
-	return true;
-}
-#endif // _IMPROVED_PACKET_ENCRYPTION_
 
 bool CGuildMarkDownloader::__SendSymbolCRCList()
 {

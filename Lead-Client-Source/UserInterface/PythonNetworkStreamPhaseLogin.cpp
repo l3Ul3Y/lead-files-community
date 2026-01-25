@@ -69,9 +69,7 @@ void CPythonNetworkStream::LoginPhase()
 void CPythonNetworkStream::SetLoginPhase()
 {
 	const char* key = LocaleService_GetSecurityKey();
-#ifndef _IMPROVED_PACKET_ENCRYPTION_
 	SetSecurityMode(true, key);
-#endif
 
 	if ("Login" != m_strPhase)
 		m_phaseLeaveFunc.Run();
@@ -230,9 +228,8 @@ bool CPythonNetworkStream::SendLoginPacketNew(const char * c_szName, const char 
 
 	__SendInternalBuffer();
 
-#ifndef _IMPROVED_PACKET_ENCRYPTION_
 	SetSecurityMode(true, (const char *) g_adwEncryptKey, (const char *) g_adwDecryptKey);
-#endif
+
 	return true;
 }
 

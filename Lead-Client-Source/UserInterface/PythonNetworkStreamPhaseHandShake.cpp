@@ -60,18 +60,6 @@ void CPythonNetworkStream::HandShakePhase()
 			RecvHybridCryptSDBPacket();
 			return;
 			break;
-
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-		case HEADER_GC_KEY_AGREEMENT:
-			RecvKeyAgreementPacket();
-			return;
-			break;
-
-		case HEADER_GC_KEY_AGREEMENT_COMPLETED:
-			RecvKeyAgreementCompletedPacket();
-			return;
-			break;
-#endif
 	}
 
 	RecvErrorPacket(header);
@@ -186,66 +174,5 @@ bool CPythonNetworkStream::RecvHybridCryptSDBPacket()
 	return true;
 }
 
-
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-bool CPythonNetworkStream::RecvKeyAgreementPacket()
-{
-	TPacketKeyAgreement packet;
-	if (!Recv(sizeof(packet), &packet))
-	{
-		return false;
-	}
-
-	Tracenf("KEY_AGREEMENT RECV %u", packet.wDataLength);
-
-	TPacketKeyAgreement packetToSend;
-	size_t dataLength = TPacketKeyAgreement::MAX_DATA_LEN;
-	size_t agreedLength = Prepare(packetToSend.data, &dataLength);
-	if (agreedLength == 0)
-	{
-		// 초기화 실패
-		Disconnect();
-		return false;
-	}
-	assert(dataLength <= TPacketKeyAgreement::MAX_DATA_LEN);
-
-	if (Activate(packet.wAgreedLength, packet.data, packet.wDataLength))
-	{
-		// Key agreement 성공, 응답 전송
-		packetToSend.bHeader = HEADER_CG_KEY_AGREEMENT;
-		packetToSend.wAgreedLength = (WORD)agreedLength;
-		packetToSend.wDataLength = (WORD)dataLength;
-
-		if (!Send(sizeof(packetToSend), &packetToSend))
-		{
-			assert(!"Failed Sending KeyAgreement");
-			return false;
-		}
-		Tracenf("KEY_AGREEMENT SEND %u", packetToSend.wDataLength);
-	}
-	else
-	{
-		// 키 협상 실패
-		Disconnect();
-		return false;
-	}
-	return true;
-}
-
-bool CPythonNetworkStream::RecvKeyAgreementCompletedPacket()
-{
-	TPacketKeyAgreementCompleted packet;
-	if (!Recv(sizeof(packet), &packet))
-	{
-		return false;
-	}
-
-	Tracenf("KEY_AGREEMENT_COMPLETED RECV");
-
-	ActivateCipher();
-
-	return true;
-}
-#endif // _IMPROVED_PACKET_ENCRYPTION_
 
 

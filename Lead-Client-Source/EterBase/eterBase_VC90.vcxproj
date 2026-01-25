@@ -130,7 +130,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="cipher.cpp" />
     <ClCompile Include="CPostIt.cpp" />
     <ClCompile Include="CRC32.cpp" />
     <ClCompile Include="Debug.cpp" />
@@ -153,7 +152,6 @@
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cipher.h" />
     <ClInclude Include="CPostIt.h" />
     <ClInclude Include="CRC32.h" />
     <ClInclude Include="Debug.h" />
@@ -169,7 +167,6 @@
     <ClInclude Include="poly\Symbol.h" />
     <ClInclude Include="poly\SymTable.h" />
     <ClInclude Include="Random.h" />
-    <ClInclude Include="ServiceDefs.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="Stl.h" />

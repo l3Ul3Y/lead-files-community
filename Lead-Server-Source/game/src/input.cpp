@@ -184,14 +184,10 @@ void CInputProcessor::Handshake(LPDESC d, const char * c_pData)
 		{
 			if (d->HandshakeProcess(p->dwTime, p->lDelta, false))
 			{
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-				d->SendKeyAgreement();
-#else
 				if (g_bAuthServer)
 					d->SetPhase(PHASE_AUTH);
 				else
 					d->SetPhase(PHASE_LOGIN);
-#endif // #ifdef _IMPROVED_PACKET_ENCRYPTION_
 			}
 		}
 		else
@@ -560,36 +556,6 @@ dev_log(LOG_DEB0, "DC : '%s'", msg.c_str());
 		Pong(d);
 	else if (bHeader == HEADER_CG_HANDSHAKE)
 		Handshake(d, c_pData);
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-	else if (bHeader == HEADER_CG_KEY_AGREEMENT)
-	{
-		// Send out the key agreement completion packet first
-		// to help client to enter encryption mode
-		d->SendKeyAgreementCompleted();
-		// Flush socket output before going encrypted
-		d->ProcessOutput();
-
-		TPacketKeyAgreement* p = (TPacketKeyAgreement*)c_pData;
-		if (!d->IsCipherPrepared())
-		{
-			sys_err ("Cipher isn't prepared. %s maybe a Hacker.", inet_ntoa(d->GetAddr().sin_addr));
-			d->DelayedDisconnect(5);
-			return 0;
-		}
-		if (d->FinishHandshake(p->wAgreedLength, p->data, p->wDataLength)) {
-			// Handshaking succeeded
-			if (g_bAuthServer) {
-				d->SetPhase(PHASE_AUTH);
-			} else {
-				d->SetPhase(PHASE_LOGIN);
-			}
-		} else {
-			sys_log(0, "[CInputHandshake] Key agreement failed: al=%u dl=%u",
-				p->wAgreedLength, p->wDataLength);
-			d->SetPhase(PHASE_CLOSE);
-		}
-	}
-#endif // _IMPROVED_PACKET_ENCRYPTION_
 	else
 		sys_err("Handshake phase does not handle packet %d (fd %d)", bHeader, d->GetSocket());
 

@@ -3,9 +3,6 @@
 
 #include "constants.h"
 #include "input.h"
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-#include "cipher.h"
-#endif
 
 #define MAX_ALLOW_USER                  4096
 //#define MAX_INPUT_LEN			2048
@@ -123,17 +120,10 @@ class DESC
 		DWORD			GetHandshake() const	{ return m_dwHandshake; }
 		DWORD			GetClientTime();
 
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-		void SendKeyAgreement();
-		void SendKeyAgreementCompleted();
-		bool FinishHandshake(size_t agreed_length, const void* buffer, size_t length);
-		bool IsCipherPrepared();
-#else
 		// Obsolete encryption stuff here
 		void			SetSecurityKey(const DWORD * c_pdwKey);
 		const DWORD *	GetEncryptionKey() const { return &m_adwEncryptionKey[0]; }
 		const DWORD *	GetDecryptionKey() const { return &m_adwDecryptionKey[0]; }
-#endif
 
 		// 제국
 		BYTE			GetEmpire();
@@ -232,14 +222,10 @@ class DESC
 		bool			m_bDestroyed;
 		bool			m_bChannelStatusRequested;
 
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-		Cipher cipher_;
-#else
 		// Obsolete encryption stuff here
 		bool			m_bEncrypted;
 		DWORD			m_adwDecryptionKey[4];
 		DWORD			m_adwEncryptionKey[4];
-#endif
 
 	public:
 		LPEVENT			m_pkDisconnectEvent;

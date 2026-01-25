@@ -62,10 +62,7 @@ void DESC::Initialize()
 	memset( &m_SockAddr, 0, sizeof(m_SockAddr) );
 
 	m_pLogFile = NULL;
-
-#ifndef _IMPROVED_PACKET_ENCRYPTION_
 	m_bEncrypted = false;
-#endif
 
 	m_wP2PPort = 0;
 	m_bP2PChannel = 0;
@@ -80,10 +77,8 @@ void DESC::Initialize()
 	m_pkLoginKey = NULL;
 	m_dwLoginKey = 0;
 
-#ifndef _IMPROVED_PACKET_ENCRYPTION_
 	memset( m_adwDecryptionKey, 0, sizeof(m_adwDecryptionKey) );
 	memset( m_adwEncryptionKey, 0, sizeof(m_adwEncryptionKey) );
-#endif
 
 	m_bCRCMagicCubeIdx = 0;
 	m_dwProcCRC = 0;
@@ -148,10 +143,6 @@ void DESC::Destroy()
 		sys_log(0, "SYSTEM: closing socket. DESC #%d", m_sock);
 		Log("SYSTEM: closing socket. DESC #%d", m_sock);
 		fdwatch_del_fd(m_lpFdw, m_sock);
-
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-		cipher_.CleanUp();
-#endif
 
 		socket_close(m_sock);
 		m_sock = INVALID_SOCKET;
@@ -233,10 +224,8 @@ bool DESC::Setup(LPFDWATCH _fdw, socket_t _fd, const struct sockaddr_in & c_rSoc
 
 	m_pkPingEvent = event_create(ping_event, info, ping_event_second_cycle);
 
-#ifndef _IMPROVED_PACKET_ENCRYPTION_
 	thecore_memcpy(m_adwEncryptionKey, "1234abcd5678efgh", sizeof(DWORD) * 4);
 	thecore_memcpy(m_adwDecryptionKey, "1234abcd5678efgh", sizeof(DWORD) * 4);
-#endif // _IMPROVED_PACKET_ENCRYPTION_
 
 	// Set Phase to handshake
 	SetPhase(PHASE_HANDSHAKE);
@@ -271,25 +260,6 @@ int DESC::ProcessInput()
 
 	if (!m_pInputProcessor)
 		sys_err("no input processor");
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-	else
-	{
-		if (cipher_.activated()) {
-			cipher_.Decrypt(const_cast<void*>(buffer_read_peek(m_lpInputBuffer)), buffer_size(m_lpInputBuffer));
-		}
-
-		int iBytesProceed = 0;
-
-		// false가 리턴 되면 다른 phase로 바뀐 것이므로 다시 프로세스로 돌입한다!
-		while (!m_pInputProcessor->Process(this, buffer_read_peek(m_lpInputBuffer), buffer_size(m_lpInputBuffer), iBytesProceed))
-		{
-			buffer_read_proceed(m_lpInputBuffer, iBytesProceed);
-			iBytesProceed = 0;
-		}
-
-		buffer_read_proceed(m_lpInputBuffer, iBytesProceed);
-	}
-#else
 	else if (!m_bEncrypted)
 	{
 		int iBytesProceed = 0;
@@ -314,14 +284,14 @@ int DESC::ProcessInput()
 
 		if (iSizeBuffer > 0)
 		{
-			TEMP_BUFFER	tempbuf;
-			LPBUFFER lpBufferDecrypt = tempbuf.getptr();
-			buffer_adjust_size(lpBufferDecrypt, iSizeBuffer);
+			auto lpBufferDecrypt = buffer_new(iSizeBuffer);
 
-			int iSizeAfter = TEA_Decrypt((DWORD *) buffer_write_peek(lpBufferDecrypt),
-					(DWORD *) buffer_read_peek(m_lpInputBuffer),
-					GetDecryptionKey(),
-					iSizeBuffer);
+			const int iSizeAfter = TEA_Decrypt(
+				static_cast<DWORD*>(buffer_write_peek(lpBufferDecrypt)),
+				static_cast<const DWORD*>(buffer_read_peek(m_lpInputBuffer)),
+				GetDecryptionKey(),
+				iSizeBuffer
+			);
 
 			buffer_write_proceed(lpBufferDecrypt, iSizeAfter);
 
@@ -348,7 +318,6 @@ int DESC::ProcessInput()
 			buffer_read_proceed(m_lpInputBuffer, iBytesProceed);
 		}
 	}
-#endif // _IMPROVED_PACKET_ENCRYPTION_
 
 	return (bytes_read);
 }
@@ -439,21 +408,6 @@ void DESC::Packet(const void * c_pvData, int iSize)
 			iSize = buffer_size(m_lpBufferedOutputBuffer);
 		}
 
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-		void* buf = buffer_write_peek(m_lpOutputBuffer);
-
-		
-		if (packet_encode(m_lpOutputBuffer, c_pvData, iSize))
-		{
-			if (cipher_.activated()) {
-				cipher_.Encrypt(buf, iSize);
-			}
-		}
-		else
-		{
-			m_iPhase = PHASE_CLOSE;
-		}
-#else
 		if (!m_bEncrypted)
 		{
 			if (!packet_encode(m_lpOutputBuffer, c_pvData, iSize))
@@ -485,7 +439,6 @@ void DESC::Packet(const void * c_pvData, int iSize)
 				}
 			}
 		}
-#endif // _IMPROVED_PACKET_ENCRYPTION_
 
 		SAFE_BUFFER_DELETE(m_lpBufferedOutputBuffer);
 	}
@@ -529,24 +482,18 @@ void DESC::SetPhase(int _phase)
 			//MessengerManager::instance().Logout(GetAccountTable().login); // 의도적으로 break 안검
 		case PHASE_LOGIN:
 		case PHASE_LOADING:
-#ifndef _IMPROVED_PACKET_ENCRYPTION_
 			m_bEncrypted = true;
-#endif
 			m_pInputProcessor = &m_inputLogin;
 			break;
 
 		case PHASE_GAME:
 		case PHASE_DEAD:
-#ifndef _IMPROVED_PACKET_ENCRYPTION_
 			m_bEncrypted = true;
-#endif
 			m_pInputProcessor = &m_inputMain;
 			break;
 
 		case PHASE_AUTH:
-#ifndef _IMPROVED_PACKET_ENCRYPTION_
 			m_bEncrypted = true;
-#endif
 			m_pInputProcessor = &m_inputAuth;
 			sys_log(0, "AUTH_PHASE %p", this);
 			break;
@@ -675,47 +622,6 @@ DWORD DESC::GetClientTime()
 {
 	return m_dwClientTime;
 }
-
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-void DESC::SendKeyAgreement()
-{
-	TPacketKeyAgreement packet;
-
-	size_t data_length = TPacketKeyAgreement::MAX_DATA_LEN;
-	size_t agreed_length = cipher_.Prepare(packet.data, &data_length);
-	if (agreed_length == 0) {
-		// Initialization failure
-		SetPhase(PHASE_CLOSE);
-		return;
-	}
-	assert(data_length <= TPacketKeyAgreement::MAX_DATA_LEN);
-
-	packet.bHeader = HEADER_GC_KEY_AGREEMENT;
-	packet.wAgreedLength = (WORD)agreed_length;
-	packet.wDataLength = (WORD)data_length;
-
-	Packet(&packet, sizeof(packet));
-}
-
-void DESC::SendKeyAgreementCompleted()
-{
-	TPacketKeyAgreementCompleted packet;
-
-	packet.bHeader = HEADER_GC_KEY_AGREEMENT_COMPLETED;
-
-	Packet(&packet, sizeof(packet));
-}
-
-bool DESC::FinishHandshake(size_t agreed_length, const void* buffer, size_t length)
-{
-	return cipher_.Activate(false, agreed_length, buffer, length);
-}
-
-bool DESC::IsCipherPrepared()
-{
-	return cipher_.IsKeyPrepared();
-}
-#endif // #ifdef _IMPROVED_PACKET_ENCRYPTION_
 
 void DESC::SetRelay(const char * c_pszName)
 {
@@ -973,13 +879,12 @@ const BYTE* GetKey_20050304Myevan()
 	return (const BYTE*)s_adwKey;
 }
 
-#ifndef _IMPROVED_PACKET_ENCRYPTION_
 void DESC::SetSecurityKey(const DWORD * c_pdwKey)
 {
 	const BYTE * c_pszKey = (const BYTE *) "JyTxtHljHJlVJHorRM301vf@4fvj10-v";
 
-	if (g_iUseLocale)
-		c_pszKey = GetKey_20050304Myevan() + 37;
+	//if (g_iUseLocale)
+	c_pszKey = GetKey_20050304Myevan() + 37;
 
 	thecore_memcpy(&m_adwDecryptionKey, c_pdwKey, 16);
 	TEA_Encrypt(&m_adwEncryptionKey[0], &m_adwDecryptionKey[0], (const DWORD *) c_pszKey, 16);
@@ -988,7 +893,6 @@ void DESC::SetSecurityKey(const DWORD * c_pdwKey)
 			m_adwDecryptionKey[0], m_adwDecryptionKey[1], m_adwDecryptionKey[2], m_adwDecryptionKey[3],
 			m_adwEncryptionKey[0], m_adwEncryptionKey[1], m_adwEncryptionKey[2], m_adwEncryptionKey[3]);
 }
-#endif // _IMPROVED_PACKET_ENCRYPTION_
 
 void DESC::AssembleCRCMagicCube(BYTE bProcPiece, BYTE bFilePiece)
 {

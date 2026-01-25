@@ -40,7 +40,7 @@ inline INT decode_4bytes(const void *a)
 #define packet_encode(buf, data, len) __packet_encode(buf, data, len, __FILE__, __LINE__)
 
 //#define DEFAULT_PACKET_BUFFER_SIZE 32768
-#define DEFAULT_PACKET_BUFFER_SIZE 65536
+#define DEFAULT_PACKET_BUFFER_SIZE (150*1024)
 
 inline bool __packet_encode(LPBUFFER pbuf, const void * data, int length, const char * file, int line)
 {
@@ -53,7 +53,7 @@ inline bool __packet_encode(LPBUFFER pbuf, const void * data, int length, const 
 		return false;
 	}
 
-	//buffer_adjust_size(pbuf, length);
+	buffer_adjust_size(pbuf, length);
 	buffer_write(pbuf, data, length);
 	return true;
 }

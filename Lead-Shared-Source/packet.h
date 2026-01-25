@@ -10,7 +10,6 @@ enum
 	HEADER_CG_HANDSHAKE				= 0xff,
 	HEADER_CG_PONG				= 0xfe,
 	HEADER_CG_TIME_SYNC				= 0xfc,
-	HEADER_CG_KEY_AGREEMENT			= 0xfb, // _IMPROVED_PACKET_ENCRYPTION_
 
 	HEADER_CG_LOGIN				= 1,
 	HEADER_CG_ATTACK				= 2,
@@ -105,8 +104,6 @@ enum
 	HEADER_CG_CLIENT_VERSION2			= 0xf1,
 
 	/********************************************************/
-	HEADER_GC_KEY_AGREEMENT_COMPLETED = 0xfa, // _IMPROVED_PACKET_ENCRYPTION_
-	HEADER_GC_KEY_AGREEMENT			= 0xfb, // _IMPROVED_PACKET_ENCRYPTION_
 	HEADER_GC_TIME_SYNC				= 0xfc,
 	HEADER_GC_PHASE					= 0xfd,
 	HEADER_GC_HANDSHAKE				= 0xff,
@@ -2246,24 +2243,6 @@ public:
 	uint8_t *m_pStream;
 	int32_t iStreamLen;
 } TPacketGCPackageSDB;
-
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-struct TPacketKeyAgreement
-{
-	static const int MAX_DATA_LEN = 256;
-	BYTE bHeader;
-	WORD wAgreedLength;
-	WORD wDataLength;
-	BYTE data[MAX_DATA_LEN];
-};
-
-struct TPacketKeyAgreementCompleted
-{
-	BYTE bHeader;
-	BYTE data[3]; // dummy (not used)
-};
-
-#endif // _IMPROVED_PACKET_ENCRYPTION_
 
 #define MAX_EFFECT_FILE_NAME 128
 typedef struct SPacketGCSpecificEffect

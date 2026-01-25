@@ -63,10 +63,6 @@ class CGuildMarkUploader : public CNetworkStream, public CSingleton<CGuildMarkUp
 		bool __LoginState_RecvPhase();
 		bool __LoginState_RecvHandshake();
 		bool __LoginState_RecvPing();
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-		bool __LoginState_RecvKeyAgreement();
-		bool __LoginState_RecvKeyAgreementCompleted();
-#endif
 
 		bool __AnalyzePacket(UINT uHeader, UINT uPacketSize, bool (CGuildMarkUploader::*pfnDispatchPacket)());
 

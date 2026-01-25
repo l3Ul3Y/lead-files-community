@@ -50,10 +50,7 @@ class CAccountConnector : public CNetworkStream, public CSingleton<CAccountConne
 		bool __AuthState_SendPong();
 		bool __AuthState_RecvAuthSuccess();
 		bool __AuthState_RecvAuthFailure();
-#ifdef _IMPROVED_PACKET_ENCRYPTION_
-		bool __AuthState_RecvKeyAgreement();
-		bool __AuthState_RecvKeyAgreementCompleted();
-#endif
+
 		bool __AuthState_RecvHybridCryptKeys(int VarSize);
 		bool __AuthState_RecvHybridCryptSDB(int VarSize);
 
@@ -62,10 +59,7 @@ class CAccountConnector : public CNetworkStream, public CSingleton<CAccountConne
 		// 제대로 하려면  Packet System Refactoring해야 한다. 
 		bool __AnalyzeVarSizePacket(UINT uHeader, bool (CAccountConnector::*pfnDispatchPacket)(int));
 
-#ifndef _IMPROVED_PACKET_ENCRYPTION_
 		void __BuildClientKey();
-#endif
-
 	protected:
 		UINT m_eState;
 		std::string m_strID;
