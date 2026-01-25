@@ -16,7 +16,7 @@ typedef struct SMapDataContainer
 	int base_y;
 }TMapDataContainer;
 
-#define mbMapDataCType std::map<DWORD, TMapDataContainer*>
+typedef std::map<DWORD, TMapDataContainer*> mbMapDataCType;
 mbMapDataCType mbMapDataContainer;
 
 enum ERegenModes
