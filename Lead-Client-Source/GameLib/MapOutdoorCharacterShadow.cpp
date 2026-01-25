@@ -50,6 +50,9 @@ bool CMapOutdoor::BeginRenderCharacterShadowToTexture()
 {
 	CCamera* pCurrentCamera = CCameraManager::Instance().GetCurrentCamera();
 
+	if (!pCurrentCamera)
+		return false;
+
 	if (recreate)
 		CreateCharacterShadowTexture();
 
