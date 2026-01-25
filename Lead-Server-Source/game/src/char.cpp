@@ -382,13 +382,11 @@ void CHARACTER::Destroy()
 	if (m_pkRegen)
 	{
 		if (m_pkDungeon) {
-			// Dungeon regen may not be valid at this point
 			if (m_pkDungeon->IsValidRegen(m_pkRegen, regen_id_)) {
 				--m_pkRegen->count;
 			}
 		}
 		else {
-			// Is this really safe? NO IT ISNT! F*CK THAT SH!T!
 			if (is_valid_regen(m_pkRegen))
 				--m_pkRegen->count;
 		}
