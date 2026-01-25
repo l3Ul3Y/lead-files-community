@@ -84,9 +84,9 @@ private:
         
         if (it != reg.end())
         {
-            fprintf(m_pFile, "[%02d:%02d:%02d.%03d] %s %s (0x%02X) %dB dt=%u | ",
+            fprintf(m_pFile, "[%02d:%02d:%02d.%03d] %s %s (%d) %d Bytes dt=%u | ",
                    st.wHour, st.wMinute, st.wSecond, st.wMilliseconds,
-                   dir, it->second.name, header, size, dt);
+                   dir, it->second.name, (int)header, size, dt);
             if (it->second.printer)
                 it->second.printer(m_pFile, data, size);
             else
@@ -94,9 +94,9 @@ private:
         }
         else
         {
-            fprintf(m_pFile, "[%02d:%02d:%02d.%03d] %s 0x%02X %dB dt=%u | not registered\n",
+            fprintf(m_pFile, "[%02d:%02d:%02d.%03d] %s %d %d Bytes dt=%u | not registered\n",
                    st.wHour, st.wMinute, st.wSecond, st.wMilliseconds,
-                   dir, header, size, dt);
+                   dir, (int)header, size, dt);
         }
     }
 
