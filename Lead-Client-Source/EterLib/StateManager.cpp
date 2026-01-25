@@ -587,9 +587,6 @@ void CStateManager::RestoreVertexShader()
 
 void CStateManager::SetVertexShader(LPDIRECT3DVERTEXSHADER9 dwShader)
 {
-	if (m_CurrentState.m_dwVertexShader == dwShader)
-		return;
-
 	m_lpD3DDev->SetVertexShader(dwShader);
 	m_CurrentState.m_dwVertexShader = dwShader;
 }
@@ -626,8 +623,6 @@ void CStateManager::RestoreVertexDeclaration()
 }
 void CStateManager::SetVertexDeclaration(LPDIRECT3DVERTEXDECLARATION9 dwShader)
 {
-	//if (m_CurrentState.m_dwVertexDeclaration == dwShader)
-	//	return;
 	m_lpD3DDev->SetVertexDeclaration(dwShader);
 	m_CurrentState.m_dwVertexDeclaration = dwShader;
 }
@@ -647,8 +642,6 @@ void CStateManager::RestoreFVF()
 }
 void CStateManager::SetFVF(DWORD dwShader)
 {
-	if (m_CurrentState.m_dwFVF == dwShader)
-		return;
 	m_lpD3DDev->SetFVF(dwShader);
 	m_CurrentState.m_dwFVF = dwShader;
 }
