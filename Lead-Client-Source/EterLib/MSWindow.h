@@ -30,7 +30,6 @@ class CMSWindow
 
 		void GetMousePosition(POINT* ppt);
 		void GetClientRect(RECT* prc);
-		void GetWindowRect(RECT* prc);
 
 		int	GetScreenWidth();
 		int	GetScreenHeight();

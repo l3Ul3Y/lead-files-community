@@ -911,11 +911,6 @@ bool CPythonApplication::Create(PyObject * poSelf, const char * c_szName, int wi
 	NANOBEGIN
 		Windowed = CPythonSystem::Instance().IsWindowed() ? 1 : 0;
 
-	bool bAnotherWindow = false;
-
-	if (FindWindow(NULL, c_szName))
-		bAnotherWindow = true;
-
 	m_dwWidth = width;
 	m_dwHeight = height;
 
@@ -950,21 +945,11 @@ bool CPythonApplication::Create(PyObject * poSelf, const char * c_szName, int wi
 	{
 		AdjustSize(m_pySystem.GetWidth(), m_pySystem.GetHeight());
 
+		CMSWindow::SetCenterPosition();
+
 		if (Windowed)
 		{
 			m_isWindowed = true;
-
-			if (bAnotherWindow)
-			{
-				RECT rc;
-
-				GetClientRect(&rc);
-
-				int windowWidth = rc.right - rc.left;
-				int windowHeight = (rc.bottom - rc.top);
-
-				CMSApplication::SetPosition(GetScreenWidth() - windowWidth, GetScreenHeight() - 60 - windowHeight);
-			}
 		}
 		else
 		{

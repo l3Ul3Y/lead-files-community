@@ -141,9 +141,46 @@ int	CMSWindow::GetScreenHeight()
 	return GetSystemMetrics(SM_CYSCREEN);
 }
 
-void CMSWindow::GetWindowRect(RECT* prc)
+static bool GetVisualWindowRect(HWND hwnd, RECT& outRect)
 {
-	::GetWindowRect(m_hWnd, prc);
+	if (!::GetWindowRect(hwnd, &outRect))
+		return false;
+
+	using DwmGetWindowAttributeFn = HRESULT(WINAPI*)(HWND, DWORD, PVOID, DWORD);
+	constexpr DWORD ExtendedFrameBounds = 9;
+
+	static HMODULE s_dwm = ::LoadLibraryA("dwmapi.dll");
+	if (!s_dwm)
+		return true;
+
+	static auto s_getAttr =
+		reinterpret_cast<DwmGetWindowAttributeFn>(
+			::GetProcAddress(s_dwm, "DwmGetWindowAttribute"));
+
+	if (!s_getAttr)
+		return true;
+
+	RECT visual{};
+	if (SUCCEEDED(s_getAttr(hwnd, ExtendedFrameBounds, &visual, sizeof(visual))))
+	{
+		outRect = visual;
+	}
+
+	return true;
+}
+
+static POINT GetCenteredPosition(const RECT& visualRect, const RECT& workArea, const RECT& windowRect)
+{
+	const int width = visualRect.right - visualRect.left;
+	const int height = visualRect.bottom - visualRect.top;
+
+	const int dx = visualRect.left - windowRect.left;
+	const int dy = visualRect.top - windowRect.top;
+
+	POINT pt{};
+	pt.x = workArea.left + ((workArea.right - workArea.left) - width) / 2 - dx;
+	pt.y = workArea.top + ((workArea.bottom - workArea.top) - height) / 2 - dy;
+	return pt;
 }
 
 
@@ -165,14 +202,20 @@ void CMSWindow::SetPosition(int x, int y)
 
 void CMSWindow::SetCenterPosition()
 {
-	RECT rc;
+	RECT window{};
+	RECT visual{};
+	RECT workArea{};
 
-	GetClientRect(&rc);
+	if (!::GetWindowRect(m_hWnd, &window))
+		return;
 
-	int windowWidth = rc.right - rc.left;
-	int windowHeight = rc.bottom - rc.top;
+	visual = window;
+	GetVisualWindowRect(m_hWnd, visual);
 
-	SetPosition((GetScreenWidth()-windowWidth)/2, (GetScreenHeight()-windowHeight)/2);
+	::SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
+
+	const POINT pos = GetCenteredPosition(visual, workArea, window);
+	SetPosition(pos.x, pos.y);
 }
 
 void CMSWindow::AdjustSize(int width, int height)
