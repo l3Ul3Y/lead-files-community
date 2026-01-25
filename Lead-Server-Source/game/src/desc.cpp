@@ -284,14 +284,14 @@ int DESC::ProcessInput()
 
 		if (iSizeBuffer > 0)
 		{
-			TEMP_BUFFER	tempbuf;
-			LPBUFFER lpBufferDecrypt = tempbuf.getptr();
-			buffer_adjust_size(lpBufferDecrypt, iSizeBuffer);
+			auto lpBufferDecrypt = buffer_new(iSizeBuffer);
 
-			int iSizeAfter = TEA_Decrypt((DWORD *) buffer_write_peek(lpBufferDecrypt),
-					(DWORD *) buffer_read_peek(m_lpInputBuffer),
-					GetDecryptionKey(),
-					iSizeBuffer);
+			const int iSizeAfter = TEA_Decrypt(
+				static_cast<DWORD*>(buffer_write_peek(lpBufferDecrypt)),
+				static_cast<const DWORD*>(buffer_read_peek(m_lpInputBuffer)),
+				GetDecryptionKey(),
+				iSizeBuffer
+			);
 
 			buffer_write_proceed(lpBufferDecrypt, iSizeAfter);
 

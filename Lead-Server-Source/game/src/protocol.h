@@ -53,7 +53,7 @@ inline bool __packet_encode(LPBUFFER pbuf, const void * data, int length, const 
 		return false;
 	}
 
-	//buffer_adjust_size(pbuf, length);
+	buffer_adjust_size(pbuf, length);
 	buffer_write(pbuf, data, length);
 	return true;
 }
