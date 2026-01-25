@@ -294,10 +294,10 @@ class CStateManager : public CSingleton<CStateManager>
 		void	GetVertexDeclaration(LPDIRECT3DVERTEXDECLARATION9 * pdwShader);
 
 		// FVF
-		void	SaveFVF(DWORD dwShader);
+		void	SaveFVF(DWORD dwFVF);
 		void	RestoreFVF();
-		void	SetFVF(DWORD dwShader);
-		void	GetFVF(DWORD * pdwShader);
+		void	SetFVF(DWORD dwFVF);
+		void	GetFVF(DWORD *pdwFVF);
 
 		// Pixel Shader
 		void	SavePixelShader(LPDIRECT3DPIXELSHADER9 dwShader);

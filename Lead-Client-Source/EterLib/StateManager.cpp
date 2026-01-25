@@ -634,24 +634,25 @@ void CStateManager::GetVertexDeclaration(LPDIRECT3DVERTEXDECLARATION9 * pdwShade
 }
 
 // FVF
-void CStateManager::SaveFVF(DWORD dwShader)
+void CStateManager::SaveFVF(DWORD dwFVF)
 {
 	m_CopyState.m_dwFVF = m_CurrentState.m_dwFVF;
-	SetFVF(dwShader);
+	SetFVF(dwFVF);
 }
 void CStateManager::RestoreFVF()
 {
 	SetFVF(m_CopyState.m_dwFVF);
 }
-void CStateManager::SetFVF(DWORD dwShader)
+void CStateManager::SetFVF(DWORD dwFVF)
 {
-	m_lpD3DDev->SetFVF(dwShader);
-	m_CurrentState.m_dwFVF = dwShader;
+	m_lpD3DDev->SetFVF(dwFVF);
+	m_CurrentState.m_dwFVF = dwFVF;
 }
-void CStateManager::GetFVF(DWORD * pdwShader)
+void CStateManager::GetFVF(DWORD * pdwFVF)
 {
-	*pdwShader = m_CurrentState.m_dwFVF;
+	*pdwFVF = m_CurrentState.m_dwFVF;
 }
+
 // Pixel Shader
 void CStateManager::SavePixelShader(LPDIRECT3DPIXELSHADER9 dwShader)
 {
