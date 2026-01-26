@@ -118,6 +118,7 @@ int event_process(int pulse)
 		 * 리턴 값을 0 이상으로 할 경우 event 에 할당된 메모리 정보를 삭제하지 않도록
 		 * 주의한다.
 		 */
+		the_event->q_el = NULL;
 		the_event->is_processing = TRUE;
 
 		if (!the_event->info)
@@ -186,6 +187,7 @@ void event_destroy(void)
 		}
 
 		cxx_q.Delete(pElem);
+		the_event->q_el = NULL;
 	}
 }
 
