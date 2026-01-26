@@ -1,27 +1,26 @@
-Group Schmuckschatulle
+Group	Gold_Treasure_Box
 {
-	Vnum 50033
-	1	14009	1	1 -- Copper Necklace+9 (Chance 1/3)
-	2	16009	1	1 -- Copper Bracelet+9    (Chance 1/3)
-	3	17009	1	1 -- Copper Earrings+9   (Chance 1/3)
+	Vnum	50083
+	Type	Pct
+	-- 50% chance for item 1, 30% for item 2. You could get both.
+	1	27001	50	100
+	2	27002	10	30
 }
 
-Group Boss_Truhe_Spezial
+Group	Mystery_Box
 {
-	Vnum 50080
-	Type pct
-	1	19	1	20 -- 20% Chance auf Sword+9
-	2	gold	100000	50 -- 50% Chance of 100k Gold
-	3	exp	5000	10 -- 10% Chance of 5000 EXP
+	Vnum	50012
+	Type	Normal
+	-- The sum is 100 + 200 = 300. Chance for 19 is 100/300 (33%).
+	1	19	1	100
+	2	29	1	200
 }
 
-Group Bonus_Set_1
+Group	Special_Rewards
 {
-	Vnum 71135 -- Vnum Item (e.g Halfmoon ring)
-	Type attr
-	1	MAX_HP	2000
-	2	ATT_BONUS_TO_MONSTER	10
-	3	RESIST_MAGIC	15
-	-- The source performs this effect while equip:
-	effect "d:/ymir work/effect/etc/firework/victory.mse"
+	Vnum	10001
+	1	exp	100000	100	-- Give 100,000 Exp
+	2	gold	50000	100 -- Give 50,000 Yang
+	3	mob	101	50	-- Spawn Mob 101 (Wild Dog)
+	4	slow	10	10	-- Slow the player
 }

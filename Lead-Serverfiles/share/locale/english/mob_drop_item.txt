@@ -1,24 +1,54 @@
-Group	Chief_Guard
+Group	WildDog
 {
-	Mob	591
 	Type	kill
-	kill_drop 3 -- How often to dice
-	1	149	1	1 -- 20% Chance of Battle Sword+9
-	2	50300	1	50 -- 50% Chance of Skillbook
+	Mob		101
+	kill_drop	1
+	1	27001	1	50	-- 1. Simple Drop: 50% chance to drop 1x Red Potion(S)
+	2	10~19	1	10	-- 2. Item Range: 10% chance to drop Sword+0 to Sword+9 (Randomly selected)
+	3	290	1	55	100	-- 	# 3. Rare Drop: 5% chance to drop Full Moon Sword with 100% chance of having attributes (RarePct)
 }
 
-Group	AzraelDrop
+Group	MetinOfBattle
 {
 	Type	drop
-	Mob	2598
-	1	50082	1	100 -- Drop 100%
-	2	70005	1	50
+	Mob		8001
+	1	50300	1	100.0	-- 1. 100% Chance to drop Skill Book (50300)
+	2	28000,28004	1	50.0	-- 2. 50% Chance to drop a Stone+0 to Stone+2 (using range)
 }
 
-Group	LevelLimitDrop
+Group	BlueDragon
 {
 	Type	limit
-	Mob	101
-	level_limit	15 -- Drop until Level 15
-	1	19	1	1
+	Mob		2493
+	level_limit_start	80
+	level_limit_end		105
+	-- Only players between Lv 80 and 105 can get these drops
+	1	50112	1	100.0
+	2	71123	1	50.0
 }
+
+Group	OrcChief
+{
+	Type	thiefgloves
+	Mob		691
+	1	50082	1	100.0	-- Only drops if wearing Thief Gloves
+}
+
+-- 1. Range: Applies to Mobs 101, 102, 103, 104, 105
+Group	DogsAndWolves
+{
+	Type	kill
+	Mob		101~105
+	kill_drop	1
+	1	27001	1	100
+}
+
+-- 2. List: Applies to Mobs 101, 191, 691 (Comma separated)
+Group	SpecificMobs
+{
+	Type	kill
+	Mob		101,191,691
+	kill_drop	1
+	1	27002	1	100
+}
+

@@ -1,1 +1,9 @@
-PAWN						S_PAWN						KNIGHT						S_KNIGHT					
+// TYPE	LV_START	LV_END	PERCENT	ITEM	COUNT	RACE
+// 1. Standard Drop: All BOSSES between Lv 50-105 drop Blessing Scroll (25040) with 30% chance.
+BOSS	50	105	30.0	25040	1	ALL
+// 2. Race Specific: All PAWN between Lv 80-105 drop a weapon ONLY for SURAS.
+PAWN	80	105	10.0	27001	1	SURA
+// 3. Item Range: All KNIGHTS drop a random item between vnum 19 and 29.
+KNIGHT	1	105	5.0	19~29	1	ALL
+// 4. Item Group: All S_KNIGHTS drop a random item from "group_common_drop" defined in special_item_group.txt.
+S_KNIGHT 1	105	0.5	119	1	ALL

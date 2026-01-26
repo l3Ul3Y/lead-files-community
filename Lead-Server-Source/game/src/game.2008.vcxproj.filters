@@ -145,6 +145,7 @@
     <ClCompile Include="war_map.cpp" />
     <ClCompile Include="wedding.cpp" />
     <ClCompile Include="xmas_event.cpp" />
+    <ClCompile Include="public_table.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="affect.h" />
