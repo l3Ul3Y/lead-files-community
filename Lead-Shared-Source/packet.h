@@ -1994,21 +1994,6 @@ typedef struct SPacketGCChangeName
 	char name[CHARACTER_NAME_MAX_LEN+1];
 } TPacketGCChangeName;
 
-
-typedef struct command_client_version
-{
-	BYTE header;
-	char filename[32+1];
-	char timestamp[32+1];
-} TPacketCGClientVersion;
-
-typedef struct command_client_version2
-{
-	BYTE header;
-	char filename[32+1];
-	char timestamp[32+1];
-} TPacketCGClientVersion2;
-
 typedef struct packet_channel
 {
 	BYTE header;
