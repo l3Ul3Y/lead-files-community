@@ -4,7 +4,7 @@ PORT: 13001
 P2P_PORT: 14001
 DB_ADDR: 127.0.0.1
 DB_PORT: 15000
-MAP_ALLOW: 21 24 25 26 108 61 63 69 70 73 216 217 303
+MAP_ALLOW: 1 21 24 25 26 108 61 63 69 70 73 216 217 303
 PLAYER_SQL: 127.0.0.1 metin2 password player
 COMMON_SQL: 127.0.0.1 metin2 password common
 LOG_SQL: 127.0.0.1 metin2 password log
@@ -23,5 +23,6 @@ MALL_URL: google.com
 TRAFFIC_PROFILE: 
 TEST_SERVER: 0
 MAX_LEVEL: 105
+CREATE_PUBLIC_FILES: 1
 #BIND_IP: Your Private/Internal IPv4 address
 #PROXY_IP: Your Public/External IPv4 address

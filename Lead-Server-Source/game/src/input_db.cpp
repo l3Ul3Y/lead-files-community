@@ -890,6 +890,8 @@ void CInputDB::Boot(const char* data)
 	{
 		CMobManager::instance().DumpRegenCount("mob_count");
 	}
+
+	extern void PUBLIC_CreateLists();
 }
 
 EVENTINFO(quest_login_event_info)

@@ -17,6 +17,7 @@
 #include "locale_service.h"
 #include "item.h"
 #include "item_manager.h"
+#include "item_manager_private_types.h"
 
 #include "common/VnumHelper.h"
 #include "DragonSoul.h"
@@ -633,28 +634,6 @@ bool ITEM_MANAGER::GetVnumByOriginalName(const char * c_pszName, DWORD & r_dwVnu
 
 	return false;
 }
-
-class CItemDropInfo
-{
-	public:
-		CItemDropInfo(int iLevelStart, int iLevelEnd, int iPercent, DWORD dwVnum) :
-			m_iLevelStart(iLevelStart), m_iLevelEnd(iLevelEnd), m_iPercent(iPercent), m_dwVnum(dwVnum)
-			{
-			}
-
-		int	m_iLevelStart;
-		int	m_iLevelEnd;
-		int	m_iPercent; // 1 ~ 1000
-		DWORD	m_dwVnum;
-
-		friend bool operator < (const CItemDropInfo & l, const CItemDropInfo & r)
-		{
-			return l.m_iLevelEnd < r.m_iLevelEnd;
-		}
-};
-
-extern std::vector<CItemDropInfo> g_vec_pkCommonDropItem[MOB_RANK_MAX_NUM];
-
 // 20050503.ipkn.
 // iMinimum 보다 작으면 iDefault 세팅 (단, iMinimum은 0보다 커야함)
 // 1, 0 식으로 ON/OFF 되는 방식을 지원하기 위해 존재
@@ -725,6 +704,8 @@ bool ITEM_MANAGER::GetDropPct(LPCHARACTER pkChr, LPCHARACTER pkKiller, OUT int& 
 bool ITEM_MANAGER::CreateDropItem(LPCHARACTER pkChr, LPCHARACTER pkKiller, std::vector<LPITEM> & vec_item)
 {
 	int iLevel = pkKiller->GetLevel();
+	bool iLevelMin = false;
+	bool iLevelMax = false;
 
 	int iDeltaPercent, iRandRange;
 	if (!GetDropPct(pkChr, pkKiller, iDeltaPercent, iRandRange))
@@ -738,17 +719,23 @@ bool ITEM_MANAGER::CreateDropItem(LPCHARACTER pkChr, LPCHARACTER pkKiller, std::
 
 	while (it != g_vec_pkCommonDropItem[bRank].end())
 	{
-		const CItemDropInfo & c_rInfo = *(it++);
+		const CItemDropInfo& c_rInfo = *(it++);
 
 		if (iLevel < c_rInfo.m_iLevelStart || iLevel > c_rInfo.m_iLevelEnd)
 			continue;
 
+		if (c_rInfo.m_bJob > 0)
+		{
+			if (c_rInfo.m_bJob != pkKiller->GetJob() + 1)
+				continue;
+		}
+
 		int iPercent = (c_rInfo.m_iPercent * iDeltaPercent) / 100;
-		sys_log(3, "CreateDropItem %d ~ %d %d(%d)", c_rInfo.m_iLevelStart, c_rInfo.m_iLevelEnd, c_rInfo.m_dwVnum, iPercent, c_rInfo.m_iPercent);
 
 		if (iPercent >= number(1, iRandRange))
 		{
-			TItemTable * table = GetTable(c_rInfo.m_dwVnum);
+			DWORD ranItem = number(c_rInfo.m_dwVnumStart, c_rInfo.m_dwVnumEnd);
+			TItemTable* table = GetTable(ranItem);
 
 			if (!table)
 				continue;
@@ -757,16 +744,16 @@ bool ITEM_MANAGER::CreateDropItem(LPCHARACTER pkChr, LPCHARACTER pkKiller, std::
 
 			if (table->bType == ITEM_POLYMORPH)
 			{
-				if (c_rInfo.m_dwVnum == pkChr->GetPolymorphItemVnum())
+				if (ranItem == pkChr->GetPolymorphItemVnum())
 				{
-					item = CreateItem(c_rInfo.m_dwVnum, 1, 0, true);
+					item = CreateItem(ranItem, 1, 0, true);
 
 					if (item)
 						item->SetSocket(0, pkChr->GetRaceNum());
 				}
 			}
 			else
-				item = CreateItem(c_rInfo.m_dwVnum, 1, 0, true);
+				item = CreateItem(ranItem, 1, 0, true);
 
 			if (item) vec_item.push_back(item);
 		}
@@ -787,7 +774,7 @@ bool ITEM_MANAGER::CreateDropItem(LPCHARACTER pkChr, LPCHARACTER pkKiller, std::
 
 				if (iPercent >= number(1, iRandRange))
 				{
-					item = CreateItem(v[i].dwVnum, v[i].iCount, 0, true);
+					item = CreateItem(number(v[i].dwVnumStart, v[i].dwVnumEnd), v[i].iCount, 0, true);
 
 					if (item)
 					{
@@ -811,24 +798,34 @@ bool ITEM_MANAGER::CreateDropItem(LPCHARACTER pkChr, LPCHARACTER pkKiller, std::
 		itertype(m_map_pkMobItemGroup) it;
 		it = m_map_pkMobItemGroup.find(pkChr->GetRaceNum());
 
-		if ( it != m_map_pkMobItemGroup.end() )
+		if (it != m_map_pkMobItemGroup.end())
 		{
-			CMobItemGroup* pGroup = it->second;
+			std::vector<CMobItemGroup*>& vec_pGroups = it->second;
 
-			// MOB_DROP_ITEM_BUG_FIX
-			// 20050805.myevan.MobDropItem 에 아이템이 없을 경우 CMobItemGroup::GetOne() 접근시 문제 발생 수정
-			if (pGroup && !pGroup->IsEmpty())
+			for (int i = 0; i < vec_pGroups.size(); ++i)
 			{
-				int iPercent = 40000 * iDeltaPercent / pGroup->GetKillPerDrop();
-				if (iPercent >= number(1, iRandRange))
-				{
-					const CMobItemGroup::SMobItemGroupInfo& info = pGroup->GetOne();
-					item = CreateItem(info.dwItemVnum, info.iCount, 0, true, info.iRarePct);
+				CMobItemGroup* pGroup = vec_pGroups[i];
 
-					if (item) vec_item.push_back(item);
+				// MOB_DROP_ITEM_BUG_FIX
+				// 20050805.myevan.MobDropItem 에 아이템이 없을 경우 CMobItemGroup::GetOne() 접근시 문제 발생 수정
+				if (pGroup && !pGroup->IsEmpty())
+				{
+					int iPercent = 10000 * iDeltaPercent / pGroup->GetKillPerDrop();
+
+					if (test_server)
+						sys_log(0, "DropItem [\"KILL\"]: perc %u randRange %u (killPerDrop %u)", iPercent, iRandRange, pGroup->GetKillPerDrop());
+
+					if (iPercent >= number(1, iRandRange))
+					{
+						const CMobItemGroup::SMobItemGroupInfo& info = pGroup->GetOne();
+						item = CreateItem(number(info.dwItemVnumStart, info.dwItemVnumEnd), info.iCount, 0, true, info.iRarePct);
+
+						if (item)
+							vec_item.push_back(item);
+					}
 				}
+				// END_OF_MOB_DROP_ITEM_BUG_FIX
 			}
-			// END_OF_MOB_DROP_ITEM_BUG_FIX
 		}
 	}
 
@@ -837,29 +834,37 @@ bool ITEM_MANAGER::CreateDropItem(LPCHARACTER pkChr, LPCHARACTER pkKiller, std::
 		itertype(m_map_pkLevelItemGroup) it;
 		it = m_map_pkLevelItemGroup.find(pkChr->GetRaceNum());
 
-		if ( it != m_map_pkLevelItemGroup.end() )
+		if (it != m_map_pkLevelItemGroup.end())
 		{
-			if ( it->second->GetLevelLimit() <= (DWORD)iLevel )
+			if (it->second->GetLevelLimitStart() <= (DWORD)iLevel)
+			{
+				iLevelMin = true;
+			}
+			if (it->second->GetLevelLimitEnd() >= (DWORD)iLevel)
+			{
+				iLevelMax = true;
+			}
+			if (iLevelMin && iLevelMax)
 			{
 				typeof(it->second->GetVector()) v = it->second->GetVector();
 
-				for ( DWORD i=0; i < v.size(); i++ )
+				for (DWORD i = 0; i < v.size(); i++)
 				{
-					if ( v[i].dwPct >= (DWORD)number(1, 1000000/*iRandRange*/) )
+					if (v[i].dwPct >= (DWORD)number(1, 1000000))
 					{
-						DWORD dwVnum = v[i].dwVNum;
+						DWORD dwVnum = number(v[i].dwVNumStart, v[i].dwVNumEnd);
 						item = CreateItem(dwVnum, v[i].iCount, 0, true);
-						if ( item ) vec_item.push_back(item);
+						if (item) vec_item.push_back(item);
 					}
 				}
 			}
 		}
 	}
-	
+
 	// BuyerTheitGloves Item Group
 	{
 		if (pkKiller->GetPremiumRemainSeconds(PREMIUM_ITEM) > 0 ||
-				pkKiller->IsEquipUniqueGroup(UNIQUE_GROUP_DOUBLE_ITEM))
+			pkKiller->IsEquipUniqueGroup(UNIQUE_GROUP_DOUBLE_ITEM))
 		{
 			itertype(m_map_pkGloveItemGroup) it;
 			it = m_map_pkGloveItemGroup.find(pkChr->GetRaceNum());
@@ -874,7 +879,7 @@ bool ITEM_MANAGER::CreateDropItem(LPCHARACTER pkChr, LPCHARACTER pkKiller, std::
 
 					if (iPercent >= number(1, iRandRange))
 					{
-						DWORD dwVnum = v[i].dwVnum;
+						DWORD dwVnum = number(v[i].dwVnumStart, v[i].dwVnumEnd);
 						item = CreateItem(dwVnum, v[i].iCount, 0, true);
 						if (item) vec_item.push_back(item);
 					}
@@ -882,7 +887,7 @@ bool ITEM_MANAGER::CreateDropItem(LPCHARACTER pkChr, LPCHARACTER pkKiller, std::
 			}
 		}
 	}
-	
+
 	// 잡템
 	if (pkChr->GetMobDropItemVnum())
 	{
@@ -1571,4 +1576,37 @@ void ITEM_MANAGER::CopyAllAttrTo(LPITEM pkOldItem, LPITEM pkNewItem)
 
 	// 매직 아이템 설정
 	pkOldItem->CopyAttributeTo(pkNewItem);
+}
+
+bool ITEM_MANAGER::GetVnumRangeByString(const std::string& stVnumRange, DWORD& r_dwVnumStart, DWORD& r_dwVnumEnd)
+{
+	int iPos;
+
+	if ((iPos = stVnumRange.find("~")) > 0)
+	{
+		std::string vnum_start, vnum_end;
+		vnum_start.assign(stVnumRange, 0, iPos);
+		vnum_end.assign(stVnumRange, iPos + 1, stVnumRange.length());
+
+		if (!str_is_number(vnum_start.c_str()) || !str_is_number(vnum_end.c_str()))
+			return false;
+
+		int iRange[2];
+
+		str_to_number(iRange[0], vnum_start.c_str());
+		str_to_number(iRange[1], vnum_end.c_str());
+		if (iRange[0] > iRange[1])
+		{
+			int iFirstVnum = iRange[0];
+			iRange[0] = iRange[1];
+			iRange[1] = iFirstVnum;
+		}
+
+		r_dwVnumStart = iRange[0];
+		r_dwVnumEnd = iRange[1];
+
+		return true;
+	}
+
+	return false;
 }
