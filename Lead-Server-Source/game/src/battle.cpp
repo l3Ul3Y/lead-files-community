@@ -360,7 +360,7 @@ void Item_GetDamage(LPITEM pkItem, int* pdamMin, int* pdamMax)
 	}
 
 	if (pkItem->GetType() != ITEM_WEAPON)
-		sys_err("Item_GetDamage - !ITEM_WEAPON vnum=%d, type=%d", pkItem->GetOriginalVnum(), pkItem->GetType());
+		sys_err("Item_GetDamage - !ITEM_WEAPON vnum=%d, type=%d", pkItem->GetVnum(), pkItem->GetType());
 
 	*pdamMin = pkItem->GetValue(3);
 	*pdamMax = pkItem->GetValue(4);

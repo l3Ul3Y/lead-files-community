@@ -65,7 +65,7 @@ void LogManager::ItemLog(LPCHARACTER ch, LPITEM item, const char * c_pszText, co
 	ItemLog(ch->GetPlayerID(), ch->GetX(), ch->GetY(), item->GetID(),
 			NULL == c_pszText ? "" : c_pszText,
 		   	c_pszHint, ch->GetDesc() ? ch->GetDesc()->GetHostName() : "",
-		   	item->GetOriginalVnum());
+		   	item->GetVnum());
 }
 
 void LogManager::ItemLog(LPCHARACTER ch, int itemID, int itemVnum, const char * c_pszText, const char * c_pszHint)

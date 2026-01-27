@@ -2099,7 +2099,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 				if (item->GetVnum() > 50800 && item->GetVnum() <= 50820)
 				{
 					if (test_server)
-						sys_log (0, "ADD addtional effect : vnum(%d) subtype(%d)", item->GetOriginalVnum(), item->GetSubType());
+						sys_log (0, "ADD addtional effect : vnum(%d) subtype(%d)", item->GetVnum(), item->GetSubType());
 
 					int affect_type = AFFECT_EXP_BONUS_EURO_FREE;
 					int apply_type = aApplyInfo[item->GetValue(0)].bPointType;
@@ -2276,7 +2276,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 				if (test_server)
 				{
-					 sys_log (0, "USE_ITEM %s Type %d SubType %d vnum %d", item->GetName(), item->GetType(), item->GetSubType(), item->GetOriginalVnum());
+					 sys_log (0, "USE_ITEM %s Type %d SubType %d vnum %d", item->GetName(), item->GetType(), item->GetSubType(), item->GetVnum());
 				}
 
 				switch (item->GetSubType())
@@ -3682,7 +3682,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 												"ADD_RARE_ATTR",
 												buf,
 												GetDesc()->GetHostName(),
-												item->GetOriginalVnum());
+												item->GetVnum());
 
 										item->SetCount(item->GetCount() - 1);
 									}
@@ -4505,7 +4505,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 													"ADD_ATTRIBUTE_SUCCESS",
 													buf,
 													GetDesc()->GetHostName(),
-													item->GetOriginalVnum());
+													item->GetVnum());
 										}
 										else
 										{
@@ -4550,7 +4550,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 													"ADD_ATTRIBUTE2_SUCCESS",
 													buf,
 													GetDesc()->GetHostName(),
-													item->GetOriginalVnum());
+													item->GetVnum());
 										}
 										else
 										{
@@ -5210,7 +5210,7 @@ bool CHARACTER::DropItem(TItemPos Cell, BYTE bCount)
 		ITEM_MANAGER::instance().FlushDelayedSave(pkItemToDrop);
 		
 		char szHint[32 + 1];
-		snprintf(szHint, sizeof(szHint), "%s %u %u", pkItemToDrop->GetName(), pkItemToDrop->GetCount(), pkItemToDrop->GetOriginalVnum());
+		snprintf(szHint, sizeof(szHint), "%s %u %u", pkItemToDrop->GetName(), pkItemToDrop->GetCount(), pkItemToDrop->GetVnum());
 		LogManager::instance().ItemLog(this, pkItemToDrop, "DROP", szHint);
 		//Motion(MOTION_PICKUP);
 	}
@@ -5600,7 +5600,7 @@ bool CHARACTER::PickupItem(DWORD dwVID)
 					item->AddToCharacter(this, TItemPos(INVENTORY, iEmptyCell));
 
 				char szHint[32+1];
-				snprintf(szHint, sizeof(szHint), "%s %u %u", item->GetName(), item->GetCount(), item->GetOriginalVnum());
+				snprintf(szHint, sizeof(szHint), "%s %u %u", item->GetName(), item->GetCount(), item->GetVnum());
 				LogManager::instance().ItemLog(this, item, "GET", szHint);
 				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s received"), item->GetName());
 
@@ -5657,7 +5657,7 @@ bool CHARACTER::PickupItem(DWORD dwVID)
 				item->AddToCharacter(owner, TItemPos(INVENTORY, iEmptyCell));
 
 			char szHint[32+1];
-			snprintf(szHint, sizeof(szHint), "%s %u %u", item->GetName(), item->GetCount(), item->GetOriginalVnum());
+			snprintf(szHint, sizeof(szHint), "%s %u %u", item->GetName(), item->GetCount(), item->GetVnum());
 			LogManager::instance().ItemLog(owner, item, "GET", szHint);
 
 			if (owner == this)
@@ -6957,7 +6957,7 @@ bool CHARACTER::ItemProcess_Polymorph(LPITEM item)
 			break;
 
 		default :
-			sys_err("POLYMORPH invalid item passed PID(%d) vnum(%d)", GetPlayerID(), item->GetOriginalVnum());
+			sys_err("POLYMORPH invalid item passed PID(%d) vnum(%d)", GetPlayerID(), item->GetVnum());
 			return false;
 	}
 

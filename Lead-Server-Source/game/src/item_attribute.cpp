@@ -305,7 +305,7 @@ void CItem::SetAttribute(int i, BYTE bType, short sValue)
 		if (GetOwner() && GetOwner()->GetDesc())
 			pszIP = GetOwner()->GetDesc()->GetHostName();
 
-		LogManager::instance().ItemLog(i, bType, sValue, GetID(), "SET_ATTR", "", pszIP ? pszIP : "", GetOriginalVnum());
+		LogManager::instance().ItemLog(i, bType, sValue, GetID(), "SET_ATTR", "", pszIP ? pszIP : "", GetVnum());
 	}
 }
 
@@ -325,7 +325,7 @@ void CItem::SetForceAttribute(int i, BYTE bType, short sValue)
 		if (GetOwner() && GetOwner()->GetDesc())
 			pszIP = GetOwner()->GetDesc()->GetHostName();
 
-		LogManager::instance().ItemLog(i, bType, sValue, GetID(), "SET_FORCE_ATTR", "", pszIP ? pszIP : "", GetOriginalVnum());
+		LogManager::instance().ItemLog(i, bType, sValue, GetID(), "SET_FORCE_ATTR", "", pszIP ? pszIP : "", GetVnum());
 	}
 }
 
@@ -364,7 +364,7 @@ bool CItem::ChangeRareAttribute()
 	if (GetOwner() && GetOwner()->GetDesc())
 		LogManager::instance().ItemLog(GetOwner(), this, "SET_RARE_CHANGE", "");
 	else
-		LogManager::instance().ItemLog(0, 0, 0, GetID(), "SET_RARE_CHANGE", "", "", GetOriginalVnum());
+		LogManager::instance().ItemLog(0, 0, 0, GetID(), "SET_RARE_CHANGE", "", "", GetVnum());
 
 	for (int i = 0; i < cnt; ++i)
 	{
@@ -415,7 +415,7 @@ bool CItem::AddRareAttribute()
 	if (GetOwner() && GetOwner()->GetDesc())
 		pszIP = GetOwner()->GetDesc()->GetHostName();
 
-	LogManager::instance().ItemLog(pos, attr.bType, attr.sValue, GetID(), "SET_RARE", "", pszIP ? pszIP : "", GetOriginalVnum());
+	LogManager::instance().ItemLog(pos, attr.bType, attr.sValue, GetID(), "SET_RARE", "", pszIP ? pszIP : "", GetVnum());
 	return true;
 }
 

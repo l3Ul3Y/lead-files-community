@@ -787,7 +787,6 @@ void CInputDB::Boot(const char* data)
 	char szDropItemGroupFileName[FILE_NAME_LEN];
 	char szSpecialItemGroupFileName[FILE_NAME_LEN];
 	char szMapIndexFileName[FILE_NAME_LEN];
-	char szItemVnumMaskTableFileName[FILE_NAME_LEN];
 	char szDragonSoulTableFileName[FILE_NAME_LEN];
 
 	snprintf(szCommonDropItemFileName, sizeof(szCommonDropItemFileName),
@@ -802,8 +801,6 @@ void CInputDB::Boot(const char* data)
 			"%s/drop_item_group.txt", LocaleService_GetBasePath().c_str());
 	snprintf(szMapIndexFileName, sizeof(szMapIndexFileName),
 			"%s/index", LocaleService_GetMapPath().c_str());
-	snprintf(szItemVnumMaskTableFileName, sizeof(szItemVnumMaskTableFileName),
-			"%s/ori_to_new_table.txt", LocaleService_GetBasePath().c_str());
 	snprintf(szDragonSoulTableFileName, sizeof(szDragonSoulTableFileName),
 			"%s/dragon_soul_table.txt", LocaleService_GetBasePath().c_str());
 
@@ -845,12 +842,6 @@ void CInputDB::Boot(const char* data)
 		sys_err("cannot load SpecialItemGroup: %s", szSpecialItemGroupFileName);
 		thecore_shutdown();
 		return;
-	}
-
-	sys_log(0, "LoadLocaleFile: ItemVnumMaskTable : %s", szItemVnumMaskTableFileName);
-	if (!ITEM_MANAGER::instance().ReadItemVnumMaskTable(szItemVnumMaskTableFileName))
-	{
-		sys_log(0, "Could not open MaskItemTable");
 	}
 
 	sys_log(0, "LoadLocaleFile: MOBDropItemFile: %s", szMOBDropItemFileName);

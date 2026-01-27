@@ -648,7 +648,7 @@ namespace quest
 	bool CQuestManager::UseItem(unsigned int pc, LPITEM item, bool bReceiveAll)
 	{
 		if (test_server)
-			sys_log( 0, "questmanager::UseItem Start : itemVnum : %d PC : %d", item->GetOriginalVnum(), pc);
+			sys_log( 0, "questmanager::UseItem Start : itemVnum : %d PC : %d", item->GetVnum(), pc);
 		PC* pPC;
 		if ((pPC = GetPC(pc)))
 		{
@@ -666,12 +666,12 @@ namespace quest
 			/*
 			if (test_server)
 			{
-				sys_log( 0, "Quest UseItem Start : itemVnum : %d PC : %d", item->GetOriginalVnum(), pc);
+				sys_log( 0, "Quest UseItem Start : itemVnum : %d PC : %d", item->GetVnum(), pc);
 				itertype(m_mapNPC) it = m_mapNPC.begin();
 				itertype(m_mapNPC) end = m_mapNPC.end();
 				for( ; it != end ; ++it)
 				{
-					sys_log( 0, "Quest UseItem : vnum : %d item Vnum : %d", it->first, item->GetOriginalVnum());
+					sys_log( 0, "Quest UseItem : vnum : %d item Vnum : %d", it->first, item->GetVnum());
 				}
 			}
 			if(test_server)
@@ -692,7 +692,7 @@ namespace quest
 	bool CQuestManager::SIGUse(unsigned int pc, DWORD sig_vnum, LPITEM item, bool bReceiveAll)
 	{
 		if (test_server)
-			sys_log( 0, "questmanager::SIGUse Start : itemVnum : %d PC : %d", item->GetOriginalVnum(), pc);
+			sys_log( 0, "questmanager::SIGUse Start : itemVnum : %d PC : %d", item->GetVnum(), pc);
 		PC* pPC;
 		if ((pPC = GetPC(pc)))
 		{
@@ -1752,7 +1752,7 @@ namespace quest
 	bool CQuestManager::PickupItem(unsigned int pc, LPITEM item)
 	{
 		if (test_server)
-			sys_log( 0, "questmanager::PickupItem Start : itemVnum : %d PC : %d", item->GetOriginalVnum(), pc);
+			sys_log( 0, "questmanager::PickupItem Start : itemVnum : %d PC : %d", item->GetVnum(), pc);
 		PC* pPC;
 		if ((pPC = GetPC(pc)))
 		{

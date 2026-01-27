@@ -127,7 +127,7 @@ bool ITEM_MANAGER::Initialize(TItemTable * table, int size)
 		LPITEM item = it->second;
 		++it;
 
-		const TItemTable* tableInfo = GetTable(item->GetOriginalVnum());
+		const TItemTable* tableInfo = GetTable(item->GetVnum());
 
 		if (NULL == tableInfo)
 		{
@@ -145,12 +145,6 @@ LPITEM ITEM_MANAGER::CreateItem(DWORD vnum, DWORD count, DWORD id, bool bTryMagi
 {
 	if (0 == vnum)
 		return NULL;
-
-	DWORD dwMaskVnum = 0;
-	if (GetMaskVnum(vnum))
-	{
-		dwMaskVnum = GetMaskVnum(vnum);
-	}
 
 	const TItemTable* table = GetTable(vnum);
 
@@ -176,7 +170,6 @@ LPITEM ITEM_MANAGER::CreateItem(DWORD vnum, DWORD count, DWORD id, bool bTryMagi
 	//초기화 하고. 테이블 셋하고
 	item->Initialize();
 	item->SetProto(table);
-	item->SetMaskVnum(dwMaskVnum);
 
 	if (item->GetType() == ITEM_ELK) // 돈은 ID가 필요없고 저장도 필요없다.
 		item->SetSkipSave(true);
@@ -426,7 +419,7 @@ void ITEM_MANAGER::SaveSingleItem(LPITEM item)
 	t.window = item->GetWindow();
 	t.pos = t.window == EQUIPMENT ? item->GetCell() - INVENTORY_MAX_NUM : item->GetCell();
 	t.count = item->GetCount();
-	t.vnum = item->GetOriginalVnum();
+	t.vnum = item->GetVnum();
 	t.owner = (t.window == SAFEBOX || t.window == MALL) ? item->GetOwner()->GetDesc()->GetAccountTable().id : item->GetOwner()->GetPlayerID();
 	thecore_memcpy(t.alSockets, item->GetSockets(), sizeof(t.alSockets));
 	thecore_memcpy(t.aAttr, item->GetAttributes(), sizeof(t.aAttr));
@@ -1673,17 +1666,6 @@ const CSpecialAttrGroup* ITEM_MANAGER::GetSpecialAttrGroup(DWORD dwVnum)
 		return it->second;
 	}
 	return NULL;
-}
-
-DWORD ITEM_MANAGER::GetMaskVnum(DWORD dwVnum)
-{
-	TMapDW2DW::iterator it = m_map_new_to_ori.find (dwVnum);
-	if (it != m_map_new_to_ori.end())
-	{
-		return it->second;
-	}
-	else
-		return 0;
 }
 
 // pkNewItem으로 모든 속성과 소켓 값들을 목사하는 함수.

@@ -200,7 +200,6 @@ ACMD(do_event_helper);
 ACMD(do_get_mob_count);
 
 ACMD(do_dice);
-ACMD(do_special_item);
 
 ACMD(do_click_mall);
 
@@ -467,7 +466,6 @@ struct command_info cmd_info[] =
 
 	{ "dice",				do_dice,				0,	POS_DEAD,	GM_PLAYER		},
 	{ "¡÷ªÁ¿ß",				do_dice,				0,	POS_DEAD,	GM_PLAYER		},
-	{ "special_item",			do_special_item,	0,	POS_DEAD,	GM_IMPLEMENTOR		},
 
 	{ "click_mall",			do_click_mall,			0,	POS_DEAD,	GM_PLAYER		},
 

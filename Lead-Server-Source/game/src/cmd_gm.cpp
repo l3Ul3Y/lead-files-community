@@ -3707,11 +3707,6 @@ ACMD(do_clear_land)
 	building::CManager::instance().ClearLand(pLand->GetID());
 }
 
-ACMD(do_special_item)
-{
-    ITEM_MANAGER::instance().ConvSpecialDropItemFile();
-}
-
 ACMD(do_set_stat)
 {
 	char szName [256];
