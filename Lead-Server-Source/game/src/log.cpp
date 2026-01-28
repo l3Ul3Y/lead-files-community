@@ -269,7 +269,7 @@ void LogManager::DetailLoginLog(bool isLogin, LPCHARACTER ch)
 	if (true == isLogin)
 	{
 		Query("INSERT INTO loginlog2(type, is_gm, login_time, channel, account_id, pid, ip) "
-				"VALUES('INVALID', %s, NOW(), %d, %u, %u, inet_aton('%s'), '%s')",
+				"VALUES('INVALID', %s, NOW(), %d, %u, %u, inet_aton('%s'))",
 				ch->IsGM() == true ? "'Y'" : "'N'",
 				g_bChannel,
 				ch->GetDesc()->GetAccountTable().id,

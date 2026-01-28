@@ -7,24 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Servers", "Servers", "{A168341F-FAE3-4DE6-858E-1A0479986B90}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{FDF84DB5-1EE3-4A4D-A452-A941ED4B8F13}"
-	ProjectSection(SolutionItems) = preProject
-		common\auction_table.h = common\auction_table.h
-		common\building.h = common\building.h
-		common\cache.h = common\cache.h
-		common\d3dtype.h = common\d3dtype.h
-		common\item_length.h = common\item_length.h
-		common\length.h = common\length.h
-		common\pool.h = common\pool.h
-		common\service.h = common\service.h
-		common\singleton.h = common\singleton.h
-		common\stl.h = common\stl.h
-		common\tables.h = common\tables.h
-		common\teen_packet.h = common\teen_packet.h
-		common\utils.h = common\utils.h
-		common\VnumHelper.h = common\VnumHelper.h
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{12B8EA69-291D-48D9-9F47-DE82A4BD47A2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cores", "Cores", "{2BC50D5E-7B54-4762-A81C-8F55697BC32A}"

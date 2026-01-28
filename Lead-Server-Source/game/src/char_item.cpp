@@ -5134,7 +5134,7 @@ bool CHARACTER::UseItem(TItemPos Cell, TItemPos DestCell)
 		return UseItemEx(item, DestCell);
 }
 
-bool CHARACTER::DropItem(TItemPos Cell, BYTE bCount)
+bool CHARACTER::DropItem(TItemPos Cell, ItemStackType bCount)
 {
 	LPITEM item = NULL; 
 
@@ -5262,7 +5262,7 @@ bool CHARACTER::DropGold(int gold)
 	return false;
 }
 
-bool CHARACTER::MoveItem(TItemPos Cell, TItemPos DestCell, BYTE count)
+bool CHARACTER::MoveItem(TItemPos Cell, TItemPos DestCell, ItemStackType count)
 {
 	LPITEM item = NULL;
 
@@ -5357,7 +5357,7 @@ bool CHARACTER::MoveItem(TItemPos Cell, TItemPos DestCell, BYTE count)
 			sys_log(0, "%s: ITEM_STACK %s (window: %d, cell : %d) -> (window:%d, cell %d) count %d", GetName(), item->GetName(), Cell.window_type, Cell.cell, 
 				DestCell.window_type, DestCell.cell, count);
 
-			count = MIN(200 - item2->GetCount(), count);
+			count = MIN(g_ItemCountLimit - item2->GetCount(), count);
 
 			item->SetCount(item->GetCount() - count);
 			item2->SetCount(item2->GetCount() + count);
@@ -5533,7 +5533,7 @@ bool CHARACTER::PickupItem(DWORD dwVID)
 			{
 				if (item->IsStackable() && !IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_STACK))
 				{
-					BYTE bCount = item->GetCount();
+					ItemStackType bCount = item->GetCount();
 
 					for (int i = 0; i < INVENTORY_MAX_NUM; ++i)
 					{
@@ -5553,7 +5553,7 @@ bool CHARACTER::PickupItem(DWORD dwVID)
 							if (j != ITEM_SOCKET_MAX_NUM)
 								continue;
 
-							BYTE bCount2 = MIN(200 - item2->GetCount(), bCount);
+							ItemStackType bCount2 = MIN(g_ItemCountLimit - item2->GetCount(), bCount);
 							bCount -= bCount2;
 
 							item2->SetCount(item2->GetCount() + bCount2);
@@ -6253,7 +6253,7 @@ void CHARACTER::AutoGiveItem(LPITEM item, bool longOwnerShip)
 	}
 }
 
-LPITEM CHARACTER::AutoGiveItem(DWORD dwItemVnum, BYTE bCount, int iRarePct, bool bMsg)
+LPITEM CHARACTER::AutoGiveItem(DWORD dwItemVnum, ItemStackType bCount, int iRarePct, bool bMsg)
 {
 	TItemTable * p = ITEM_MANAGER::instance().GetTable(dwItemVnum);
 
@@ -6279,7 +6279,7 @@ LPITEM CHARACTER::AutoGiveItem(DWORD dwItemVnum, BYTE bCount, int iRarePct, bool
 						bCount = p->alValues[1];
 				}
 
-				BYTE bCount2 = MIN(200 - item->GetCount(), bCount);
+				ItemStackType bCount2 = MIN(g_ItemCountLimit - item->GetCount(), bCount);
 				bCount -= bCount2;
 
 				item->SetCount(item->GetCount() + bCount2);
@@ -6318,7 +6318,7 @@ LPITEM CHARACTER::AutoGiveItem(DWORD dwItemVnum, BYTE bCount, int iRarePct, bool
 					if (inv_item->GetSocket(0) == item->GetSocket(0) &&
 							inv_item->GetSocket(1) == item->GetSocket(1) &&
 							inv_item->GetSocket(2) == item->GetSocket(2) &&
-							inv_item->GetCount() < ITEM_MAX_COUNT)
+							inv_item->GetCount() < g_ItemCountLimit)
 					{
 						inv_item->SetCount(inv_item->GetCount() + item->GetCount());
 						return inv_item;
@@ -6374,8 +6374,7 @@ LPITEM CHARACTER::AutoGiveItem(DWORD dwItemVnum, BYTE bCount, int iRarePct, bool
 		LogManager::instance().ItemLog(this, item, "SYSTEM_DROP", item->GetName());
 	}
 
-	sys_log(0, 
-		"7: %d %d", dwItemVnum, bCount);
+	sys_log(0, "7: %d %u", dwItemVnum, bCount);
 	return item;
 }
 

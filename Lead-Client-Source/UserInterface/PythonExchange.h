@@ -18,7 +18,7 @@ class CPythonExchange : public CSingleton<CPythonExchange>
 			char					name[CHARACTER_NAME_MAX_LEN + 1];
 
 			DWORD					item_vnum[EXCHANGE_ITEM_MAX_NUM];
-			BYTE					item_count[EXCHANGE_ITEM_MAX_NUM];
+			ItemStackType			item_count[EXCHANGE_ITEM_MAX_NUM];
 			DWORD					item_metin[EXCHANGE_ITEM_MAX_NUM][ITEM_SOCKET_SLOT_MAX_NUM];
 			TPlayerItemAttribute	item_attr[EXCHANGE_ITEM_MAX_NUM][ITEM_ATTRIBUTE_SLOT_MAX_NUM];
 
@@ -50,8 +50,8 @@ class CPythonExchange : public CSingleton<CPythonExchange>
 		DWORD			GetElkFromTarget();
 		DWORD			GetElkFromSelf();
 
-		void			SetItemToTarget(DWORD pos, DWORD vnum, BYTE count);
-		void			SetItemToSelf(DWORD pos, DWORD vnum, BYTE count);
+		void			SetItemToTarget(DWORD pos, DWORD vnum, ItemStackType count);
+		void			SetItemToSelf(DWORD pos, DWORD vnum, ItemStackType count);
 
 		void			SetItemMetinSocketToTarget(int pos, int imetinpos, DWORD vnum);
 		void			SetItemMetinSocketToSelf(int pos, int imetinpos, DWORD vnum);
@@ -65,8 +65,8 @@ class CPythonExchange : public CSingleton<CPythonExchange>
 		DWORD			GetItemVnumFromTarget(BYTE pos);
 		DWORD			GetItemVnumFromSelf(BYTE pos);
 
-		BYTE			GetItemCountFromTarget(BYTE pos);
-		BYTE			GetItemCountFromSelf(BYTE pos);
+		ItemStackType			GetItemCountFromTarget(BYTE pos);
+		ItemStackType			GetItemCountFromSelf(BYTE pos);
 
 		DWORD			GetItemMetinSocketFromTarget(BYTE pos, int iMetinSocketPos);
 		DWORD			GetItemMetinSocketFromSelf(BYTE pos, int iMetinSocketPos);

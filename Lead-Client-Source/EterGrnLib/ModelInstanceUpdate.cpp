@@ -16,6 +16,7 @@ void CGrannyModelInstance::Update(DWORD dwAniFPS)
 
 	m_dwOldUpdateFrame=c_dwCurUpdateFrame;
 
+	GrannyFreeCompletedModelControls(m_pgrnModelInstance);
 	GrannySetModelClock(m_pgrnModelInstance, GetLocalTime());	
 }
 

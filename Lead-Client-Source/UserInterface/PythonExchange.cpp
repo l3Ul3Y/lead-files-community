@@ -41,7 +41,7 @@ DWORD CPythonExchange::GetElkFromSelf()
 	return m_self.elk;
 }
 
-void CPythonExchange::SetItemToTarget(DWORD pos, DWORD vnum, BYTE count)
+void CPythonExchange::SetItemToTarget(DWORD pos, DWORD vnum, ItemStackType count)
 {
 	if (pos >= EXCHANGE_ITEM_MAX_NUM)
 		return;
@@ -50,7 +50,7 @@ void CPythonExchange::SetItemToTarget(DWORD pos, DWORD vnum, BYTE count)
 	m_victim.item_count[pos] = count;
 }
 
-void CPythonExchange::SetItemToSelf(DWORD pos, DWORD vnum, BYTE count)
+void CPythonExchange::SetItemToSelf(DWORD pos, DWORD vnum, ItemStackType count)
 {
 	if (pos >= EXCHANGE_ITEM_MAX_NUM)
 		return;
@@ -127,7 +127,7 @@ DWORD CPythonExchange::GetItemVnumFromSelf(BYTE pos)
 	return m_self.item_vnum[pos];
 }
 
-BYTE CPythonExchange::GetItemCountFromTarget(BYTE pos)
+ItemStackType CPythonExchange::GetItemCountFromTarget(BYTE pos)
 {
 	if (pos >= EXCHANGE_ITEM_MAX_NUM)
 		return 0;
@@ -135,7 +135,7 @@ BYTE CPythonExchange::GetItemCountFromTarget(BYTE pos)
 	return m_victim.item_count[pos];
 }
 
-BYTE CPythonExchange::GetItemCountFromSelf(BYTE pos)
+ItemStackType CPythonExchange::GetItemCountFromSelf(BYTE pos)
 {
 	if (pos >= EXCHANGE_ITEM_MAX_NUM)
 		return 0;

@@ -168,7 +168,7 @@ enum
 typedef struct packet_item
 {
     DWORD       vnum;
-    BYTE        count;
+    ItemStackType        count;
 	DWORD		flags;
 	DWORD		anti_flags;
 	long		alSockets[ITEM_SOCKET_SLOT_MAX_NUM];

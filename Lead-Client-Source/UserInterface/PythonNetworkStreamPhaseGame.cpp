@@ -1634,7 +1634,7 @@ bool CPythonNetworkStream::RecvExchangePacket()
 			if (exchange_packet.is_me)
 			{
 				int iSlotIndex = exchange_packet.arg2.cell;
-				CPythonExchange::Instance().SetItemToSelf(iSlotIndex, exchange_packet.arg1, (BYTE) exchange_packet.arg3);
+				CPythonExchange::Instance().SetItemToSelf(iSlotIndex, exchange_packet.arg1, (ItemStackType) exchange_packet.arg3);
 				for (int i = 0; i < ITEM_SOCKET_SLOT_MAX_NUM; ++i)
 					CPythonExchange::Instance().SetItemMetinSocketToSelf(iSlotIndex, i, exchange_packet.alSockets[i]);
 				for (int j = 0; j < ITEM_ATTRIBUTE_SLOT_MAX_NUM; ++j)
@@ -1643,7 +1643,7 @@ bool CPythonNetworkStream::RecvExchangePacket()
 			else
 			{
 				int iSlotIndex = exchange_packet.arg2.cell;
-				CPythonExchange::Instance().SetItemToTarget(iSlotIndex, exchange_packet.arg1, (BYTE) exchange_packet.arg3);
+				CPythonExchange::Instance().SetItemToTarget(iSlotIndex, exchange_packet.arg1, (ItemStackType) exchange_packet.arg3);
 				for (int i = 0; i < ITEM_SOCKET_SLOT_MAX_NUM; ++i)
 					CPythonExchange::Instance().SetItemMetinSocketToTarget(iSlotIndex, i, exchange_packet.alSockets[i]);
 				for (int j = 0; j < ITEM_ATTRIBUTE_SLOT_MAX_NUM; ++j)

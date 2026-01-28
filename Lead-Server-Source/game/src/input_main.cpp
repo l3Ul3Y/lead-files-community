@@ -1045,26 +1045,26 @@ int CInputMain::Shop(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 		case SHOP_SUBHEADER_CG_BUY:
 			{
-				if (uiBytes < sizeof(BYTE) + sizeof(BYTE))
+				if (uiBytes < sizeof(ItemStackType) + sizeof(BYTE))
 					return -1;
 
-				BYTE bPos = *(c_pData + 1);
+				BYTE bPos = *(c_pData + sizeof(ItemStackType));
 				sys_log(1, "INPUT: %s SHOP: BUY %d", ch->GetName(), bPos);
 				CShopManager::instance().Buy(ch, bPos);
-				return (sizeof(BYTE) + sizeof(BYTE));
+				return (sizeof(ItemStackType) + sizeof(BYTE));
 			}
 
 		case SHOP_SUBHEADER_CG_SELL:
 			{
-				if (uiBytes < sizeof(BYTE) + sizeof(BYTE))
+				if (uiBytes < sizeof(BYTE) + sizeof(ItemStackType))
 					return -1;
 
 				BYTE pos = *(c_pData++);
-				BYTE count = *(c_pData);
+				ItemStackType count = *(c_pData);
 
 				sys_log(0, "INPUT: %s SHOP: SELL2", ch->GetName());
 				CShopManager::instance().Sell(ch, pos, count);
-				return sizeof(BYTE) + sizeof(BYTE);
+				return sizeof(BYTE) + sizeof(ItemStackType);
 			}
 
 		default:

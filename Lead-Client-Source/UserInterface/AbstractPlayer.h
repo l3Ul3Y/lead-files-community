@@ -28,7 +28,7 @@ class IAbstractPlayer : public TAbstractSingleton<IAbstractPlayer>
 		virtual bool	IsSamePartyMember(DWORD dwVID1, DWORD dwVID2) = 0;
 
 		virtual void	SetItemData(TItemPos itemPos, const TItemData & c_rkItemInst) = 0;
-		virtual void	SetItemCount(TItemPos itemPos, BYTE byCount) = 0;
+		virtual void	SetItemCount(TItemPos itemPos, ItemStackType byCount) = 0;
 		virtual void	SetItemMetinSocket(TItemPos itemPos, DWORD dwMetinSocketIndex, DWORD dwMetinNumber) = 0;
 		virtual void	SetItemAttribute(TItemPos itemPos, DWORD dwAttrIndex, BYTE byType, short sValue) = 0;
 

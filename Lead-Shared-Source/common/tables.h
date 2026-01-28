@@ -2,6 +2,7 @@
 #define __INC_TABLES_H__
 
 #include "length.h"
+#include "service.h"
 
 typedef	DWORD IDENT;
 
@@ -517,7 +518,7 @@ typedef struct SSkillTable
 typedef struct SShopItemTable
 {
 	DWORD		vnum;
-	BYTE		count;
+	ItemStackType		count;
 
     TItemPos	pos;			// PC 상점에만 이용
 	DWORD		price;	// PC, shop_table_ex.txt 상점에만 이용
@@ -529,7 +530,7 @@ typedef struct SShopTable
 	DWORD		dwVnum;
 	DWORD		dwNPCVnum;
 
-	BYTE		byItemCount;
+	ItemStackType		byItemCount;
 	TShopItemTable	items[SHOP_HOST_ITEM_MAX_NUM];
 } TShopTable;
 

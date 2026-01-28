@@ -53,7 +53,7 @@ class COXEventManager : public singleton<COXEventManager>
 		bool ShowQuizList(LPCHARACTER pChar);
 
 		bool Quiz(unsigned char level, int timelimit);
-		bool GiveItemToAttender(DWORD dwItemVnum, BYTE count);
+		bool GiveItemToAttender(DWORD dwItemVnum, ItemStackType count);
 
 		bool CheckAnswer(bool answer);
 		void WarpToAudience();

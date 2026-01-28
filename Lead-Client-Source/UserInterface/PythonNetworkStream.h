@@ -147,7 +147,7 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		bool SendItemUseToItemPacket(TItemPos source_pos, TItemPos target_pos);
 		bool SendItemDropPacket(TItemPos pos, DWORD elk);
 		bool SendItemDropPacketNew(TItemPos pos, DWORD elk, DWORD count);
-		bool SendItemMovePacket(TItemPos pos, TItemPos change_pos, BYTE num);
+		bool SendItemMovePacket(TItemPos pos, TItemPos change_pos, ItemStackType count);
 		bool SendItemPickUpPacket(DWORD vid);
 
 		bool SendQuickSlotAddPacket(BYTE wpos, BYTE type, BYTE pos);
@@ -159,8 +159,8 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 
 		// Shop
 		bool SendShopEndPacket();
-		bool SendShopBuyPacket(BYTE byCount);
-		bool SendShopSellPacket(BYTE bySlot, BYTE byCount);
+		bool SendShopBuyPacket(BYTE bPos);
+		bool SendShopSellPacket(BYTE bySlot, ItemStackType byCount);
 
 		// Exchange
 		bool SendExchangeStartPacket(DWORD vid);
@@ -204,7 +204,7 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		bool SendSafeBoxMoneyPacket(BYTE byState, DWORD dwMoney);
 		bool SendSafeBoxCheckinPacket(TItemPos InventoryPos, BYTE bySafeBoxPos);
 		bool SendSafeBoxCheckoutPacket(BYTE bySafeBoxPos, TItemPos InventoryPos);
-		bool SendSafeBoxItemMovePacket(BYTE bySourcePos, BYTE byTargetPos, BYTE byCount);
+		bool SendSafeBoxItemMovePacket(BYTE bySourcePos, BYTE byTargetPos, ItemStackType byCount);
 
 		// Mall
 		bool SendMallCheckoutPacket(BYTE byMallPos, TItemPos InventoryPos);

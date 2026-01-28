@@ -654,7 +654,7 @@ void CPythonPlayer::GetItemAttribute(TItemPos Cell, DWORD dwAttrSlotIndex, BYTE 
 	*psValue = GetItemData(Cell)->aAttr[dwAttrSlotIndex].sValue;
 }
 
-void CPythonPlayer::SetItemCount(TItemPos Cell, BYTE byCount)
+void CPythonPlayer::SetItemCount(TItemPos Cell, ItemStackType byCount)
 {
 	if (!Cell.IsValidItemPosition())
 		return;

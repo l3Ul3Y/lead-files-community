@@ -54,7 +54,7 @@ bool CPythonNetworkStream::SendSafeBoxCheckoutPacket(BYTE bySafeBoxPos, TItemPos
 	return SendSequence();
 }
 
-bool CPythonNetworkStream::SendSafeBoxItemMovePacket(BYTE bySourcePos, BYTE byTargetPos, BYTE byCount)
+bool CPythonNetworkStream::SendSafeBoxItemMovePacket(BYTE bySourcePos, BYTE byTargetPos, ItemStackType byCount)
 {
 	__PlaySafeBoxItemDropSound(bySourcePos);
 
@@ -389,8 +389,8 @@ bool CPythonNetworkStream::SendShopBuyPacket(BYTE bPos)
 		return false;
 	}
 
-	BYTE bCount=1;
-	if (!Send(sizeof(BYTE), &bCount))
+	ItemStackType bCount=1;
+	if (!Send(sizeof(ItemStackType), &bCount))
 	{
 		Tracef("SendShopBuyPacket Error\n");
 		return false;
@@ -405,7 +405,7 @@ bool CPythonNetworkStream::SendShopBuyPacket(BYTE bPos)
 	return SendSequence();
 }
 
-bool CPythonNetworkStream::SendShopSellPacket(BYTE bySlot, BYTE byCount)
+bool CPythonNetworkStream::SendShopSellPacket(BYTE bySlot, ItemStackType byCount)
 {
 	if (!__CanActMainInstance())
 		return true;
@@ -424,7 +424,7 @@ bool CPythonNetworkStream::SendShopSellPacket(BYTE bySlot, BYTE byCount)
 		Tracef("SendShopAddSellPacket Error\n");
 		return false;
 	}
-	if (!Send(sizeof(BYTE), &byCount))
+	if (!Send(sizeof(ItemStackType), &byCount))
 	{
 		Tracef("SendShopAddSellPacket Error\n");
 		return false;
@@ -593,7 +593,7 @@ void CPythonNetworkStream::__PlayMallItemDropSound(UINT uSlotPos)
 	rkItem.PlayDropSound(dwItemID);
 }
 
-bool CPythonNetworkStream::SendItemMovePacket(TItemPos pos, TItemPos change_pos, BYTE num)
+bool CPythonNetworkStream::SendItemMovePacket(TItemPos pos, TItemPos change_pos, ItemStackType count)
 {	
 	if (!__CanActMainInstance())
 		return true;
@@ -628,7 +628,7 @@ bool CPythonNetworkStream::SendItemMovePacket(TItemPos pos, TItemPos change_pos,
 	itemMovePacket.header = HEADER_CG_ITEM_MOVE;
 	itemMovePacket.Cell = pos;
 	itemMovePacket.CellTo = change_pos;
-	itemMovePacket.count = num;
+	itemMovePacket.count = count;
 
 	if (!Send(sizeof(TPacketCGItemMove), &itemMovePacket))
 	{

@@ -280,7 +280,7 @@ class CPythonPlayer : public CSingleton<CPythonPlayer>, public IAbstractPlayer
 		void	MoveItemData(TItemPos SrcCell, TItemPos DstCell);
 		void	SetItemData(TItemPos Cell, const TItemData & c_rkItemInst);
 		const TItemData * GetItemData(TItemPos Cell) const;
-		void	SetItemCount(TItemPos Cell, BYTE byCount);
+		void	SetItemCount(TItemPos Cell, ItemStackType byCount);
 		void	SetItemMetinSocket(TItemPos Cell, DWORD dwMetinSocketIndex, DWORD dwMetinNumber);
 		void	SetItemAttribute(TItemPos Cell, DWORD dwAttrIndex, BYTE byType, short sValue);
 		DWORD	GetItemIndex(TItemPos Cell);

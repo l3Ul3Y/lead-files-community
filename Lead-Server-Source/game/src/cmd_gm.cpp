@@ -458,7 +458,7 @@ ACMD(do_item)
 	if (*arg2)
 	{
 		str_to_number(iCount, arg2);
-		iCount = MINMAX(1, iCount, ITEM_MAX_COUNT);
+		iCount = MINMAX(1, iCount, g_ItemCountLimit);
 	}
 
 	DWORD dwVnum;

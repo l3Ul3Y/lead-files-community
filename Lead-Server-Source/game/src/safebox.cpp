@@ -4,6 +4,7 @@
 #include "safebox.h"
 #include "packet.h"
 #include "char.h"
+#include "config.h"
 #include "desc_client.h"
 #include "item.h"
 #include "item_manager.h"
@@ -166,7 +167,7 @@ LPITEM CSafebox::GetItem(BYTE bCell)
 	return m_pkItems[bCell];
 }
 
-bool CSafebox::MoveItem(BYTE bCell, BYTE bDestCell, BYTE count)
+bool CSafebox::MoveItem(BYTE bCell, BYTE bDestCell, ItemStackType count)
 {
 	LPITEM item;
 
@@ -198,7 +199,7 @@ bool CSafebox::MoveItem(BYTE bCell, BYTE bDestCell, BYTE count)
 			if (count == 0)
 				count = item->GetCount();
 
-			count = MIN(200 - item2->GetCount(), count);
+			count = MIN(g_ItemCountLimit - item2->GetCount(), count);
 
 			if (item->GetCount() >= count)
 				Remove(bCell);

@@ -111,7 +111,7 @@ namespace quest
 	{
 		if (lua_isnumber(L, 1) && lua_isnumber(L, 2))
 		{
-			COXEventManager::instance().GiveItemToAttender((int)lua_tonumber(L, 1), (int)lua_tonumber(L, 2));
+			COXEventManager::instance().GiveItemToAttender((int)lua_tonumber(L, 1), (ItemStackType)lua_tonumber(L, 2));
 		}
 
 		return 0;

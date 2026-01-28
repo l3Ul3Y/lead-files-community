@@ -1,9 +1,9 @@
 #ifndef __INC_ITEM_MANAGER__
 #define __INC_ITEM_MANAGER__
 
-// special_item_group.txt¿¡¼­ Á¤ÀÇÇÏ´Â ¼Ó¼º ±×·ì
-// type attr·Î ¼±¾ğÇÒ ¼ö ÀÖ´Ù.
-// ÀÌ ¼Ó¼º ±×·ìÀ» ÀÌ¿ëÇÒ ¼ö ÀÖ´Â °ÍÀº special_item_group.txt¿¡¼­ Special typeÀ¸·Î Á¤ÀÇµÈ ±×·ì¿¡ ¼ÓÇÑ UNIQUE ITEMÀÌ´Ù.
+// special_item_group.txtì—ì„œ ì •ì˜í•˜ëŠ” ì†ì„± ê·¸ë£¹
+// type attrë¡œ ì„ ì–¸í•  ìˆ˜ ìˆë‹¤.
+// ì´ ì†ì„± ê·¸ë£¹ì„ ì´ìš©í•  ìˆ˜ ìˆëŠ” ê²ƒì€ special_item_group.txtì—ì„œ Special typeìœ¼ë¡œ ì •ì˜ëœ ê·¸ë£¹ì— ì†í•œ UNIQUE ITEMì´ë‹¤.
 class CSpecialAttrGroup
 {
 public:
@@ -39,10 +39,10 @@ public:
 		MOB_GROUP,
 	};
 
-	// QUEST Å¸ÀÔÀº Äù½ºÆ® ½ºÅ©¸³Æ®¿¡¼­ vnum.sig_use¸¦ »ç¿ëÇÒ ¼ö ÀÖ´Â ±×·ìÀÌ´Ù.
-	//		´Ü, ÀÌ ±×·ì¿¡ µé¾î°¡±â À§ÇØ¼­´Â ITEM ÀÚÃ¼ÀÇ TYPEÀÌ QUEST¿©¾ß ÇÑ´Ù.
-	// SPECIAL Å¸ÀÔÀº idx, item_vnum, attr_vnumÀ» ÀÔ·ÂÇÑ´Ù. attr_vnumÀº À§¿¡ CSpecialAttrGroupÀÇ VnumÀÌ´Ù.
-	//		ÀÌ ±×·ì¿¡ µé¾îÀÖ´Â ¾ÆÀÌÅÛÀº °°ÀÌ Âø¿ëÇÒ ¼ö ¾ø´Ù.
+	// QUEST íƒ€ì…ì€ í€˜ìŠ¤íŠ¸ ìŠ¤í¬ë¦½íŠ¸ì—ì„œ vnum.sig_useë¥¼ ì‚¬ìš©í•  ìˆ˜ ìˆëŠ” ê·¸ë£¹ì´ë‹¤.
+	//		ë‹¨, ì´ ê·¸ë£¹ì— ë“¤ì–´ê°€ê¸° ìœ„í•´ì„œëŠ” ITEM ìì²´ì˜ TYPEì´ QUESTì—¬ì•¼ í•œë‹¤.
+	// SPECIAL íƒ€ì…ì€ idx, item_vnum, attr_vnumì„ ì…ë ¥í•œë‹¤. attr_vnumì€ ìœ„ì— CSpecialAttrGroupì˜ Vnumì´ë‹¤.
+	//		ì´ ê·¸ë£¹ì— ë“¤ì–´ìˆëŠ” ì•„ì´í…œì€ ê°™ì´ ì°©ìš©í•  ìˆ˜ ì—†ë‹¤.
 	enum ESIGType { NORMAL, PCT, QUEST, SPECIAL };
 
 	struct CSpecialItemInfo
@@ -327,23 +327,23 @@ class ITEM_MANAGER : public singleton<ITEM_MANAGER>
 
 		bool                    Initialize(TItemTable * table, int size);
 		void			Destroy();
-		void			Update();	// ¸Å ·çÇÁ¸¶´Ù ºÎ¸¥´Ù.
+		void			Update();	// ë§¤ ë£¨í”„ë§ˆë‹¤ ë¶€ë¥¸ë‹¤.
 		void			GracefulShutdown();
 
 		DWORD			GetNewID();
-		bool			SetMaxItemID(TItemIDRangeTable range); // ÃÖ´ë °íÀ¯ ¾ÆÀÌµğ¸¦ ÁöÁ¤
+		bool			SetMaxItemID(TItemIDRangeTable range); // ìµœëŒ€ ê³ ìœ  ì•„ì´ë””ë¥¼ ì§€ì •
 		bool			SetMaxSpareItemID(TItemIDRangeTable range);
 
-		// DelayedSave: ¾î¶°ÇÑ ·çÆ¾ ³»¿¡¼­ ÀúÀåÀ» ÇØ¾ß ÇÒ ÁşÀ» ¸¹ÀÌ ÇÏ¸é ÀúÀå
-		// Äõ¸®°¡ ³Ê¹« ¸¹¾ÆÁö¹Ç·Î "ÀúÀåÀ» ÇÑ´Ù" ¶ó°í Ç¥½Ã¸¸ ÇØµÎ°í Àá±ñ
-		// (¿¹: 1 frame) ÈÄ¿¡ ÀúÀå½ÃÅ²´Ù.
+		// DelayedSave: ì–´ë– í•œ ë£¨í‹´ ë‚´ì—ì„œ ì €ì¥ì„ í•´ì•¼ í•  ì§“ì„ ë§ì´ í•˜ë©´ ì €ì¥
+		// ì¿¼ë¦¬ê°€ ë„ˆë¬´ ë§ì•„ì§€ë¯€ë¡œ "ì €ì¥ì„ í•œë‹¤" ë¼ê³  í‘œì‹œë§Œ í•´ë‘ê³  ì ê¹
+		// (ì˜ˆ: 1 frame) í›„ì— ì €ì¥ì‹œí‚¨ë‹¤.
 		void			DelayedSave(LPITEM item);
-		void			FlushDelayedSave(LPITEM item); // Delayed ¸®½ºÆ®¿¡ ÀÖ´Ù¸é Áö¿ì°í ÀúÀåÇÑ´Ù. ²÷±è Ã³¸®½Ã »ç¿ë µÊ.
+		void			FlushDelayedSave(LPITEM item); // Delayed ë¦¬ìŠ¤íŠ¸ì— ìˆë‹¤ë©´ ì§€ìš°ê³  ì €ì¥í•œë‹¤. ëŠê¹€ ì²˜ë¦¬ì‹œ ì‚¬ìš© ë¨.
 		void			SaveSingleItem(LPITEM item);
 
 		LPITEM                  CreateItem(DWORD vnum, DWORD count = 1, DWORD dwID = 0, bool bTryMagic = false, int iRarePct = -1, bool bSkipSave = false);
 		void DestroyItem(LPITEM item);
-		void			RemoveItem(LPITEM item, const char * c_pszReason=NULL); // »ç¿ëÀÚ·Î ºÎÅÍ ¾ÆÀÌÅÛÀ» Á¦°Å
+		void			RemoveItem(LPITEM item, const char * c_pszReason=NULL); // ì‚¬ìš©ìë¡œ ë¶€í„° ì•„ì´í…œì„ ì œê±°
 
 		LPITEM			Find(DWORD id);
 		LPITEM                  FindByVID(DWORD vid);
@@ -364,7 +364,7 @@ class ITEM_MANAGER : public singleton<ITEM_MANAGER>
 
 		DWORD			GetRefineFromVnum(DWORD dwVnum);
 
-		static void		CopyAllAttrTo(LPITEM pkOldItem, LPITEM pkNewItem);		// pkNewItemÀ¸·Î ¸ğµç ¼Ó¼º°ú ¼ÒÄÏ °ªµéÀ» ¸ñ»çÇÏ´Â ÇÔ¼ö.
+		static void		CopyAllAttrTo(LPITEM pkOldItem, LPITEM pkNewItem);		// pkNewItemìœ¼ë¡œ ëª¨ë“  ì†ì„±ê³¼ ì†Œì¼“ ê°’ë“¤ì„ ëª©ì‚¬í•˜ëŠ” í•¨ìˆ˜.
 
 
 		const CSpecialItemGroup* GetSpecialItemGroup(DWORD dwVnum);
@@ -393,8 +393,8 @@ class ITEM_MANAGER : public singleton<ITEM_MANAGER>
 		std::map<DWORD, DWORD>		m_map_ItemRefineFrom;
 		int				m_iTopOfTable;
 
-		ITEM_VID_MAP			m_VIDMap;			///< m_dwVIDCount ÀÇ °ª´ÜÀ§·Î ¾ÆÀÌÅÛÀ» ÀúÀåÇÑ´Ù.
-		DWORD				m_dwVIDCount;			///< ÀÌ³à¼® VID°¡ ¾Æ´Ï¶ó ±×³É ÇÁ·Î¼¼½º ´ÜÀ§ À¯´ÏÅ© ¹øÈ£´Ù.
+		ITEM_VID_MAP			m_VIDMap;			///< m_dwVIDCount ì˜ ê°’ë‹¨ìœ„ë¡œ ì•„ì´í…œì„ ì €ì¥í•œë‹¤.
+		DWORD				m_dwVIDCount;			///< ì´ë…€ì„ VIDê°€ ì•„ë‹ˆë¼ ê·¸ëƒ¥ í”„ë¡œì„¸ìŠ¤ ë‹¨ìœ„ ìœ ë‹ˆí¬ ë²ˆí˜¸ë‹¤.
 		DWORD				m_dwCurrentID;
 		TItemIDRangeTable	m_ItemIDRange;
 		TItemIDRangeTable	m_ItemIDSpareRange;

@@ -415,7 +415,7 @@ bool COXEventManager::LogWinner()
 	return true;
 }
 
-bool COXEventManager::GiveItemToAttender(DWORD dwItemVnum, BYTE count)
+bool COXEventManager::GiveItemToAttender(DWORD dwItemVnum, ItemStackType count)
 {
 	itertype(m_map_attender) iter = m_map_attender.begin();
 

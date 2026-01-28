@@ -895,7 +895,7 @@ PyObject * playerSetItemCount(PyObject* poSelf, PyObject* poArgs)
 			if (!PyTuple_GetInteger(poArgs, 0, &iSlotIndex))
 				return Py_BuildException();
 
-			BYTE bCount;
+			ItemStackType bCount;
 			if (!PyTuple_GetInteger(poArgs, 1, &bCount))
 				return Py_BuildException();
 
@@ -914,7 +914,7 @@ PyObject * playerSetItemCount(PyObject* poSelf, PyObject* poArgs)
 			if (!PyTuple_GetInteger(poArgs, 1, &Cell.cell))
 				return Py_BuildException();
 
-			BYTE bCount;
+			ItemStackType bCount;
 			if (!PyTuple_GetInteger(poArgs, 2, &bCount))
 				return Py_BuildException();
 
