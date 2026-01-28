@@ -15,6 +15,7 @@ debug_packet.log
 # Generated config files
 channel.inf
 metin2.cfg
+mouse.cfg
 
 # Screenshots
 screenshot/*

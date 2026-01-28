@@ -1,6 +1,20 @@
 # Generated build files
 /db/db_d.*
+/auth/game_d.*
+/auth/data*
+/auth/locale*
+/channel1/game1/public*
 /channel1/game1/game_d.*
+/channel1/game1/locale*
+/channel1/game1/data*
+/channel1/game2/locale*
+/channel1/game2/data*
+/channel1/game2/locale*
+/channel99/game_d.*
+/channel99/data*
+/channel99/locale*
+/db/data*
+/db/locale*
 
 # Generated log files
 /**/log/
@@ -12,3 +26,7 @@
 /**/syslog.txt
 /**/syserr
 /**/syslog
+/**/usage.txt
+
+/share/locale/english/quest/__pycache__
+/share/locale/english/quest/qc.*
