@@ -144,11 +144,11 @@ class CPythonNonPlayer : public CSingleton<CPythonNonPlayer>
 		DWORD				GetMonsterST(DWORD dwVnum);
 		DWORD				GetMonsterDX(DWORD dwVnum);
 		bool				IsMonsterStone(DWORD dwVnum);
-		BYTE				GetMobRegenCycle(DWORD dwVnum);
-		BYTE				GetMobRegenPercent(DWORD dwVnum);
-		DWORD				GetMobGoldMin(DWORD dwVnum);
-		DWORD				GetMobGoldMax(DWORD dwVnum);
-		DWORD				GetMobResist(DWORD dwVnum, BYTE bResistNum);
+		BYTE				GetMonsterRegenCycle(DWORD dwVnum);
+		BYTE				GetMonsterRegenPercent(DWORD dwVnum);
+		DWORD				GetMonsterGoldMin(DWORD dwVnum);
+		DWORD				GetMonsterGoldMax(DWORD dwVnum);
+		DWORD				GetMonsterResist(DWORD dwVnum, BYTE bResistNum);
 
 		// Function for outer
 		void				GetMatchableMobList(int iLevel, int iInterval, TMobTableList * pMobTableList);

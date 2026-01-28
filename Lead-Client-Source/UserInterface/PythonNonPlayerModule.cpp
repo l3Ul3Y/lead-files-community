@@ -128,7 +128,7 @@ PyObject* nonplayerGetMonsterRaceFlag(PyObject* poSelf, PyObject* poArgs)
 	return Py_BuildValue("i", rkNonPlayer.GetMonsterRaceFlag(race));
 }
 
-PyObject* nonplayerGetMobRegenCycle(PyObject* poSelf, PyObject* poArgs)
+PyObject* nonplayerGetMonsterRegenCycle(PyObject* poSelf, PyObject* poArgs)
 {
 	int race;
 	if (!PyTuple_GetInteger(poArgs, 0, &race))
@@ -136,10 +136,10 @@ PyObject* nonplayerGetMobRegenCycle(PyObject* poSelf, PyObject* poArgs)
 
 	CPythonNonPlayer& rkNonPlayer = CPythonNonPlayer::Instance();
 
-	return Py_BuildValue("i", rkNonPlayer.GetMobRegenCycle(race));
+	return Py_BuildValue("i", rkNonPlayer.GetMonsterRegenCycle(race));
 }
 
-PyObject* nonplayerGetMobRegenPercent(PyObject* poSelf, PyObject* poArgs)
+PyObject* nonplayerGetMonsterRegenPercent(PyObject* poSelf, PyObject* poArgs)
 {
 	int race;
 	if (!PyTuple_GetInteger(poArgs, 0, &race))
@@ -147,10 +147,10 @@ PyObject* nonplayerGetMobRegenPercent(PyObject* poSelf, PyObject* poArgs)
 
 	CPythonNonPlayer& rkNonPlayer = CPythonNonPlayer::Instance();
 
-	return Py_BuildValue("i", rkNonPlayer.GetMobRegenPercent(race));
+	return Py_BuildValue("i", rkNonPlayer.GetMonsterRegenPercent(race));
 }
 
-PyObject* nonplayerGetMobGoldMin(PyObject* poSelf, PyObject* poArgs)
+PyObject* nonplayerGetMonsterGoldMin(PyObject* poSelf, PyObject* poArgs)
 {
 	int race;
 	if (!PyTuple_GetInteger(poArgs, 0, &race))
@@ -158,10 +158,10 @@ PyObject* nonplayerGetMobGoldMin(PyObject* poSelf, PyObject* poArgs)
 
 	CPythonNonPlayer& rkNonPlayer = CPythonNonPlayer::Instance();
 
-	return Py_BuildValue("i", rkNonPlayer.GetMobGoldMin(race));
+	return Py_BuildValue("i", rkNonPlayer.GetMonsterGoldMin(race));
 }
 
-PyObject* nonplayerGetMobGoldMax(PyObject* poSelf, PyObject* poArgs)
+PyObject* nonplayerGetMonsterGoldMax(PyObject* poSelf, PyObject* poArgs)
 {
 	int race;
 	if (!PyTuple_GetInteger(poArgs, 0, &race))
@@ -169,10 +169,10 @@ PyObject* nonplayerGetMobGoldMax(PyObject* poSelf, PyObject* poArgs)
 
 	CPythonNonPlayer& rkNonPlayer = CPythonNonPlayer::Instance();
 
-	return Py_BuildValue("i", rkNonPlayer.GetMobGoldMax(race));
+	return Py_BuildValue("i", rkNonPlayer.GetMonsterGoldMax(race));
 }
 
-PyObject* nonplayerGetMobResist(PyObject* poSelf, PyObject* poArgs)
+PyObject* nonplayerGetMonsterResist(PyObject* poSelf, PyObject* poArgs)
 {
 	int race;
 	if (!PyTuple_GetInteger(poArgs, 0, &race))
@@ -184,7 +184,7 @@ PyObject* nonplayerGetMobResist(PyObject* poSelf, PyObject* poArgs)
 
 	CPythonNonPlayer& rkNonPlayer = CPythonNonPlayer::Instance();
 
-	return Py_BuildValue("i", rkNonPlayer.GetMobResist(race, resistNum));
+	return Py_BuildValue("i", rkNonPlayer.GetMonsterResist(race, resistNum));
 }
 
 PyObject* nonplayerGetMonsterLevel(PyObject* poSelf, PyObject* poArgs)
@@ -288,11 +288,11 @@ void initNonPlayer()
 		{ "GetMonsterST",				nonplayerGetMonsterST,				METH_VARARGS },
 		{ "GetMonsterDX",				nonplayerGetMonsterDX,				METH_VARARGS },
 		{ "IsMonsterStone",				nonplayerIsMonsterStone,			METH_VARARGS },
-		{ "GetMobRegenCycle",			nonplayerGetMobRegenCycle,			METH_VARARGS },
-		{ "GetMobRegenPercent",			nonplayerGetMobRegenPercent,		METH_VARARGS },
-		{ "GetMobGoldMin",				nonplayerGetMobGoldMin,				METH_VARARGS },
-		{ "GetMobGoldMax",				nonplayerGetMobGoldMax,				METH_VARARGS },
-		{ "GetResist",					nonplayerGetMobResist,				METH_VARARGS },
+		{ "GetMonsterRegenCycle",			nonplayerGetMonsterRegenCycle,			METH_VARARGS },
+		{ "GetMonsterRegenPercent",			nonplayerGetMonsterRegenPercent,		METH_VARARGS },
+		{ "GetMonsterGoldMin",				nonplayerGetMonsterGoldMin,				METH_VARARGS },
+		{ "GetMonsterGoldMax",				nonplayerGetMonsterGoldMax,				METH_VARARGS },
+		{ "GetMonsterResist",					nonplayerGetMonsterResist,				METH_VARARGS },
 
 		{ "LoadNonPlayerData",			nonplayerLoadNonPlayerData,			METH_VARARGS },
 

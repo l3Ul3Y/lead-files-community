@@ -59,8 +59,6 @@
 #include <algorithm>
 #include <iterator>
 
-using namespace std;
-
 extern const BYTE g_aBuffOnAttrPoints;
 extern bool RaceToJob(unsigned race, unsigned *ret_job);
 

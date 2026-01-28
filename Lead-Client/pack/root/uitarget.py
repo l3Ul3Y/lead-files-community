@@ -186,8 +186,8 @@ class TargetBoard(ui.ThinBoard):
 		def __LoadInformation_Resists(self, race):
 			self.AppendSeperator()
 			self.AppendTextLine(localeInfo.TARGET_INFO_RESISTS)
-			self.AppendTextLine(localeInfo.TARGET_INFO_RESISTS_LINE0 % (nonplayer.GetResist(race, nonplayer.MOB_RESIST_SWORD), nonplayer.GetResist(race, nonplayer.MOB_RESIST_TWOHAND), nonplayer.GetResist(race, nonplayer.MOB_RESIST_BELL)))
-			self.AppendTextLine(localeInfo.TARGET_INFO_RESISTS_LINE1 % (nonplayer.GetResist(race, nonplayer.MOB_RESIST_DAGGER), nonplayer.GetResist(race, nonplayer.MOB_RESIST_FAN), nonplayer.GetResist(race, nonplayer.MOB_RESIST_BOW)))
+			self.AppendTextLine(localeInfo.TARGET_INFO_RESISTS_LINE0 % (nonplayer.GetMonsterResist(race, nonplayer.MOB_RESIST_SWORD), nonplayer.GetMonsterResist(race, nonplayer.MOB_RESIST_TWOHAND), nonplayer.GetMonsterResist(race, nonplayer.MOB_RESIST_BELL)))
+			self.AppendTextLine(localeInfo.TARGET_INFO_RESISTS_LINE1 % (nonplayer.GetMonsterResist(race, nonplayer.MOB_RESIST_DAGGER), nonplayer.GetMonsterResist(race, nonplayer.MOB_RESIST_FAN), nonplayer.GetMonsterResist(race, nonplayer.MOB_RESIST_BOW)))
 
 		def __LoadInformation_Default(self, race):
 			self.AppendSeperator()
@@ -212,9 +212,9 @@ class TargetBoard(ui.ThinBoard):
 			idx = min(len(self.EXP_BASE_LVDELTA) - 1, max(0, (monsterLevel + 15) - player.GetStatus(player.LEVEL)))
 			iExp = nonplayer.GetMonsterExp(race) * self.EXP_BASE_LVDELTA[idx] / 100
 			self.AppendTextLine(localeInfo.TARGET_INFO_EXP % localeInfo.DottedNumber(iExp))
-			
-			self.AppendTextLine(localeInfo.TARGET_INFO_GOLD_MIN_MAX % (localeInfo.DottedNumber(nonplayer.GetMobGoldMin(race)), localeInfo.DottedNumber(nonplayer.GetMobGoldMax(race))))
-			self.AppendTextLine(localeInfo.TARGET_INFO_REGEN_INFO % (nonplayer.GetMobRegenPercent(race), nonplayer.GetMobRegenCycle(race)))
+
+			self.AppendTextLine(localeInfo.TARGET_INFO_GOLD_MIN_MAX % (localeInfo.DottedNumber(nonplayer.GetMonsterGoldMin(race)), localeInfo.DottedNumber(nonplayer.GetMonsterGoldMax(race))))
+			self.AppendTextLine(localeInfo.TARGET_INFO_REGEN_INFO % (nonplayer.GetMonsterRegenPercent(race), nonplayer.GetMonsterRegenCycle(race)))
 
 		def __LoadInformation_Race(self, race):
 			dwRaceFlag = nonplayer.GetMonsterRaceFlag(race)

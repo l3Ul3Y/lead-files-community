@@ -293,7 +293,7 @@ bool CPythonNonPlayer::IsMonsterStone(DWORD dwVnum)
 	return c_pTable->bType == 2;
 }
 
-BYTE CPythonNonPlayer::GetMobRegenCycle(DWORD dwVnum)
+BYTE CPythonNonPlayer::GetMonsterRegenCycle(DWORD dwVnum)
 {
 	const CPythonNonPlayer::TMobTable* c_pTable = GetTable(dwVnum);
 	if (!c_pTable)
@@ -302,7 +302,7 @@ BYTE CPythonNonPlayer::GetMobRegenCycle(DWORD dwVnum)
 	return c_pTable->bRegenCycle;
 }
 
-BYTE CPythonNonPlayer::GetMobRegenPercent(DWORD dwVnum)
+BYTE CPythonNonPlayer::GetMonsterRegenPercent(DWORD dwVnum)
 {
 	const CPythonNonPlayer::TMobTable* c_pTable = GetTable(dwVnum);
 	if (!c_pTable)
@@ -311,7 +311,7 @@ BYTE CPythonNonPlayer::GetMobRegenPercent(DWORD dwVnum)
 	return c_pTable->bRegenPercent;
 }
 
-DWORD CPythonNonPlayer::GetMobGoldMin(DWORD dwVnum)
+DWORD CPythonNonPlayer::GetMonsterGoldMin(DWORD dwVnum)
 {
 	const CPythonNonPlayer::TMobTable* c_pTable = GetTable(dwVnum);
 	if (!c_pTable)
@@ -320,7 +320,7 @@ DWORD CPythonNonPlayer::GetMobGoldMin(DWORD dwVnum)
 	return c_pTable->dwGoldMin;
 }
 
-DWORD CPythonNonPlayer::GetMobGoldMax(DWORD dwVnum)
+DWORD CPythonNonPlayer::GetMonsterGoldMax(DWORD dwVnum)
 {
 	const CPythonNonPlayer::TMobTable* c_pTable = GetTable(dwVnum);
 	if (!c_pTable)
@@ -329,7 +329,7 @@ DWORD CPythonNonPlayer::GetMobGoldMax(DWORD dwVnum)
 	return c_pTable->dwGoldMax;
 }
 
-DWORD CPythonNonPlayer::GetMobResist(DWORD dwVnum, BYTE bResistNum)
+DWORD CPythonNonPlayer::GetMonsterResist(DWORD dwVnum, BYTE bResistNum)
 {
 	const CPythonNonPlayer::TMobTable* c_pTable = GetTable(dwVnum);
 	if (!c_pTable)

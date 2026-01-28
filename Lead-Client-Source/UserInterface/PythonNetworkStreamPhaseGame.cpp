@@ -2256,8 +2256,6 @@ bool CPythonNetworkStream::RecvTargetInfoPacket()
 			}
 			else
 				PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "CloseTargetBoard", Py_BuildValue("()"));
-
-			// m_pInstTarget = pInstTarget;
 		}
 	}
 	else

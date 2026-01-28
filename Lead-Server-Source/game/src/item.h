@@ -58,11 +58,6 @@ class CItem : public CEntity
 		bool		SetCount(DWORD count);
 		DWORD		GetCount();
 
-		// GetVnum과 GetVnum에 대한 comment
-		// GetVnum은 Masking 된 Vnum이다. 이를 사용함으로써, 아이템의 실제 Vnum은 10이지만, Vnum이 20인 것처럼 동작할 수 있는 것이다.
-		// Masking 값은 ori_to_new.txt에서 정의된 값이다.
-		// GetVnum은 아이템 고유의 Vnum으로, 로그 남길 때, 클라이언트에 아이템 정보 보낼 때, 저장할 때는 이 Vnum을 사용하여야 한다.
-		// 
 		DWORD		GetVnum() const		{ return m_dwVnum;	}
 		BYTE		GetType() const		{ return m_pProto ? m_pProto->bType : 0;	}
 		BYTE		GetSubType() const	{ return m_pProto ? m_pProto->bSubType : 0;	}
@@ -267,7 +262,6 @@ class CItem : public CEntity
 
 		bool		m_isLocked;
 		
-		DWORD		m_dwMaskVnum;
 		DWORD		m_dwSIGVnum;
 	public:
 		void SetSIGVnum(DWORD dwSIG)
