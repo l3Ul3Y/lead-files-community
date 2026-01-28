@@ -94,6 +94,7 @@ bool            g_protectNormalPlayer   = false;        // 범법자가 "평화모드" �
 
 int gPlayerMaxLevel = 99;
 // NEW CONFIG VARIABLES
+bool g_bCreatePublicFiles = false;
 BYTE g_PartyGapLevel = 30;
 int g_GuildCreateFee = 200000;
 int g_DeathExpLossCap = 800000;
@@ -803,6 +804,20 @@ void config_init(const string& st_localeServiceName)
 		TOKEN("no_wander")
 		{
 			no_wander = true;
+			continue;
+		}
+		
+		TOKEN("create_public_files")
+		{
+			int tmp = 0;
+
+			str_to_number(tmp, value_string);
+
+			if (0 == tmp)
+				g_bCreatePublicFiles = false;
+			else
+				g_bCreatePublicFiles = true;
+
 			continue;
 		}
 

@@ -175,6 +175,7 @@
     <ClCompile Include="PetSystem.cpp" />
     <ClCompile Include="polymorph.cpp" />
     <ClCompile Include="priv_manager.cpp" />
+    <ClCompile Include="public_table.cpp" />
     <ClCompile Include="pvp.cpp" />
     <ClCompile Include="questevent.cpp" />
     <ClCompile Include="questlua.cpp" />

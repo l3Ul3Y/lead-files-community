@@ -26,239 +26,261 @@ public:
 
 class CSpecialItemGroup
 {
-	public:
-		enum EGiveType
+public:
+	enum EGiveType
+	{
+		NONE,
+		GOLD,
+		EXP,
+		MOB,
+		SLOW,
+		DRAIN_HP,
+		POISON,
+		MOB_GROUP,
+	};
+
+	// QUEST 타입은 퀘스트 스크립트에서 vnum.sig_use를 사용할 수 있는 그룹이다.
+	//		단, 이 그룹에 들어가기 위해서는 ITEM 자체의 TYPE이 QUEST여야 한다.
+	// SPECIAL 타입은 idx, item_vnum, attr_vnum을 입력한다. attr_vnum은 위에 CSpecialAttrGroup의 Vnum이다.
+	//		이 그룹에 들어있는 아이템은 같이 착용할 수 없다.
+	enum ESIGType { NORMAL, PCT, QUEST, SPECIAL };
+
+	struct CSpecialItemInfo
+	{
+		DWORD vnum;
+		int count;
+		int rare;
+
+		CSpecialItemInfo(DWORD _vnum, int _count, int _rare)
+			: vnum(_vnum), count(_count), rare(_rare)
 		{
-			NONE,
-			GOLD,
-			EXP,
-			MOB,
-			SLOW,
-			DRAIN_HP,
-			POISON,
-			MOB_GROUP,
-		};
-
-		// QUEST 타입은 퀘스트 스크립트에서 vnum.sig_use를 사용할 수 있는 그룹이다.
-		//		단, 이 그룹에 들어가기 위해서는 ITEM 자체의 TYPE이 QUEST여야 한다.
-		// SPECIAL 타입은 idx, item_vnum, attr_vnum을 입력한다. attr_vnum은 위에 CSpecialAttrGroup의 Vnum이다.
-		//		이 그룹에 들어있는 아이템은 같이 착용할 수 없다.
-		enum ESIGType { NORMAL, PCT, QUEST, SPECIAL };
-
-		struct CSpecialItemInfo
-		{
-			DWORD vnum;
-			int count;
-			int rare;
-
-			CSpecialItemInfo(DWORD _vnum, int _count, int _rare)
-				: vnum(_vnum), count(_count), rare(_rare)
-				{}
-		};
-
-		CSpecialItemGroup(DWORD vnum, BYTE type=0)
-			: m_dwVnum(vnum), m_bType(type)
-			{}
-
-		void AddItem(DWORD vnum, int count, int prob, int rare)
-		{
-			if (!prob)
-				return;
-			if (!m_vecProbs.empty())
-				prob += m_vecProbs.back();
-			m_vecProbs.push_back(prob);
-			m_vecItems.push_back(CSpecialItemInfo(vnum, count, rare));
 		}
+	};
 
-		bool IsEmpty() const
-		{
-			return m_vecProbs.empty();
-		}
+	CSpecialItemGroup(DWORD vnum, BYTE type = 0)
+		: m_dwVnum(vnum), m_bType(type)
+	{
+	}
 
-		// Type Multi, 즉 m_bType == PCT 인 경우,
-		// 확률을 더해가지 않고, 독립적으로 계산하여 아이템을 생성한다.
-		// 따라서 여러 개의 아이템이 생성될 수 있다.
-		// by rtsummit
-		int GetMultiIndex(std::vector <int> &idx_vec) const
+	void AddItem(DWORD vnum, int count, int prob, int rare)
+	{
+		if (!prob)
+			return;
+		if (!m_vecProbs.empty())
+			prob += m_vecProbs.back();
+		m_vecProbs.push_back(prob);
+		m_vecItems.push_back(CSpecialItemInfo(vnum, count, rare));
+	}
+
+	bool IsEmpty() const
+	{
+		return m_vecProbs.empty();
+	}
+
+	// Type Multi, 즉 m_bType == PCT 인 경우,
+	// 확률을 더해가지 않고, 독립적으로 계산하여 아이템을 생성한다.
+	// 따라서 여러 개의 아이템이 생성될 수 있다.
+	// by rtsummit
+	int GetMultiIndex(std::vector <int>& idx_vec) const
+	{
+		idx_vec.clear();
+		if (m_bType == PCT)
 		{
-			idx_vec.clear();
-			if (m_bType == PCT)
+			int count = 0;
+			if (number(1, 100) <= m_vecProbs[0])
 			{
-				int count = 0;
-				if (number(1,100) <= m_vecProbs[0])
+				idx_vec.push_back(0);
+				count++;
+			}
+			for (uint i = 1; i < m_vecProbs.size(); i++)
+			{
+				if (number(1, 100) <= m_vecProbs[i] - m_vecProbs[i - 1])
 				{
-					idx_vec.push_back(0);
+					idx_vec.push_back(i);
 					count++;
 				}
-				for (uint i = 1; i < m_vecProbs.size(); i++)
-				{
-					if (number(1,100) <= m_vecProbs[i] - m_vecProbs[i-1])
-					{
-						idx_vec.push_back(i);
-						count++;
-					}
-				}
-				return count;
 			}
-			else
-			{
-				idx_vec.push_back(GetOneIndex());
-				return 1;
-			}
+			return count;
 		}
+		else
+		{
+			idx_vec.push_back(GetOneIndex());
+			return 1;
+		}
+	}
 
-		int GetOneIndex() const
-		{
-			int n = number(1, m_vecProbs.back());
-			itertype(m_vecProbs) it = lower_bound(m_vecProbs.begin(), m_vecProbs.end(), n);
-			return std::distance(m_vecProbs.begin(), it);
-		}
+	int GetOneIndex() const
+	{
+		int n = number(1, m_vecProbs.back());
+		itertype(m_vecProbs) it = lower_bound(m_vecProbs.begin(), m_vecProbs.end(), n);
+		return std::distance(m_vecProbs.begin(), it);
+	}
 
-		int GetVnum(int idx) const
-		{
-			return m_vecItems[idx].vnum;
-		}
+	int GetVnum(int idx) const
+	{
+		return m_vecItems[idx].vnum;
+	}
 
-		int GetCount(int idx) const
-		{
-			return m_vecItems[idx].count;
-		}
+	int GetCount(int idx) const
+	{
+		return m_vecItems[idx].count;
+	}
 
-		int GetRarePct(int idx) const
-		{
-			return m_vecItems[idx].rare;
-		}
+	int GetRarePct(int idx) const
+	{
+		return m_vecItems[idx].rare;
+	}
 
-		bool Contains(DWORD dwVnum) const
+	bool Contains(DWORD dwVnum) const
+	{
+		for (DWORD i = 0; i < m_vecItems.size(); i++)
 		{
-			for (DWORD i = 0; i < m_vecItems.size(); i++)
-			{
-				if (m_vecItems[i].vnum == dwVnum)
-					return true;
-			}
-			return false;
+			if (m_vecItems[i].vnum == dwVnum)
+				return true;
 		}
-		
-		// Group의 Type이 Special인 경우에
-		// dwVnum에 매칭되는 AttrVnum을 return해준다.
-		DWORD GetAttrVnum(DWORD dwVnum) const
-		{
-			if (CSpecialItemGroup::SPECIAL != m_bType)
-				return 0;
-			for (itertype(m_vecItems) it = m_vecItems.begin(); it != m_vecItems.end(); it++)
-			{
-				if (it->vnum == dwVnum)
-				{
-					return it->count;
-				}
-			}
+		return false;
+	}
+
+	// Group의 Type이 Special인 경우에
+	// dwVnum에 매칭되는 AttrVnum을 return해준다.
+	DWORD GetAttrVnum(DWORD dwVnum) const
+	{
+		if (CSpecialItemGroup::SPECIAL != m_bType)
 			return 0;
+		for (itertype(m_vecItems) it = m_vecItems.begin(); it != m_vecItems.end(); it++)
+		{
+			if (it->vnum == dwVnum)
+			{
+				return it->count;
+			}
 		}
+		return 0;
+	}
 
-		DWORD m_dwVnum;
-		BYTE	m_bType;
-		std::vector<int> m_vecProbs;
-		std::vector<CSpecialItemInfo> m_vecItems; // vnum, count
+	// Group의 Size를 return해준다.
+	int GetGroupSize() const
+	{
+		return m_vecProbs.size();
+	}
+
+	DWORD m_dwVnum;
+	BYTE	m_bType;
+	std::vector<int> m_vecProbs;
+	std::vector<CSpecialItemInfo> m_vecItems; // vnum, count
 };
 
 class CMobItemGroup
 {
-	public:
-		struct SMobItemGroupInfo
-		{
-			DWORD dwItemVnum;
-			int iCount;
-			int iRarePct;
+public:
+	struct SMobItemGroupInfo
+	{
+		DWORD dwItemVnumStart;
+		DWORD dwItemVnumEnd;
+		int iCount;
+		int iRarePct;
 
-			SMobItemGroupInfo(DWORD dwItemVnum, int iCount, int iRarePct)
-				: dwItemVnum(dwItemVnum),
+		SMobItemGroupInfo(DWORD dwItemVnumStart, DWORD dwItemVnumEnd, int iCount, int iRarePct)
+			: dwItemVnumStart(dwItemVnumStart), dwItemVnumEnd(dwItemVnumEnd),
 			iCount(iCount),
 			iRarePct(iRarePct)
-			{
-			}
-		};
+		{
+		}
+	};
 
-		CMobItemGroup(DWORD dwMobVnum, int iKillDrop, const std::string& r_stName)
-			:
-			m_dwMobVnum(dwMobVnum),
+	CMobItemGroup(DWORD dwMobVnum, int iKillDrop, const std::string& r_stName)
+		:
+		m_dwMobVnum(dwMobVnum),
 		m_iKillDrop(iKillDrop),
 		m_stName(r_stName)
-		{
-		}
+	{
+	}
 
-		int GetKillPerDrop() const
-		{
-			return m_iKillDrop;
-		}
+	int GetKillPerDrop() const
+	{
+		return m_iKillDrop;
+	}
 
-		void AddItem(DWORD dwItemVnum, int iCount, int iPartPct, int iRarePct)
-		{
-			if (!m_vecProbs.empty())
-				iPartPct += m_vecProbs.back();
-			m_vecProbs.push_back(iPartPct);
-			m_vecItems.push_back(SMobItemGroupInfo(dwItemVnum, iCount, iRarePct));
-		}
+	void AddItem(DWORD dwItemVnumStart, DWORD dwItemVnumEnd, int iCount, int iPartPct, int iRarePct)
+	{
+		if (!m_vecProbs.empty())
+			iPartPct += m_vecProbs.back();
+		m_vecProbs.push_back(iPartPct);
+		m_vecItems.push_back(SMobItemGroupInfo(dwItemVnumStart, dwItemVnumEnd, iCount, iRarePct));
+	}
 
-		// MOB_DROP_ITEM_BUG_FIX
-		bool IsEmpty() const
-		{
-			return m_vecProbs.empty();
-		}
+	// MOB_DROP_ITEM_BUG_FIX
+	bool IsEmpty() const
+	{
+		return m_vecProbs.empty();
+	}
 
-		int GetOneIndex() const
-		{
-			int n = number(1, m_vecProbs.back());
-			itertype(m_vecProbs) it = lower_bound(m_vecProbs.begin(), m_vecProbs.end(), n);
-			return std::distance(m_vecProbs.begin(), it);
-		}
-		// END_OF_MOB_DROP_ITEM_BUG_FIX
+	int GetOneIndex() const
+	{
+		int n = number(1, m_vecProbs.back());
+		itertype(m_vecProbs) it = lower_bound(m_vecProbs.begin(), m_vecProbs.end(), n);
+		return std::distance(m_vecProbs.begin(), it);
+	}
+	// END_OF_MOB_DROP_ITEM_BUG_FIX
 
-		const SMobItemGroupInfo& GetOne() const
-		{
-			return m_vecItems[GetOneIndex()];
-		}
+	const SMobItemGroupInfo& GetOne() const
+	{
+		return m_vecItems[GetOneIndex()];
+	}
 
-	private:
-		DWORD m_dwMobVnum;
-		int m_iKillDrop;
-		std::string m_stName;
-		std::vector<int> m_vecProbs;
-		std::vector<SMobItemGroupInfo> m_vecItems;
+	const std::vector<int>& GetProbVector() const
+	{
+		return m_vecProbs;
+	}
+
+	const std::vector<SMobItemGroupInfo>& GetItemVector() const
+	{
+		return m_vecItems;
+	}
+
+private:
+	DWORD m_dwMobVnum;
+	int m_iKillDrop;
+	std::string m_stName;
+	std::vector<int> m_vecProbs;
+	std::vector<SMobItemGroupInfo> m_vecItems;
 };
 
 class CDropItemGroup
 {
+public:
 	struct SDropItemGroupInfo
 	{
-		DWORD	dwVnum;
+		DWORD	dwVnumStart;
+		DWORD	dwVnumEnd;
 		DWORD	dwPct;
 		int	iCount;
 
-		SDropItemGroupInfo(DWORD dwVnum, DWORD dwPct, int iCount)
-			: dwVnum(dwVnum), dwPct(dwPct), iCount(iCount)
-			{}
+		SDropItemGroupInfo(DWORD dwVnumStart, DWORD dwVnumEnd, DWORD dwPct, int iCount)
+			: dwVnumStart(dwVnumStart), dwVnumEnd(dwVnumEnd), dwPct(dwPct), iCount(iCount)
+		{
+		}
 	};
 
-	public:
+public:
 	CDropItemGroup(DWORD dwVnum, DWORD dwMobVnum, const std::string& r_stName)
 		:
 		m_dwVnum(dwVnum),
-	m_dwMobVnum(dwMobVnum),
-	m_stName(r_stName)
+		m_dwMobVnum(dwMobVnum),
+		m_stName(r_stName)
 	{
 	}
 
-	const std::vector<SDropItemGroupInfo> & GetVector()
+	const std::vector<SDropItemGroupInfo>& GetVector()
 	{
 		return m_vec_items;
 	}
 
-	void AddItem(DWORD dwItemVnum, DWORD dwPct, int iCount)
+	void AddItem(DWORD dwItemVnumStart, DWORD dwItemVnumEnd, DWORD dwPct, int iCount)
 	{
-		m_vec_items.push_back(SDropItemGroupInfo(dwItemVnum, dwPct, iCount));
+		m_vec_items.push_back(SDropItemGroupInfo(dwItemVnumStart, dwItemVnumEnd, dwPct, iCount));
 	}
 
-	private:
+private:
 	DWORD m_dwVnum;
 	DWORD m_dwMobVnum;
 	std::string m_stName;
@@ -267,73 +289,78 @@ class CDropItemGroup
 
 class CLevelItemGroup
 {
+public:
 	struct SLevelItemGroupInfo
 	{
-		DWORD dwVNum;
+		DWORD dwVNumStart, dwVNumEnd;
 		DWORD dwPct;
 		int iCount;
 
-		SLevelItemGroupInfo(DWORD dwVnum, DWORD dwPct, int iCount)
-			: dwVNum(dwVnum), dwPct(dwPct), iCount(iCount)
-		{ }
+		SLevelItemGroupInfo(DWORD dwVnumStart, DWORD dwVnumEnd, DWORD dwPct, int iCount)
+			: dwVNumStart(dwVnumStart), dwVNumEnd(dwVnumEnd), dwPct(dwPct), iCount(iCount)
+		{
+		}
 	};
 
-	private :
-		DWORD m_dwLevelLimit;
-		std::string m_stName;
-		std::vector<SLevelItemGroupInfo> m_vec_items;
+private:
+	DWORD m_dwLevelLimitStart;
+	DWORD m_dwLevelLimitEnd;
+	std::string m_stName;
+	std::vector<SLevelItemGroupInfo> m_vec_items;
 
-	public :
-		CLevelItemGroup(DWORD dwLevelLimit)
-			: m_dwLevelLimit(dwLevelLimit)
-		{}
+public:
+	CLevelItemGroup(DWORD dwLevelLimitStart, DWORD dwLevelLimitEnd) : m_dwLevelLimitStart(dwLevelLimitStart), m_dwLevelLimitEnd(dwLevelLimitEnd) {}
 
-		DWORD GetLevelLimit() { return m_dwLevelLimit; }
+	DWORD GetLevelLimitStart() { return m_dwLevelLimitStart; }
+	DWORD GetLevelLimitEnd() { return m_dwLevelLimitEnd; }
 
-		void AddItem(DWORD dwItemVnum, DWORD dwPct, int iCount)
-		{
-			m_vec_items.push_back(SLevelItemGroupInfo(dwItemVnum, dwPct, iCount));
-		}
+	void AddItem(DWORD dwItemVnumStart, DWORD dwItemVnumEnd, DWORD dwPct, int iCount)
+	{
+		m_vec_items.push_back(SLevelItemGroupInfo(dwItemVnumStart, dwItemVnumEnd, dwPct, iCount));
+	}
 
-		const std::vector<SLevelItemGroupInfo> & GetVector()
-		{
-			return m_vec_items;
-		}
+	const std::vector<SLevelItemGroupInfo>& GetVector()
+	{
+		return m_vec_items;
+	}
 };
+
 
 class CBuyerThiefGlovesItemGroup
 {
 	struct SThiefGroupInfo
 	{
-		DWORD	dwVnum;
+		DWORD	dwVnumStart;
+		DWORD	dwVnumEnd;
 		DWORD	dwPct;
 		int	iCount;
 
-		SThiefGroupInfo(DWORD dwVnum, DWORD dwPct, int iCount)
-			: dwVnum(dwVnum), dwPct(dwPct), iCount(iCount)
-			{}
+		SThiefGroupInfo(DWORD dwVnumStart, DWORD dwVnumEnd, DWORD dwPct, int iCount)
+			: dwVnumStart(dwVnumStart), dwVnumEnd(dwVnumEnd), dwPct(dwPct), iCount(iCount)
+		{
+		}
 	};
 
-	public:
+public:
 	CBuyerThiefGlovesItemGroup(DWORD dwVnum, DWORD dwMobVnum, const std::string& r_stName)
 		:
 		m_dwVnum(dwVnum),
-	m_dwMobVnum(dwMobVnum),
-	m_stName(r_stName)
+		m_dwMobVnum(dwMobVnum),
+		m_stName(r_stName)
 	{
 	}
 
-	const std::vector<SThiefGroupInfo> & GetVector()
+	const std::vector<SThiefGroupInfo>& GetVector()
 	{
 		return m_vec_items;
 	}
 
-	void AddItem(DWORD dwItemVnum, DWORD dwPct, int iCount)
+	void AddItem(DWORD dwItemVnumStart, DWORD dwItemVnumEnd, DWORD dwPct, int iCount)
 	{
-		m_vec_items.push_back(SThiefGroupInfo(dwItemVnum, dwPct, iCount));
+		m_vec_items.push_back(SThiefGroupInfo(dwItemVnumStart, dwItemVnumEnd, dwPct, iCount));
 	}
 
-	private:
+private:
 	DWORD m_dwVnum;
 	DWORD m_dwMobVnum;
 	std::string m_stName;
@@ -405,6 +432,11 @@ class ITEM_MANAGER : public singleton<ITEM_MANAGER>
 		int                     RealNumber(DWORD vnum);
 		void			CreateQuestDropItem(LPCHARACTER pkChr, LPCHARACTER pkKiller, std::vector<LPITEM> & vec_item, int iDeltaPercent, int iRandRange);
 
+	public:
+		const std::map<DWORD, std::vector<CMobItemGroup*> >& GetMobItemGroupMap() const { return m_map_pkMobItemGroup; }
+		const std::map<DWORD, CDropItemGroup*>& GetDropItemGroupMap() const { return m_map_pkDropItemGroup; }
+		const std::map<DWORD, CLevelItemGroup*>& GetLevelItemGroupMap() const { return m_map_pkLevelItemGroup; }
+
 	protected:
 		typedef std::map<DWORD, LPITEM> ITEM_VID_MAP;		
 
@@ -426,7 +458,7 @@ class ITEM_MANAGER : public singleton<ITEM_MANAGER>
 		std::map<DWORD, CSpecialItemGroup*> m_map_pkSpecialItemGroup;
 		std::map<DWORD, CSpecialItemGroup*> m_map_pkQuestItemGroup;
 		std::map<DWORD, CSpecialAttrGroup*> m_map_pkSpecialAttrGroup;
-		std::map<DWORD, CMobItemGroup*> m_map_pkMobItemGroup;
+		std::map<DWORD, std::vector<CMobItemGroup*> > m_map_pkMobItemGroup;
 		std::map<DWORD, CLevelItemGroup*> m_map_pkLevelItemGroup;
 		std::map<DWORD, CBuyerThiefGlovesItemGroup*> m_map_pkGloveItemGroup;
 
@@ -456,6 +488,7 @@ class ITEM_MANAGER : public singleton<ITEM_MANAGER>
 		const static int MAX_NORM_ATTR_NUM = 5;
 		const static int MAX_RARE_ATTR_NUM = 2;
 		bool ReadItemVnumMaskTable(const char * c_pszFileName);
+		bool GetVnumRangeByString(const std::string& stVnumRange, DWORD& r_dwVnumStart, DWORD& r_dwVnumEnd);
 	private:
 };
 

@@ -107,6 +107,19 @@ inline bool str_to_number (long double& out, const char *in)
 }
 #endif
 
+inline bool str_is_number(const char* in)
+{
+	if (0 == in || 0 == in[0])	return false;
+
+	int len = strlen(in);
+	for (int i = 0; i < len; ++i)
+	{
+		if ((in[i] < '0' || in[i] > '9') && (i > 0 || in[i] != '-'))
+			return false;
+	}
+
+	return true;
+}
 
 struct DeleteMapValues
 {
@@ -115,7 +128,37 @@ struct DeleteMapValues
 	{
 		for (typename T::iterator it = mapContainer.begin(); it != mapContainer.end(); ++it)
 		{
-			M2_DELETE(it->second);
+			if constexpr (std::is_pointer<typename T::mapped_type>::value)
+			{
+				M2_DELETE(it->second);
+			}
+			else
+			{
+				for (auto* pGroup : it->second)
+				{
+					M2_DELETE(pGroup);
+				}
+			}
+		}
+		mapContainer.clear();
+	}
+};
+
+struct DeleteVectorMapValues
+{
+	template <typename T>
+	void operator()(T& mapContainer)
+	{
+		typename T::iterator it = mapContainer.begin();
+		for (; it != mapContainer.end(); ++it)
+		{
+			typename T::mapped_type& vec = it->second;
+			typename T::mapped_type::iterator vIt = vec.begin();
+			for (; vIt != vec.end(); ++vIt)
+			{
+				M2_DELETE(*vIt);
+			}
+			vec.clear();
 		}
 		mapContainer.clear();
 	}
