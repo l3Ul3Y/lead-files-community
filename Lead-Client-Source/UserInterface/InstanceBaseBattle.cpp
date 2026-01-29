@@ -514,6 +514,10 @@ BOOL CInstanceBase::CheckAdvancing()
 		if (pkInstEach==this)
 			continue;
 
+		if (pkInstEach->__GetRaceType() == CActorInstance::TYPE_NPC ||
+			pkInstEach->__GetRaceType() == CActorInstance::TYPE_ENEMY)
+			continue;
+
 		CActorInstance& rkActorSelf=m_GraphicThingInstance;
 		CActorInstance& rkActorEach=pkInstEach->GetGraphicThingInstanceRef();
 
