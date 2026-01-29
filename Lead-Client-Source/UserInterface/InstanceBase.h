@@ -754,6 +754,7 @@ class CInstanceBase
 
 		float					GetDistance(CInstanceBase * pkTargetInst);
 		float					GetDistance(const TPixelPosition & c_rPixelPosition);
+		float					GetBaseHeight();
 
 		// ETC
 		CActorInstance&			GetGraphicThingInstanceRef();

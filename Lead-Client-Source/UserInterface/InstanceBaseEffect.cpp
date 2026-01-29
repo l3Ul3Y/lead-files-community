@@ -630,7 +630,7 @@ void CInstanceBase::AttachTextTail()
 
 	DWORD dwVID=GetVirtualID();
 
-	float fTextTailHeight=IsMountingHorse() ? 110.0f : 10.0f;
+	float fTextTailHeight = GetBaseHeight() + 10.0f;
 
 	static D3DXCOLOR s_kD3DXClrTextTail=D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	CPythonTextTail::Instance().RegisterCharacterTextTail(m_dwGuildID, dwVID, s_kD3DXClrTextTail, fTextTailHeight);
@@ -994,7 +994,7 @@ void CInstanceBase::SetEmoticon(UINT eEmoticon)
 	if (IsPossibleEmoticon())
 	{
 		D3DXVECTOR3 v3Pos = m_GraphicThingInstance.GetPosition();
-		v3Pos.z += float(m_GraphicThingInstance.GetHeight());
+		v3Pos.z += float(GetBaseHeight() + m_GraphicThingInstance.GetHeight());
 
 		//CEffectManager& rkEftMgr=CEffectManager::Instance();
 		CCamera * pCamera = CCameraManager::Instance().GetCurrentCamera();
@@ -1003,7 +1003,7 @@ void CInstanceBase::SetEmoticon(UINT eEmoticon)
 		v3Pos = pCamera->GetEye()-v3Dir;
 
 		v3Pos = D3DXVECTOR3(0,0,0);
-		v3Pos.z += float(m_GraphicThingInstance.GetHeight());
+		v3Pos.z += float(GetBaseHeight() + m_GraphicThingInstance.GetHeight());
 
 		//rkEftMgr.CreateEffect(ms_adwCRCAffectEffect[EFFECT_EMOTICON+eEmoticon],v3Pos,D3DXVECTOR3(0,0,0));
 		m_GraphicThingInstance.AttachEffectByID(0, NULL, ms_adwCRCAffectEffect[EFFECT_EMOTICON+eEmoticon],&v3Pos);

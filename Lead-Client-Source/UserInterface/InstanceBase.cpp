@@ -10,6 +10,7 @@
 
 #include "../eterlib/StateManager.h"
 #include "../gamelib/ItemManager.h"
+#include "../gamelib/RaceManager.h"
 
 BOOL HAIR_COLOR_ENABLE=FALSE;
 BOOL USE_ARMOR_SPECULAR=FALSE;
@@ -549,6 +550,24 @@ int CInstanceBase::GetAlignmentType()
 BYTE CInstanceBase::GetPKMode()
 {
 	return m_byPKMode;
+}
+
+float CInstanceBase::GetBaseHeight()
+{
+	CActorInstance* pkHorse = m_kHorse.GetActorPtr();
+	if (!m_kHorse.IsMounting() || !pkHorse)
+		return 0.0f;
+
+	DWORD dwHorseVnum = m_kHorse.m_pkActor->GetRace();
+	if ((dwHorseVnum >= 20101 && dwHorseVnum <= 20109) ||
+		(dwHorseVnum == 20029 || dwHorseVnum == 20030))
+		return 100.0f;
+
+	float fRaceHeight = CRaceManager::instance().GetRaceHeight(dwHorseVnum);
+	if (fRaceHeight == 0.0f)
+		return 100.0f;
+	else
+		return fRaceHeight;
 }
 
 bool CInstanceBase::IsKiller()

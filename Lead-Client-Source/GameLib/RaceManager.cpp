@@ -390,6 +390,20 @@ BOOL CRaceManager::GetRaceDataPointer(DWORD dwRaceIndex, CRaceData ** ppRaceData
 	return TRUE;
 }
 
+void CRaceManager::SetRaceHeight(int iVnum, float fHeight)
+{
+	m_kMap_iRaceKey_fRaceAdditionalHeight.insert(std::map<int, float>::value_type(iVnum, fHeight));
+}
+
+float CRaceManager::GetRaceHeight(int iVnum)
+{
+	std::map<int, float>::iterator it = m_kMap_iRaceKey_fRaceAdditionalHeight.find(iVnum);
+	if (m_kMap_iRaceKey_fRaceAdditionalHeight.end() == it)
+		return 0.0f;
+
+	return it->second;
+}
+
 void CRaceManager::SetPathName(const char * c_szPathName)
 {
 	m_strPathName = c_szPathName;

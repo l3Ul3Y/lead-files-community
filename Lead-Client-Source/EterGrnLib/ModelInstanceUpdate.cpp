@@ -171,7 +171,7 @@ void CGrannyModelInstance::UpdateWorldMatrices(const D3DXMATRIX* c_pWorldMatrix)
 		}
 		else
 		{
-			int iBone = *boneIndices;
+			const granny_int32x iBone = *boneIndices;
 			D3DXMatrixMultiply(&rWorldMatrix, &boneMatrices[iBone], c_pWorldMatrix);
 		}
 	}

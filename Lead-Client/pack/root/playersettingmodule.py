@@ -1355,6 +1355,25 @@ def LoadGuildBuildingList(filename):
 
 # END_OF_GUILD_BUILDING
 
+# SetRaceHeight
+def __LoadRaceHeight():
+	try:
+		lines = pack_open("race_height.txt", "r").readlines()
+	except IOError:
+		import dbg
+		dbg.LogBox("__LoadRaceHeight: load text file error!")
+		app.Abort()
+		
+	for line in lines:
+		tokens = line[:-1].split("\t")
+		if len(tokens) == 0 or not tokens[0]:
+			continue
+			
+		vnum = int(tokens[0])
+		height = float(tokens[1])
+		
+		chrmgr.SetRaceHeight(vnum, height)
+
 loadGameDataDict={
 	"INIT" : __InitData,
 	"SOUND" : __LoadGameSound,
@@ -1366,6 +1385,7 @@ loadGameDataDict={
 	"SKILL" : __LoadGameSkill,
 	"ENEMY" : __LoadGameEnemy,
 	"NPC" : __LoadGameNPC,
+    "RACE_HEIGHT": __LoadRaceHeight,
 }
 
 def LoadGameData(name):

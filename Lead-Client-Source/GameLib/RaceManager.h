@@ -29,6 +29,8 @@ class CRaceManager : public CSingleton<CRaceManager>
 
 		BOOL GetRaceDataPointer(DWORD dwRaceIndex, CRaceData ** ppRaceData);
 
+		void SetRaceHeight(int iVnum, float fHeight);
+		float GetRaceHeight(int iVnum);
 
 	protected:
 		CRaceData* __LoadRaceData(DWORD dwRaceIndex);
@@ -42,6 +44,7 @@ class CRaceManager : public CSingleton<CRaceManager>
 
 		std::map<std::string, std::string> m_kMap_stRaceName_stSrcName;
 		std::map<DWORD, std::string>	m_kMap_dwRaceKey_stRaceName;
+		std::map<int, float>				m_kMap_iRaceKey_fRaceAdditionalHeight;
 
 	private:
 		std::string						m_strPathName;
