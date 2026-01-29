@@ -284,7 +284,7 @@ int get_Item_Flag_Value(string inputString)
 int get_Item_WearFlag_Value(string inputString) 
 {
 
-	string arWearrFlag[] = { "WEAR_BODY", "WEAR_HEAD", "WEAR_FOOTS", "WEAR_WRIST", "WEAR_WEAPON", "WEAR_NECK", "WEAR_EAR", "WEAR_SHIELD", "WEAR_UNIQUE",
+	string arWearrFlag[] = { "WEAR_BODY", "WEAR_HEAD", "WEAR_FOOTS", "WEAR_WRIST", "WEAR_WEAPON", "WEAR_NECK", "WEAR_EAR", "WEAR_UNIQUE", "WEAR_SHIELD",
 					"WEAR_ARROW", "WEAR_HAIR", "WEAR_ABILITY" };
 
 
