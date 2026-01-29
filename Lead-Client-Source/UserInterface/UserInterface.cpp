@@ -4,6 +4,7 @@
 #include "PythonExceptionSender.h"
 #include "resource.h"
 #include "Version.h"
+#include <shobjidl.h>
 
 #ifdef _DEBUG
 #include <crtdbg.h>
@@ -457,8 +458,15 @@ bool __IsLocaleVersion(LPSTR lpCmdLine)
 	return (strcmp(lpCmdLine, "--perforce-revision") == 0);
 }
 
+void ApplyUniqueAppID()
+{
+	std::wstring appID = L"App.Metin2.Instance." + std::to_wstring(GetCurrentProcessId());
+	SetCurrentProcessExplicitAppUserModelID(appID.c_str());
+}
+
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	ApplyUniqueAppID();
 #ifdef _DEBUG
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_CHECK_CRT_DF | _CRTDBG_LEAK_CHECK_DF );
 	//_CrtSetBreakAlloc( 110247 ); 
