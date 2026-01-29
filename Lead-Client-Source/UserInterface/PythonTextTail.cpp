@@ -607,7 +607,7 @@ void CPythonTextTail::RegisterChatTail(DWORD VirtualID, const char * c_szChat)
 	TTextTail * pTextTail = RegisterTextTail(VirtualID,
 											 c_szChat,
 											 pCharacterInstance->GetGraphicThingInstancePtr(),
-											 pCharacterInstance->GetGraphicThingInstanceRef().GetHeight() + 10.0f,
+											 pCharacterInstance->GetGraphicThingInstanceRef().GetHeight() + pCharacterInstance->GetBaseHeight() + 10.0f,
 											 c_TextTail_Chat_Color);
 
 	// TEXTTAIL_LIVINGTIME_CONTROL

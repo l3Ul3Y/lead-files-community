@@ -179,6 +179,7 @@ class LoadingWindow(ui.ScriptWindow):
 		self.__LoadSkill()
 		self.__LoadEnemy()
 		self.__LoadNPC()
+		self.__LoadRaceHeight()
 		self.__StartGame()
 
 	def LoadData(self, playerX, playerY):
@@ -206,7 +207,7 @@ class LoadingWindow(ui.ScriptWindow):
 			# GUILD_BUILDING
 			(98, ui.__mem_func__(self.__LoadGuildBuilding)),
 			# END_OF_GUILD_BUILDING
-
+			(99, ui.__mem_func__(self.__LoadRaceHeight)),
 			(100, ui.__mem_func__(self.__StartGame)),
 		]
 
@@ -333,6 +334,9 @@ class LoadingWindow(ui.ScriptWindow):
 	def __LoadGuildBuilding(self):
 		playerSettingModule.LoadGuildBuildingList(localeInfo.GUILD_BUILDING_LIST_TXT)
 	# END_OF_GUILD_BUILDING
+
+	def __LoadRaceHeight(self):
+		playerSettingModule.LoadGameData("RACE_HEIGHT")
 
 	def __StartGame(self):
 		background.SetViewDistanceSet(background.DISTANCE0, 25600)

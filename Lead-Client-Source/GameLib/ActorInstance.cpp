@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "ActorInstance.h"
 #include "AreaTerrain.h"
+#include "RaceManager.h"
 #include "RaceData.h"
 #include "../SpeedTreeLib/SpeedTreeForestDirectX8.h"
 #include "../SpeedTreeLib/SpeedTreeWrapper.h"
@@ -690,7 +691,8 @@ BOOL CActorInstance::IsMovement()
 
 float CActorInstance::GetHeight()
 {
-	return CGraphicThingInstance::GetHeight();
+	const float fHeight = CRaceManager::instance().GetRaceHeight(GetRace());
+	return (fHeight > 0.0f) ? fHeight : CGraphicThingInstance::GetHeight();
 }
 
 bool CActorInstance::IntersectDefendingSphere()

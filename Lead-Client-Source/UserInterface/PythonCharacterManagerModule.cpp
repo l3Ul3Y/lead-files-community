@@ -713,6 +713,19 @@ PyObject * chrmgrIsPossibleEmoticon(PyObject* poSelf, PyObject* poArgs)
 	return Py_BuildValue("i", result);
 }
 
+PyObject* chrmgrSetRaceHeight(PyObject* poSelf, PyObject* poArgs)
+{
+	int iRaceIndex;
+	if (!PyTuple_GetInteger(poArgs, 0, &iRaceIndex))
+		return Py_BadArgument();
+	float fRaceHeight = 0.0f;
+	if (!PyTuple_GetFloat(poArgs, 1, &fRaceHeight))
+		return Py_BadArgument();
+
+	CRaceManager::Instance().SetRaceHeight(iRaceIndex, fRaceHeight);
+	return Py_BuildNone();
+}
+
 void initchrmgr()
 {
 	static PyMethodDef s_methods[] =
@@ -758,6 +771,8 @@ void initchrmgr()
 		{ "RegisterTitleName",			chrmgrRegisterTitleName,				METH_VARARGS },
 		{ "RegisterNameColor",			chrmgrRegisterNameColor,				METH_VARARGS },
 		{ "RegisterTitleColor",			chrmgrRegisterTitleColor,				METH_VARARGS },
+
+		{ "SetRaceHeight",				chrmgrSetRaceHeight,					METH_VARARGS },
 
 		{ NULL,							NULL,									NULL },
 	};	
