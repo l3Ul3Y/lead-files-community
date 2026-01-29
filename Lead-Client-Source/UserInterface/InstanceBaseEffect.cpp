@@ -291,6 +291,8 @@ void CInstanceBase::__AttachEmpireEffect(DWORD eEmpire)
 	
 	CInstanceBase* pkInstMain=__GetMainInstancePtr();
 
+	if (IsNPC())
+		return;
 	if (IsWarp())
 		return;
 	if (IsObject())
