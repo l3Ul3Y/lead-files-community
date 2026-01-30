@@ -6,6 +6,7 @@
 #include "../EterLocale/StringCodec.h"
 #include "../EterBase/Utils.h"
 #include "../EterLocale/Arabic.h"
+#include <unordered_map>
 
 extern DWORD GetDefaultCodePage();
 
@@ -531,6 +532,20 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 	}
 
 	//WORD FillRectIndices[6] = { 0, 2, 1, 2, 3, 1 };
+	static std::unordered_map<LPDIRECT3DTEXTURE9, std::vector<SVertex>> s_vtxBatches;
+	for (auto& it : s_vtxBatches)
+		it.second.clear();
+
+	auto AppendQuad = [](std::vector<SVertex>& batch, const SVertex* v)
+	{
+		batch.push_back(v[0]);
+		batch.push_back(v[1]);
+		batch.push_back(v[2]);
+		batch.push_back(v[2]);
+		batch.push_back(v[1]);
+		batch.push_back(v[3]);
+	};
+
 
 	STATEMANAGER.SaveRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	STATEMANAGER.SaveRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
@@ -615,7 +630,7 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 				fFontEy = fFontSy + fFontHeight;
 
 				pFontTexture->SelectTexture(pCurCharInfo->index);
-				STATEMANAGER.SetTexture(0, pFontTexture->GetD3DTexture());
+				std::vector<SVertex>& vtxBatch = s_vtxBatches[pFontTexture->GetD3DTexture()];
 
 				akVertex[0].u=pCurCharInfo->left;
 				akVertex[0].v=pCurCharInfo->top;
@@ -642,8 +657,7 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 				akVertex[2].x=fFontEx-fFontHalfWeight+feather;
 				akVertex[3].x=fFontEx-fFontHalfWeight+feather;
 				
-				if (CGraphicBase::SetPDTStream((SPDTVertex*)akVertex, 4))
-					STATEMANAGER.DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+				AppendQuad(vtxBatch, akVertex);
 				
 
 				// 오른
@@ -652,8 +666,7 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 				akVertex[2].x=fFontEx+fFontHalfWeight+feather;
 				akVertex[3].x=fFontEx+fFontHalfWeight+feather;
 
-				if (CGraphicBase::SetPDTStream((SPDTVertex*)akVertex, 4))
-					STATEMANAGER.DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+				AppendQuad(vtxBatch, akVertex);
 				
 				akVertex[0].x=fFontSx-feather;
 				akVertex[1].x=fFontSx-feather;
@@ -667,8 +680,7 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 				akVertex[3].y=fFontEy-fFontHalfWeight+feather;
 
 				// 20041216.myevan.DrawPrimitiveUP
-				if (CGraphicBase::SetPDTStream((SPDTVertex*)akVertex, 4))
-					STATEMANAGER.DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+				AppendQuad(vtxBatch, akVertex);
 				
 				// 아래
 				akVertex[0].y=fFontSy+fFontHalfWeight-feather;
@@ -677,8 +689,7 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 				akVertex[3].y=fFontEy+fFontHalfWeight+feather;
 
 				// 20041216.myevan.DrawPrimitiveUP
-				if (CGraphicBase::SetPDTStream((SPDTVertex*)akVertex, 4))
-					STATEMANAGER.DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+				AppendQuad(vtxBatch, akVertex);
 				
 				fCurX += fFontAdvance;
 			}
@@ -727,7 +738,7 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 			fFontEy = fFontSy + fFontHeight;
 
 			pFontTexture->SelectTexture(pCurCharInfo->index);
-			STATEMANAGER.SetTexture(0, pFontTexture->GetD3DTexture());
+			std::vector<SVertex>& vtxBatch = s_vtxBatches[pFontTexture->GetD3DTexture()];
 
 			akVertex[0].x=fFontSx;
 			akVertex[0].y=fFontSy;
@@ -754,11 +765,32 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 			akVertex[0].color = akVertex[1].color = akVertex[2].color = akVertex[3].color = m_dwColorInfoVector[i];
 
 			// 20041216.myevan.DrawPrimitiveUP
-			if (CGraphicBase::SetPDTStream((SPDTVertex*)akVertex, 4))
-				STATEMANAGER.DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+			AppendQuad(vtxBatch, akVertex);
 			//STATEMANAGER.DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, akVertex, sizeof(SVertex));
 
 			fCurX += fFontAdvance;
+		}
+	}
+
+	for (const auto& it : s_vtxBatches)
+	{
+		if (it.second.empty() || !it.first)
+			continue;
+
+		STATEMANAGER.SetTexture(0, it.first);
+
+		const std::vector<SVertex>& batch = it.second;
+		const size_t kMaxVerts = 4092; // multiple of 6 for quad lists
+		for (size_t i = 0; i < batch.size(); i += kMaxVerts)
+		{
+			size_t count = batch.size() - i;
+			if (count > kMaxVerts)
+				count = kMaxVerts;
+			count -= count % 3;
+			if (count == 0)
+				break;
+
+			STATEMANAGER.DrawPrimitiveUP(D3DPT_TRIANGLELIST, count / 3, &batch[i], sizeof(SVertex));
 		}
 	}
 
