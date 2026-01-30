@@ -791,7 +791,7 @@ class CInstanceBase
 		CInstanceBase*			__FindInstancePtr(DWORD dwVID);
 
 		bool  __FindRaceType(DWORD dwRace, BYTE* pbType);
-		DWORD __GetRaceType();
+		DWORD GetRaceType() const { return m_eRaceType; };
 
 		bool __IsShapeAnimalWear();
 		BOOL __IsChangableWeapon(int iWeaponID);

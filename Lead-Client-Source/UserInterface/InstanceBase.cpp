@@ -2841,12 +2841,6 @@ bool CInstanceBase::__IsShapeAnimalWear()
 	return false;
 }
 
-DWORD CInstanceBase::__GetRaceType()
-{
-	return m_eRaceType;
-}
-
-
 void CInstanceBase::RefreshState(DWORD dwMotIndex, bool isLoop)
 {
 	DWORD dwPartItemID = m_GraphicThingInstance.GetPartItemID(CRaceData::PART_WEAPON);
