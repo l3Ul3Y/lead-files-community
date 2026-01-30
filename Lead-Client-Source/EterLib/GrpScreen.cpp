@@ -632,11 +632,6 @@ BOOL CScreen::IsLostDevice()
 	if (!ms_lpd3dDevice)
 		return TRUE;
 
-	IDirect3DDevice9Ex & rkD3DDev = *ms_lpd3dDevice;
-	HRESULT hrTestCooperativeLevel = rkD3DDev.TestCooperativeLevel();
-	if (FAILED(hrTestCooperativeLevel))
-		return TRUE;		
-	
 	return FALSE;
 }
 
@@ -645,40 +640,7 @@ BOOL CScreen::RestoreDevice()
 	if (!ms_lpd3dDevice)
 		return FALSE;
 
-	IDirect3D9Ex& rkD3D = *ms_lpd3d;
-	IDirect3DDevice9Ex& rkD3DDev = *ms_lpd3dDevice;
-	D3DPRESENT_PARAMETERS& rkD3DPP = ms_d3dPresentParameter;
-	
-	HRESULT hrTestCooperativeLevel = rkD3DDev.TestCooperativeLevel();
-	
-	if (FAILED(hrTestCooperativeLevel))
-	{		
-		if (D3DERR_DEVICELOST == hrTestCooperativeLevel)
-		{
-			return FALSE;		
-		}
-
-		if (D3DERR_DEVICENOTRESET == hrTestCooperativeLevel)
-		{
-			D3DDISPLAYMODE d3dDisplayMode;
-			if (FAILED(rkD3D.GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3dDisplayMode)))
-				return FALSE;
-
-			rkD3DPP.BackBufferFormat = d3dDisplayMode.Format;
-			
-			HRESULT hrReset = rkD3DDev.Reset(&rkD3DPP);
-
-			if (FAILED(hrReset))
-			{
-				return FALSE;
-			}
-			
-			STATEMANAGER.SetDefaultState();
-		}        
-	}
-
 	return TRUE;
-	
 }
 
 bool CScreen::Begin()
@@ -714,29 +676,27 @@ void CScreen::Show(HWND hWnd)
 		RECT rcLeft = { 0, g_rcBrowser.top, g_rcBrowser.left, g_rcBrowser.bottom };
 		RECT rcRight = { g_rcBrowser.right, g_rcBrowser.top, (LONG)ms_d3dPresentParameter.BackBufferWidth, g_rcBrowser.bottom };
 		
-		ms_lpd3dDevice->Present(&rcTop, &rcTop, hWnd, NULL);
-		ms_lpd3dDevice->Present(&rcBottom, &rcBottom, hWnd, NULL);
-		ms_lpd3dDevice->Present(&rcLeft, &rcLeft, hWnd, NULL);	
-		ms_lpd3dDevice->Present(&rcRight, &rcRight, hWnd, NULL);
+		ms_lpd3dDevice->PresentEx(&rcTop, &rcTop, hWnd, NULL, 0);
+		ms_lpd3dDevice->PresentEx(&rcBottom, &rcBottom, hWnd, NULL, 0);
+		ms_lpd3dDevice->PresentEx(&rcLeft, &rcLeft, hWnd, NULL, 0);	
+		ms_lpd3dDevice->PresentEx(&rcRight, &rcRight, hWnd, NULL, 0);
 	}
 	else
 	{
-		HRESULT hr=ms_lpd3dDevice->Present(NULL, NULL, hWnd, NULL);
-		if (D3DERR_DEVICELOST == hr)
-			RestoreDevice();
+		ms_lpd3dDevice->PresentEx(NULL, NULL, hWnd, NULL, 0);
 	}	
 }
 
 void CScreen::Show(RECT * pSrcRect)
 {
 	assert(ms_lpd3dDevice != NULL);
-	ms_lpd3dDevice->Present(pSrcRect, NULL, NULL, NULL);
+	ms_lpd3dDevice->PresentEx(pSrcRect, NULL, NULL, NULL, 0);
 }
 
 void CScreen::Show(RECT * pSrcRect, HWND hWnd)
 {
 	assert(ms_lpd3dDevice != NULL);
-	ms_lpd3dDevice->Present(pSrcRect, NULL, hWnd, NULL);
+	ms_lpd3dDevice->PresentEx(pSrcRect, NULL, hWnd, NULL, 0);
 }
 
 void CScreen::ProjectPosition(float x, float y, float z, float * pfX, float * pfY)

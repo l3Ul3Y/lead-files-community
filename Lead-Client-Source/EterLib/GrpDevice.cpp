@@ -81,7 +81,7 @@ void CGraphicDevice::EnableWebBrowserMode(const RECT& c_rcWebPage)
 	rkD3DPP.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 	
 	IDirect3DDevice9Ex& rkD3DDev=*ms_lpd3dDevice;
-	HRESULT hr=rkD3DDev.Reset(&rkD3DPP);
+	HRESULT hr=rkD3DDev.ResetEx(&rkD3DPP, NULL);
 	if (FAILED(hr))
 		return;
 	
@@ -100,7 +100,7 @@ void CGraphicDevice::DisableWebBrowserMode()
 	rkD3DPP=g_kD3DPP;
 
 	IDirect3DDevice9Ex& rkD3DDev=*ms_lpd3dDevice;
-	HRESULT hr=rkD3DDev.Reset(&rkD3DPP);
+	HRESULT hr=rkD3DDev.ResetEx(&rkD3DPP, NULL);
 	if (FAILED(hr))
 		return;
 	
@@ -122,7 +122,7 @@ bool CGraphicDevice::ResizeBackBuffer(UINT uWidth, UINT uHeight)
 
 			IDirect3DDevice9Ex& rkD3DDev=*ms_lpd3dDevice;
 
-			HRESULT hr=rkD3DDev.Reset(&rkD3DPP);
+			HRESULT hr=rkD3DDev.ResetEx(&rkD3DPP, NULL);
 			if (FAILED(hr))
 			{
 				return false;
@@ -231,32 +231,12 @@ LPDIRECT3DVERTEXDECLARATION9 CGraphicDevice::CreateDoublePNTStreamVertexShader()
 	return dwShader;
 }
 
-CGraphicDevice::EDeviceState CGraphicDevice::GetDeviceState()
-{
-	if (!ms_lpd3dDevice)
-		return DEVICESTATE_NULL;
-
-	HRESULT hr;
-
-	if (FAILED(hr = ms_lpd3dDevice->TestCooperativeLevel()))
-	{
-		if (D3DERR_DEVICELOST == hr)
-			return DEVICESTATE_BROKEN;
-
-		if (D3DERR_DEVICENOTRESET == hr)
-			return DEVICESTATE_NEEDS_RESET;
-
-		return DEVICESTATE_BROKEN;
-	}
-	
-	return DEVICESTATE_OK;
-}
 
 bool CGraphicDevice::Reset()
 {
 	HRESULT hr;
 
-	if (FAILED(hr = ms_lpd3dDevice->Reset(&ms_d3dPresentParameter)))
+	if (FAILED(hr = ms_lpd3dDevice->ResetEx(&ms_d3dPresentParameter, NULL)))
 		return false;
 
 	return true;
@@ -370,8 +350,11 @@ int CGraphicDevice::Create(HWND hWnd, int iHres, int iVres, bool Windowed, int /
 	D3DADAPTER_IDENTIFIER9 d3dAdapterId;
 	ms_lpd3d->GetAdapterIdentifier(D3DADAPTER_DEFAULT, 0, &d3dAdapterId);
 
-	D3DDISPLAYMODE d3dDisplayMode;
-	ms_lpd3d->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3dDisplayMode);
+	D3DDISPLAYMODEEX d3dDisplayMode;
+	D3DDISPLAYROTATION d3dRotation = D3DDISPLAYROTATION_IDENTITY;
+	ZeroMemory(&d3dDisplayMode, sizeof(d3dDisplayMode));
+	d3dDisplayMode.Size = sizeof(D3DDISPLAYMODEEX);
+	ms_lpd3d->GetAdapterDisplayModeEx(D3DADAPTER_DEFAULT, &d3dDisplayMode, &d3dRotation);
 
 	if (Windowed &&
 		strnicmp(d3dAdapterId.Driver, "3dfx", 4) == 0 &&

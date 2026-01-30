@@ -7,13 +7,6 @@
 class CGraphicDevice : public CGraphicBase
 {
 public:
-	enum EDeviceState
-	{
-		DEVICESTATE_OK,
-		DEVICESTATE_BROKEN,
-		DEVICESTATE_NEEDS_RESET,
-		DEVICESTATE_NULL
-	};
 
 	enum ECreateReturnValues
 	{
@@ -38,7 +31,6 @@ public:
 	void			Destroy();
 	int				Create(HWND hWnd, int hres, int vres, bool Windowed = true, int bit = 32, int ReflashRate = 0);
 
-	EDeviceState	GetDeviceState();
 	bool			Reset();
 
 	void			EnableWebBrowserMode(const RECT& c_rcWebPage);		

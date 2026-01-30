@@ -555,26 +555,6 @@ void CPythonApplication::SetMouseHandler(PyObject* poMouseHandler)
 
 int CPythonApplication::CheckDeviceState()
 {
-	CGraphicDevice::EDeviceState e_deviceState = m_grpDevice.GetDeviceState();
-
-	switch (e_deviceState)
-	{
-		// 디바이스가 없으면 프로그램이 종료 되어야 한다.
-	case CGraphicDevice::DEVICESTATE_NULL:
-		return DEVICE_STATE_FALSE;
-
-		// DEVICESTATE_BROKEN일 때는 다음 루프에서 복구 될 수 있도록 리턴 한다.
-		// 그냥 진행할 경우 DrawPrimitive 같은 것을 하면 프로그램이 터진다.
-	case CGraphicDevice::DEVICESTATE_BROKEN:
-		return DEVICE_STATE_SKIP;
-
-	case CGraphicDevice::DEVICESTATE_NEEDS_RESET:
-		if (!m_grpDevice.Reset())
-			return DEVICE_STATE_SKIP;
-
-		break;
-	}
-
 	return DEVICE_STATE_OK;
 }
 
