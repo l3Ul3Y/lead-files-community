@@ -21,6 +21,11 @@ extern int _fltused;
 volatile int _AVOID_FLOATING_POINT_LIBRARY_BUG = _fltused;  
 };  
 
+extern "C" {
+    __declspec ( dllexport ) DWORD NvOptimusEnablement = 0x00000001 ;
+    __declspec ( dllexport ) int AmdPowerXpressRequestHighPerformance = 1 ;
+}
+
 #pragma comment(linker, "/NODEFAULTLIB:libci.lib")
 
 #pragma comment( lib, "version.lib" )
