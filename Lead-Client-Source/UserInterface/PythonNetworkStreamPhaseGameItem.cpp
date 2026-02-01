@@ -497,32 +497,13 @@ bool CPythonNetworkStream::SendItemUseToItemPacket(TItemPos source_pos, TItemPos
 	return SendSequence();
 }
 
-bool CPythonNetworkStream::SendItemDropPacket(TItemPos pos, DWORD elk)
+bool CPythonNetworkStream::SendItemDropPacket(TItemPos pos, DWORD elk, DWORD count)
 {
 	if (!__CanActMainInstance())
 		return true;
 
 	TPacketCGItemDrop itemDropPacket;
 	itemDropPacket.header = HEADER_CG_ITEM_DROP;
-	itemDropPacket.Cell = pos;
-	itemDropPacket.gold = elk;
-
-	if (!Send(sizeof(TPacketCGItemDrop), &itemDropPacket))
-	{
-		Tracen("SendItemDropPacket Error");
-		return false;
-	}
-
-	return SendSequence();
-}
-
-bool CPythonNetworkStream::SendItemDropPacketNew(TItemPos pos, DWORD elk, DWORD count)
-{
-	if (!__CanActMainInstance())
-		return true;
-
-	TPacketCGItemDrop2 itemDropPacket;
-	itemDropPacket.header = HEADER_CG_ITEM_DROP2;
 	itemDropPacket.Cell = pos;
 	itemDropPacket.gold = elk;
 	itemDropPacket.count = count;

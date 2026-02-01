@@ -18,5 +18,41 @@
     <ClInclude Include="packet.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="common\building.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="common\cache.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="common\d3dtype.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="common\item_length.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="common\length.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="common\pool.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="common\service.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="common\singleton.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="common\stl.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="common\tables.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="common\utils.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="common\VnumHelper.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

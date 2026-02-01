@@ -146,7 +146,7 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		bool SendItemUsePacket(TItemPos pos);
 		bool SendItemUseToItemPacket(TItemPos source_pos, TItemPos target_pos);
 		bool SendItemDropPacket(TItemPos pos, DWORD elk);
-		bool SendItemDropPacketNew(TItemPos pos, DWORD elk, DWORD count);
+		bool SendItemDropPacket(TItemPos pos, DWORD elk, DWORD count);
 		bool SendItemMovePacket(TItemPos pos, TItemPos change_pos, ItemStackType count);
 		bool SendItemPickUpPacket(DWORD vid);
 

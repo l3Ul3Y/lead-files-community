@@ -109,7 +109,6 @@ class CInputMain : public CInputProcessor
 		int			Chat(LPCHARACTER ch, const char * data, size_t uiBytes);
 		void		ItemUse(LPCHARACTER ch, const char * data);
 		void		ItemDrop(LPCHARACTER ch, const char * data);
-		void		ItemDrop2(LPCHARACTER ch, const char * data);
 		void		ItemMove(LPCHARACTER ch, const char * data);
 		void		ItemPickup(LPCHARACTER ch, const char * data);
 		void		ItemToItem(LPCHARACTER ch, const char * pcData);

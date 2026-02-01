@@ -1385,7 +1385,7 @@ class GameWindow(ui.ScriptWindow):
 
 			if player.SLOT_TYPE_INVENTORY == dropType:
 				if dropNumber == player.ITEM_MONEY:
-					net.SendGoldDropPacketNew(dropCount)
+					net.SendGoldDropPacket(dropCount)
 					snd.PlaySound("sound/ui/money.wav")
 				else:
 					# PRIVATESHOP_DISABLE_ITEM_DROP
@@ -1407,7 +1407,7 @@ class GameWindow(ui.ScriptWindow):
 			chat.AppendChat(chat.CHAT_TYPE_INFO, localeInfo.DROP_ITEM_FAILURE_PRIVATE_SHOP)
 			return
 
-		net.SendItemDropPacketNew(itemInvenType, itemVNum, itemCount)
+		net.SendItemDropPacket(itemInvenType, itemVNum, itemCount)
 	# END_OF_PRIVATESHOP_DISABLE_ITEM_DROP
 
 	def OnMouseRightButtonDown(self):

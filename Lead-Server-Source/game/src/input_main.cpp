@@ -859,20 +859,7 @@ void CInputMain::ItemToItem(LPCHARACTER ch, const char * pcData)
 
 void CInputMain::ItemDrop(LPCHARACTER ch, const char * data)
 {
-	struct command_item_drop * pinfo = (struct command_item_drop *) data;
-
-	if (!ch)
-		return;
-
-	if (pinfo->gold > 0)
-		ch->DropGold(pinfo->gold);
-	else
-		ch->DropItem(pinfo->Cell);
-}
-
-void CInputMain::ItemDrop2(LPCHARACTER ch, const char * data)
-{
-	TPacketCGItemDrop2 * pinfo = (TPacketCGItemDrop2 *) data;
+	TPacketCGItemDrop * pinfo = (TPacketCGItemDrop *) data;
 	
 	if (!ch)
 		return;
@@ -3039,14 +3026,7 @@ int CInputMain::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 
 		case HEADER_CG_ITEM_DROP:
 			if (!ch->IsObserverMode())
-			{
 				ItemDrop(ch, c_pData);
-			}
-			break;
-
-		case HEADER_CG_ITEM_DROP2:
-			if (!ch->IsObserverMode())
-				ItemDrop2(ch, c_pData);
 			break;
 
 		case HEADER_CG_ITEM_MOVE:

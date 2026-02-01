@@ -22,7 +22,6 @@ enum
 	HEADER_CG_ENTERGAME				= 10,
 
 	HEADER_CG_ITEM_USE				= 11,
-	HEADER_CG_ITEM_DROP				= 12,
 	HEADER_CG_ITEM_MOVE				= 13,
 	HEADER_CG_ITEM_PICKUP			= 15,
 
@@ -30,7 +29,7 @@ enum
 	HEADER_CG_QUICKSLOT_DEL			= 17,
 	HEADER_CG_QUICKSLOT_SWAP			= 18,
 	HEADER_CG_WHISPER				= 19,
-	HEADER_CG_ITEM_DROP2			= 20,
+	HEADER_CG_ITEM_DROP			= 20,
 
 	HEADER_CG_ON_CLICK				= 26,
 	HEADER_CG_EXCHANGE				= 27,
@@ -628,15 +627,8 @@ typedef struct command_item_drop
 	BYTE 	header;
 	TItemPos 	Cell;
 	DWORD	gold;
-} TPacketCGItemDrop;
-
-typedef struct command_item_drop2
-{
-	BYTE 	header;
-	TItemPos 	Cell;
-	DWORD	gold;
 	ItemStackType	count;
-} TPacketCGItemDrop2;
+} TPacketCGItemDrop;
 
 typedef struct command_item_move
 {

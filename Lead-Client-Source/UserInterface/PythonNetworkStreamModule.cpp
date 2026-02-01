@@ -672,31 +672,6 @@ PyObject* netSendItemUseToItemPacket(PyObject* poSelf, PyObject* poArgs)
 PyObject* netSendItemDropPacket(PyObject* poSelf, PyObject* poArgs)
 {
 	TItemPos Cell;
-	switch (PyTuple_Size(poArgs))
-	{
-	case 1:
-		if (!PyTuple_GetInteger(poArgs, 0, &Cell.cell))
-			return Py_BuildException();
-		break;
-	case 2:
-		if (!PyTuple_GetByte(poArgs, 0, &Cell.window_type))
-			return Py_BuildException();
-		if (!PyTuple_GetInteger(poArgs, 1, &Cell.cell))
-			return Py_BuildException();
-		break;
-	default:
-		return Py_BuildException();
-	}
-
-
-	CPythonNetworkStream& rkNetStream=CPythonNetworkStream::Instance();
-	rkNetStream.SendItemDropPacket(Cell, 0);
-	return Py_BuildNone();
-}
-
-PyObject* netSendItemDropPacketNew(PyObject* poSelf, PyObject* poArgs)
-{
-	TItemPos Cell;
 	int count;
 	switch (PyTuple_Size(poArgs))
 	{
@@ -720,29 +695,18 @@ PyObject* netSendItemDropPacketNew(PyObject* poSelf, PyObject* poArgs)
 		return Py_BuildException();
 	}
 	CPythonNetworkStream& rkNetStream=CPythonNetworkStream::Instance();
-	rkNetStream.SendItemDropPacketNew(Cell, 0, count);
+	rkNetStream.SendItemDropPacket(Cell, 0, count);
 	return Py_BuildNone();
 }
 
-PyObject* netSendElkDropPacket(PyObject* poSelf, PyObject* poArgs)
+PyObject* netSendGoldDropPacket(PyObject* poSelf, PyObject* poArgs)
 {
 	int iElk;
 	if (!PyTuple_GetInteger(poArgs, 0, &iElk))
 		return Py_BuildException();
 
 	CPythonNetworkStream& rkNetStream=CPythonNetworkStream::Instance();
-	rkNetStream.SendItemDropPacket(TItemPos(RESERVED_WINDOW, 0), (DWORD) iElk);
-	return Py_BuildNone();
-}
-
-PyObject* netSendGoldDropPacketNew(PyObject* poSelf, PyObject* poArgs)
-{
-	int iElk;
-	if (!PyTuple_GetInteger(poArgs, 0, &iElk))
-		return Py_BuildException();
-
-	CPythonNetworkStream& rkNetStream=CPythonNetworkStream::Instance();
-	rkNetStream.SendItemDropPacketNew(TItemPos (RESERVED_WINDOW, 0), (DWORD) iElk, 0);
+	rkNetStream.SendItemDropPacket(TItemPos (RESERVED_WINDOW, 0), (DWORD) iElk, 0);
 	return Py_BuildNone();
 }
 
@@ -1706,10 +1670,8 @@ void initnet()
 
 		{ "SendItemUsePacket",					netSendItemUsePacket,					METH_VARARGS },
 		{ "SendItemUseToItemPacket",			netSendItemUseToItemPacket,				METH_VARARGS },
-		{ "SendItemDropPacket",					netSendItemDropPacket,					METH_VARARGS },
-		{ "SendItemDropPacketNew",				netSendItemDropPacketNew,				METH_VARARGS },
-		{ "SendElkDropPacket",					netSendElkDropPacket,					METH_VARARGS },
-		{ "SendGoldDropPacketNew",				netSendGoldDropPacketNew,				METH_VARARGS },
+		{ "SendItemDropPacket",				netSendItemDropPacket,				METH_VARARGS },
+		{ "SendGoldDropPacket",				netSendGoldDropPacket,				METH_VARARGS },
 		{ "SendItemMovePacket",					netSendItemMovePacket,					METH_VARARGS },
 		{ "SendItemPickUpPacket",				netSendItemPickUpPacket,				METH_VARARGS },
 		{ "SendGiveItemPacket",					netSendGiveItemPacket,					METH_VARARGS },
