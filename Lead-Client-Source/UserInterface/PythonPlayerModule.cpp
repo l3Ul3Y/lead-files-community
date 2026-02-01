@@ -2433,6 +2433,9 @@ void initPlayer()
 	PyModule_AddIntConstant(poModule, "DRAGON_SOUL_INVENTORY",				DRAGON_SOUL_INVENTORY);
 	PyModule_AddIntConstant(poModule, "GROUND",								GROUND);
 
+	PyModule_AddIntConstant(poModule, "SWITCHBOT",							SWITCHBOT);
+	PyModule_AddIntConstant(poModule, "SLOT_TYPE_SWITCHBOT",				SLOT_TYPE_SWITCHBOT);
+
 	PyModule_AddIntConstant(poModule, "ITEM_MONEY",					-1);
 
 	PyModule_AddIntConstant(poModule, "SKILL_SLOT_COUNT",			SKILL_MAX_NUM);

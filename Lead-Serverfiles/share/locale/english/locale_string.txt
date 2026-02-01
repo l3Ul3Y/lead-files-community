@@ -2665,3 +2665,11 @@
 "usage : priv_empire <empire> <type> <value> <duration>";
 "usage : priv_empire <empire> <type> <value> <duration>";
 
+"Cannot remove item from switchbot. Inventory is full.";
+"Du kannst das Item nicht herausnehmen, da dein Inventar voll ist.";
+
+"Cannot move active switchbot item.";
+"Du kannst kein aktives Item verschieben.";
+
+"Invalid item type for switchbot.";
+"Ungültiger Gegenstand für den Switchbot.";

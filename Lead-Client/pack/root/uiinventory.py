@@ -658,6 +658,10 @@ class InventoryWindow(ui.ScriptWindow):
 				if item.IsRefineScroll(attachedItemIndex):
 					self.wndItem.SetUseMode(False)
 
+			elif player.SLOT_TYPE_SWITCHBOT == attachedSlotType:
+				attachedCount = mouseModule.mouseController.GetAttachedItemCount()
+				net.SendItemMovePacket(player.SWITCHBOT, attachedSlotPos, player.INVENTORY, selectedSlotPos, attachedCount)
+
 			elif player.SLOT_TYPE_PRIVATE_SHOP == attachedSlotType:
 				mouseModule.mouseController.RunCallBack("INVENTORY")
 

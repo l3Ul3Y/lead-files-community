@@ -119,6 +119,7 @@ class CPythonPlayer : public CSingleton<CPythonPlayer>, public IAbstractPlayer
 		{		    
 			TItemData			aItem[c_Inventory_Count];
 			TItemData			aDSItem[c_DragonSoul_Inventory_Count];
+			TItemData			aSwitchbotItem[SWITCHBOT_SLOT_COUNT];
 			TQuickslot			aQuickSlot[QUICKSLOT_MAX_NUM];
 			TSkillInstance		aSkill[SKILL_MAX_NUM];
 			long				m_alPoint[POINT_MAX_NUM];

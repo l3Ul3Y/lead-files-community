@@ -42,6 +42,8 @@
 #include "buff_on_attributes.h"
 #include "belt_inventory_helper.h"
 
+#include "switchbot.h"
+
 const int ITEM_BROKEN_METIN_VNUM = 28960;
 
 // CHANGE_ITEM_ATTRIBUTES
@@ -219,7 +221,7 @@ bool CHARACTER::CanHandleItem(bool bSkipCheckRefine, bool bSkipObserver)
 	return true;
 }
 
-LPITEM CHARACTER::GetInventoryItem(WORD wCell) const
+LPITEM CHARACTER::GetInventoryItem(ItemCellType wCell) const
 {
 	return GetItem(TItemPos(INVENTORY, wCell));
 }
@@ -227,7 +229,7 @@ LPITEM CHARACTER::GetItem(TItemPos Cell) const
 {
 	if (!IsValidItemPosition(Cell))
 		return NULL;
-	WORD wCell = Cell.cell;
+	ItemCellType wCell = Cell.cell;
 	BYTE window_type = Cell.window_type;
 	switch (window_type)
 	{
@@ -246,6 +248,13 @@ LPITEM CHARACTER::GetItem(TItemPos Cell) const
 			return NULL;
 		}
 		return m_pointsInstant.pDSItems[wCell];
+	case SWITCHBOT:
+		if (wCell >= SWITCHBOT_SLOT_COUNT)
+		{
+			sys_err("CHARACTER::GetInventoryItem: invalid switchbot item cell %d", wCell);
+			return NULL;
+		}
+		return m_pointsInstant.pSwitchbotItems[wCell];
 
 	default:
 		return NULL;
@@ -255,7 +264,7 @@ LPITEM CHARACTER::GetItem(TItemPos Cell) const
 
 void CHARACTER::SetItem(TItemPos Cell, LPITEM pItem)
 {
-	WORD wCell = Cell.cell;
+	ItemCellType wCell = Cell.cell;
 	BYTE window_type = Cell.window_type;
 	if ((unsigned long)((CItem*)pItem) == 0xff || (unsigned long)((CItem*)pItem) == 0xffffffff)
 	{
@@ -382,6 +391,32 @@ void CHARACTER::SetItem(TItemPos Cell, LPITEM pItem)
 			m_pointsInstant.pDSItems[wCell] = pItem;
 		}
 		break;
+	case SWITCHBOT:
+		{
+			LPITEM pOld = m_pointsInstant.pSwitchbotItems[wCell];
+			if (pItem && pOld)
+			{
+				return;
+			}
+
+			if (wCell >= SWITCHBOT_SLOT_COUNT)
+			{
+				sys_err("CHARACTER::SetItem: invalid switchbot item cell %d", wCell);
+				return;
+			}
+
+			if (pItem)
+			{
+				CSwitchbotManager::Instance().RegisterItem(GetPlayerID(), pItem->GetID(), wCell);
+			}
+			else
+			{
+				CSwitchbotManager::Instance().UnregisterItem(GetPlayerID(), wCell);
+			}
+
+			m_pointsInstant.pSwitchbotItems[wCell] = pItem;
+		}
+		break;
 	default:
 		sys_err ("Invalid Inventory type %d", window_type);
 		return;
@@ -438,11 +473,14 @@ void CHARACTER::SetItem(TItemPos Cell, LPITEM pItem)
 		case DRAGON_SOUL_INVENTORY:
 			pItem->SetWindow(DRAGON_SOUL_INVENTORY);
 			break;
+		case SWITCHBOT:
+			pItem->SetWindow(SWITCHBOT);
+			break;
 		}
 	}
 }
 
-LPITEM CHARACTER::GetWear(BYTE bCell) const
+LPITEM CHARACTER::GetWear(ItemCellType bCell) const
 {
 	// > WEAR_MAX_NUM : 용혼석 슬롯들.
 	if (bCell >= WEAR_MAX_NUM + DRAGON_SOUL_DECK_MAX_NUM * DS_SLOT_MAX)
@@ -454,7 +492,7 @@ LPITEM CHARACTER::GetWear(BYTE bCell) const
 	return m_pointsInstant.pItems[INVENTORY_MAX_NUM + bCell];
 }
 
-void CHARACTER::SetWear(BYTE bCell, LPITEM item)
+void CHARACTER::SetWear(ItemCellType bCell, LPITEM item)
 {
 	// > WEAR_MAX_NUM : 용혼석 슬롯들.
 	if (bCell >= WEAR_MAX_NUM + DRAGON_SOUL_DECK_MAX_NUM * DS_SLOT_MAX)
@@ -505,6 +543,17 @@ void CHARACTER::ClearItem()
 			M2_DESTROY_ITEM(item);
 		}
 	}
+	for (i = 0; i < SWITCHBOT_SLOT_COUNT; ++i)
+	{
+		if ((item = GetItem(TItemPos(SWITCHBOT, i))))
+		{
+			item->SetSkipSave(true);
+			ITEM_MANAGER::instance().FlushDelayedSave(item);
+
+			item->RemoveFromCharacter();
+			M2_DESTROY_ITEM(item);
+		}
+	}
 }
 
 bool CHARACTER::IsEmptyItemGrid(TItemPos Cell, BYTE bSize, int iExceptionCell) const
@@ -513,7 +562,7 @@ bool CHARACTER::IsEmptyItemGrid(TItemPos Cell, BYTE bSize, int iExceptionCell) c
 	{
 	case INVENTORY:
 		{
-			BYTE bCell = Cell.cell;
+			ItemCellType bCell = Cell.cell;
 
 			// bItemCell은 0이 false임을 나타내기 위해 + 1 해서 처리한다.
 			// 따라서 iExceptionCell에 1을 더해 비교한다.
@@ -664,6 +713,21 @@ bool CHARACTER::IsEmptyItemGrid(TItemPos Cell, BYTE bSize, int iExceptionCell) c
 
 				return true;
 			}
+		}
+	case SWITCHBOT:
+		{
+			WORD wCell = Cell.cell;
+			if (wCell >= SWITCHBOT_SLOT_COUNT)
+			{
+				return false;
+			}
+
+			if (m_pointsInstant.pSwitchbotItems[wCell])
+			{
+				return false;
+			}
+
+			return true;
 		}
 	}
 }
@@ -914,7 +978,7 @@ bool CHARACTER::DoRefine(LPITEM item, bool bMoneyOnly)
 			ITEM_MANAGER::CopyAllAttrTo(item, pkNewItem);
 			LogManager::instance().ItemLog(this, pkNewItem, "REFINE SUCCESS", pkNewItem->GetName());
 
-			BYTE bCell = item->GetCell();
+			ItemCellType bCell = item->GetCell();
 
 			// DETAIL_REFINE_LOG
 			NotifyRefineSuccess(this, item, IsRefineThroughGuild() ? "GUILD" : "POWER");
@@ -1170,7 +1234,7 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 			ITEM_MANAGER::CopyAllAttrTo(item, pkNewItem);
 			LogManager::instance().ItemLog(this, pkNewItem, "REFINE SUCCESS", pkNewItem->GetName());
 
-			BYTE bCell = item->GetCell();
+			ItemCellType bCell = item->GetCell();
 
 			NotifyRefineSuccess(this, item, szRefineType);
 			DBManager::instance().SendMoneyLog(MONEY_LOG_REFINE, item->GetVnum(), -prt->cost);
@@ -1199,7 +1263,7 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 			ITEM_MANAGER::CopyAllAttrTo(item, pkNewItem);
 			LogManager::instance().ItemLog(this, pkNewItem, "REFINE FAIL", pkNewItem->GetName());
 
-			BYTE bCell = item->GetCell();
+			ItemCellType bCell = item->GetCell();
 
 			DBManager::instance().SendMoneyLog(MONEY_LOG_REFINE, item->GetVnum(), -prt->cost);
 			NotifyRefineFail(this, item, szRefineType, -1);
@@ -1230,7 +1294,7 @@ bool CHARACTER::DoRefineWithScroll(LPITEM item)
 	return true;
 }
 
-bool CHARACTER::RefineInformation(BYTE bCell, BYTE bType, int iAdditionalCell)
+bool CHARACTER::RefineInformation(ItemCellType bCell, BYTE bType, int iAdditionalCell)
 {
 	if (bCell > INVENTORY_MAX_NUM)
 		return false;
@@ -1641,7 +1705,7 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 	int iLimitRealtimeStartFirstUseFlagIndex = -1;
 	int iLimitTimerBasedOnWearFlagIndex = -1;
 
-	WORD wDestCell = DestCell.cell;
+	ItemCellType wDestCell = DestCell.cell;
 	BYTE bDestInven = DestCell.window_type;
 	for (int i = 0; i < ITEM_LIMIT_MAX_NUM; ++i)
 	{
@@ -4964,12 +5028,32 @@ bool CHARACTER::UseItem(TItemPos Cell, TItemPos DestCell)
 		return false;
 
 	if (!IsValidItemPosition(Cell) || !(item = GetItem(Cell)))
-			return false;
+		return false;
 
 	sys_log(0, "%s: USE_ITEM %s (inven %d, cell: %d)", GetName(), item->GetName(), window_type, wCell);
 
 	if (item->IsExchanging())
 		return false;
+
+	if (Cell.IsSwitchbotPosition())
+	{
+		CSwitchbot* pkSwitchbot = CSwitchbotManager::Instance().FindSwitchbot(GetPlayerID());
+		if (pkSwitchbot && pkSwitchbot->IsActive(Cell.cell))
+		{
+			return false;
+		}
+
+		int iEmptyCell = GetEmptyInventory(item->GetSize());
+
+		if (iEmptyCell == -1)
+		{
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cannot remove item from switchbot. Inventory is full."));
+			return false;
+		}
+
+		MoveItem(Cell, TItemPos(INVENTORY, iEmptyCell), item->GetCount());
+		return true;
+	}
 
 	if (!item->CanUsedBy(this))
 	{
@@ -5300,6 +5384,30 @@ bool CHARACTER::MoveItem(TItemPos Cell, TItemPos DestCell, ItemStackType count)
 	if (DestCell.IsBeltInventoryPosition() && false == CBeltInventoryHelper::CanMoveIntoBeltInventory(item))
 	{
 		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot equip this item in your belt inventory."));			
+		return false;
+	}
+
+	if (Cell.IsSwitchbotPosition() && CSwitchbotManager::Instance().IsActive(GetPlayerID(), Cell.cell))
+	{
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cannot move active switchbot item."));
+		return false;
+	}
+
+	if (DestCell.IsSwitchbotPosition() && !SwitchbotHelper::IsValidItem(item))
+	{
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Invalid item type for switchbot."));
+		return false;
+	}
+
+	if (Cell.IsSwitchbotPosition() && DestCell.IsEquipPosition())
+	{
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cannot equip items directly from switchbot."));
+		return false;
+	}
+
+	if (DestCell.IsSwitchbotPosition() && Cell.IsEquipPosition())
+	{
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Cannot move equipped items to switchbot."));
 		return false;
 	}
 
@@ -5678,7 +5786,7 @@ bool CHARACTER::PickupItem(DWORD dwVID)
 	return false;
 }
 
-bool CHARACTER::SwapItem(BYTE bCell, BYTE bDestCell)
+bool CHARACTER::SwapItem(ItemCellType bCell, ItemCellType bDestCell)
 {
 	if (!CanHandleItem())
 		return false;
@@ -5729,8 +5837,8 @@ bool CHARACTER::SwapItem(BYTE bCell, BYTE bDestCell)
 	// 바꿀 아이템이 장비창에 있으면
 	if (TItemPos(EQUIPMENT, item2->GetCell()).IsEquipPosition())
 	{
-		BYTE bEquipCell = item2->GetCell() - INVENTORY_MAX_NUM;
-		BYTE bInvenCell = item1->GetCell();
+		ItemCellType bEquipCell = item2->GetCell() - INVENTORY_MAX_NUM;
+		ItemCellType bInvenCell = item1->GetCell();
 
 		// 착용중인 아이템을 벗을 수 있고, 착용 예정 아이템이 착용 가능한 상태여야만 진행
 		if (false == CanUnequipNow(item2) || false == CanEquipNow(item1))
@@ -5748,8 +5856,8 @@ bool CHARACTER::SwapItem(BYTE bCell, BYTE bDestCell)
 	}
 	else
 	{
-		BYTE bCell1 = item1->GetCell();
-		BYTE bCell2 = item2->GetCell();
+		ItemCellType bCell1 = item1->GetCell();
+		ItemCellType bCell2 = item2->GetCell();
 		
 		item1->RemoveFromCharacter();
 		item2->RemoveFromCharacter();
@@ -5878,7 +5986,7 @@ bool CHARACTER::EquipItem(LPITEM item, int iCandidateCell)
 		}
 		else
 		{
-			BYTE bOldCell = item->GetCell();
+			ItemCellType bOldCell = item->GetCell();
 
 			if (item->EquipTo(this, iWearCell))
 			{
@@ -7102,7 +7210,7 @@ void CHARACTER::AutoRecoveryItemProcess(const EAffectTypes type)
 bool CHARACTER::IsValidItemPosition(TItemPos Pos) const
 {
 	BYTE window_type = Pos.window_type;
-	WORD cell = Pos.cell;
+	ItemCellType cell = Pos.cell;
 	
 	switch (window_type)
 	{
@@ -7127,6 +7235,8 @@ bool CHARACTER::IsValidItemPosition(TItemPos Pos) const
 			return m_pkMall->IsValidPosition(cell);
 		else
 			return false;
+	case SWITCHBOT:
+		return cell < SWITCHBOT_SLOT_COUNT;
 	default:
 		return false;
 	}

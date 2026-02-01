@@ -28,6 +28,7 @@
 #include "log.h"
 #include "horsename_manager.h"
 #include "MarkManager.h"
+#include "switchbot.h"
 
 static void _send_bonus_info(LPCHARACTER ch)
 {
@@ -663,6 +664,8 @@ void CInputLogin::Entergame(LPDESC d, const char * data)
 		if (pid != 0 && CHorseNameManager::instance().GetHorseName(pid) == NULL)
 			db_clientdesc->DBPacket(HEADER_GD_REQ_HORSE_NAME, 0, &pid, sizeof(DWORD));
 	}
+
+	CSwitchbotManager::Instance().EnterGame(ch);
 }
 
 void CInputLogin::Empire(LPDESC d, const char * c_pData)

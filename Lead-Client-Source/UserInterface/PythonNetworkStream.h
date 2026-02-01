@@ -7,6 +7,7 @@
 #include "InsultChecker.h"
 
 #include "packet.h"
+#include "PythonSwitchbot.h"
 
 class CInstanceBase;
 class CNetworkActorManager;
@@ -159,8 +160,8 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 
 		// Shop
 		bool SendShopEndPacket();
-		bool SendShopBuyPacket(BYTE bPos);
-		bool SendShopSellPacket(BYTE bySlot, ItemStackType byCount);
+		bool SendShopBuyPacket(ItemCellType bPos);
+		bool SendShopSellPacket(ItemCellType bySlot, ItemStackType byCount);
 
 		// Exchange
 		bool SendExchangeStartPacket(DWORD vid);
@@ -247,7 +248,7 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		bool SendBuildPrivateShopPacket(const char * c_szName, const std::vector<TShopItemTable> & c_rSellingItemStock);
 
 		// Refine
-		bool SendRefinePacket(BYTE byPos, BYTE byType);
+		bool SendRefinePacket(ItemCellType byPos, BYTE byType);
 		bool SendSelectItemPacket(DWORD dwItemPos);
 
 		// CRC Report
@@ -695,4 +696,10 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		void __BettingGuildWar_Initialize();
 		void __BettingGuildWar_SetObserverCount(UINT uObserverCount);
 		void __BettingGuildWar_SetBettingMoney(UINT uBettingMoney);
+
+	public:
+		bool RecvSwitchbotPacket();
+
+		bool SendSwitchbotStartPacket(BYTE slot, std::vector<CPythonSwitchbot::TSwitchbotAttributeAlternativeTable> alternatives);
+		bool SendSwitchbotStopPacket(BYTE slot);
 };

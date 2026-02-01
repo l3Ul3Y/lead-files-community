@@ -4,5 +4,6 @@
 
 // Typedefs
 typedef uint16_t ItemStackType;
+typedef uint16_t ItemCellType;
 
 #endif

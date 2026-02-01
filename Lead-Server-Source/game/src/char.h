@@ -180,12 +180,14 @@ typedef struct character_point_instant
 
 	WORD			parts[PART_MAX_NUM];
 
-	LPITEM			pItems[INVENTORY_AND_EQUIP_SLOT_MAX];
-	BYTE			bItemGrid[INVENTORY_AND_EQUIP_SLOT_MAX];
+	LPITEM				pItems[INVENTORY_AND_EQUIP_SLOT_MAX];
+	ItemCellType		bItemGrid[INVENTORY_AND_EQUIP_SLOT_MAX];
 
 	// 용혼석 인벤토리.
 	LPITEM			pDSItems[DRAGON_SOUL_INVENTORY_MAX_NUM];
 	WORD			wDSItemGrid[DRAGON_SOUL_INVENTORY_MAX_NUM];
+
+	LPITEM			pSwitchbotItems[SWITCHBOT_SLOT_COUNT];
 
 	// by mhh
 	LPITEM			pCubeItems[CUBE_MAX_NUM];
@@ -843,11 +845,11 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		void			ClearItem();
 		void			SetItem(TItemPos Cell, LPITEM item);
 		LPITEM			GetItem(TItemPos Cell) const;
-		LPITEM			GetInventoryItem(WORD wCell) const;
+		LPITEM			GetInventoryItem(ItemCellType wCell) const;
 		bool			IsEmptyItemGrid(TItemPos Cell, BYTE size, int iExceptionCell = -1) const;
 
-		void			SetWear(BYTE bCell, LPITEM item);
-		LPITEM			GetWear(BYTE bCell) const;
+		void			SetWear(ItemCellType bCell, LPITEM item);
+		LPITEM			GetWear(ItemCellType bCell) const;
 
 		// MYSHOP_PRICE_LIST
 		void			UseSilkBotary(void); 		/// 비단 보따리 아이템의 사용
@@ -887,7 +889,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		// END_OF_ADD_MONSTER_REFINE
 
 		bool			DoRefineWithScroll(LPITEM item);
-		bool			RefineInformation(BYTE bCell, BYTE bType, int iAdditionalCell = -1);
+		bool			RefineInformation(ItemCellType bCell, BYTE bType, int iAdditionalCell = -1);
 
 		void			SetRefineMode(int iAdditionalCell = -1);
 		void			ClearRefineMode();
@@ -909,7 +911,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		// 착용중인 item을 벗을 수 있는 지 확인하고, 불가능 하다면 캐릭터에게 이유를 알려주는 함수
 		bool			CanUnequipNow(const LPITEM item, const TItemPos& srcCell = NPOS, const TItemPos& destCell = NPOS);
 
-		bool			SwapItem(BYTE bCell, BYTE bDestCell);
+		bool			SwapItem(ItemCellType bCell, ItemCellType bDestCell);
 		LPITEM			AutoGiveItem(DWORD dwItemVnum, ItemStackType bCount=1, int iRarePct = -1, bool bMsg = true);
 		void			AutoGiveItem(LPITEM item, bool longOwnerShip = false);
 		

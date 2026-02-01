@@ -154,6 +154,7 @@ class CInputMain : public CInputProcessor
 
 		void		Refine(LPCHARACTER ch, const char* c_pData);
 		void		TargetInfoLoad(LPCHARACTER ch, const char* c_pData);
+		int			Switchbot(LPCHARACTER ch, const char* data, size_t uiBytes);
 };
 
 class CInputDead : public CInputMain
@@ -303,6 +304,7 @@ class CInputP2P : public CInputProcessor
 		void		LoginPing(LPDESC d, const char * c_pData);
 		void		BlockChat(const char * c_pData);
 		void		IamAwake(LPDESC d, const char * c_pData);
+		void		Switchbot(LPDESC d, const char* c_pData);
 
 	protected:
 		CPacketInfoGG 	m_packetInfoGG;

@@ -18,6 +18,7 @@
 #include "questmanager.h"
 #include "skill.h"
 
+#include "switchbot.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Input Processor
@@ -449,8 +450,23 @@ int CInputP2P::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 		case HEADER_GG_CHECK_AWAKENESS:
 			IamAwake(d, c_pData);
 			break;
+
+		case HEADER_GG_SWITCHBOT:
+			Switchbot(d, c_pData);
+			break;
 	}
 
 	return (iExtraLen);
+}
+
+void CInputP2P::Switchbot(LPDESC d, const char* c_pData)
+{
+	const TPacketGGSwitchbot* p = reinterpret_cast<const TPacketGGSwitchbot*>(c_pData);
+	if (p->wPort != mother_port)
+	{
+		return;
+	}
+
+	CSwitchbotManager::Instance().P2PReceiveSwitchbot(p->table);
 }
 

@@ -416,9 +416,7 @@ class ITEM_MANAGER : public singleton<ITEM_MANAGER>
 		std::map<DWORD, TItemTable>  m_map_vid;
 		std::map<DWORD, TItemTable>&  GetVIDMap() { return m_map_vid; }
 		std::vector<TItemTable>& GetVecProto() { return m_vec_prototype; }	
-		
-		const static int MAX_NORM_ATTR_NUM = 5;
-		const static int MAX_RARE_ATTR_NUM = 2;
+
 		bool GetVnumRangeByString(const std::string& stVnumRange, DWORD& r_dwVnumStart, DWORD& r_dwVnumEnd);
 	private:
 };

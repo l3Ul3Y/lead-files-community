@@ -58,6 +58,7 @@
 #include "DragonSoul.h"
 #include <algorithm>
 #include <iterator>
+#include "switchbot.h"
 
 extern const BYTE g_aBuffOnAttrPoints;
 extern bool RaceToJob(unsigned race, unsigned *ret_job);
@@ -5119,6 +5120,13 @@ bool CHARACTER::WarpSet(long x, long y, long lPrivateMapIndex)
 	p.lY	= y;
 	p.lAddr	= lAddr;
 	p.wPort	= wPort;
+
+	CSwitchbotManager::Instance().SetIsWarping(GetPlayerID(), true);
+
+	if (p.wPort != mother_port)
+	{
+		CSwitchbotManager::Instance().P2PSendSwitchbot(GetPlayerID(), p.wPort);
+	}
 
 	GetDesc()->Packet(&p, sizeof(TPacketGCWarp));
 

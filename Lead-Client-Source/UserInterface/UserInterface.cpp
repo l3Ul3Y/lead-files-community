@@ -269,6 +269,7 @@ bool RunMainScript(CPythonLauncher& pyLauncher, const char* lpCmdLine)
 	initsafebox();
 	initguild();
 	initServerStateChecker();
+	initSwitchbot();
 
 	NANOBEGIN
 

@@ -2,6 +2,9 @@
 #define __INC_METIN_II_LENGTH_H__
 
 #define WORD_MAX 0xffff
+
+#include "service.h"
+
 enum EMisc
 {
 	// TODO: private code length is 7, refactor this later on
@@ -93,6 +96,23 @@ enum EMisc
 	MAX_GROUP_ITEM_NUM = 256,
 };
 
+enum SwitchbotValues
+{
+	SWITCHBOT_SLOT_COUNT = 5,
+	SWITCHBOT_ALTERNATIVE_COUNT = 2,
+	//1 = Switching Item
+	//2 = Yang
+	SWITCHBOT_PRICE_TYPE = 1,
+	//Amount Swtichting Items the Yang-Price
+	SWITCHBOT_PRICE_AMOUNT = 1,
+};
+
+const DWORD c_arSwitchingItems[3] =
+{
+	39028,
+	71084,
+	76014,
+};
 
 enum EWearPositions
 {
@@ -710,6 +730,7 @@ enum EWindows
 	MALL,
 	DRAGON_SOUL_INVENTORY,
 	BELT_INVENTORY,
+	SWITCHBOT,
 	GROUND,					// Only used by client
 	WINDOW_TYPE_MAX,
 };
@@ -947,14 +968,14 @@ enum EMisc2
 typedef struct SItemPos
 {
 	BYTE window_type;
-	WORD cell;
+	ItemCellType cell;
     SItemPos ()
     {
         window_type = INVENTORY;
 		cell = WORD_MAX;
     }
 
-	SItemPos (BYTE _window_type, WORD _cell)
+	SItemPos (BYTE _window_type, ItemCellType _cell)
     {
         window_type = _window_type;
         cell = _cell;
@@ -975,6 +996,8 @@ typedef struct SItemPos
 		case SAFEBOX:
 		case MALL:
 			return false;
+		case SWITCHBOT:
+			return cell < SWITCHBOT_SLOT_COUNT;
 		default:
 			return false;
 		}
@@ -1001,6 +1024,11 @@ typedef struct SItemPos
 	{
 		return INVENTORY == window_type && cell < INVENTORY_MAX_NUM;
 	}
+
+	bool IsSwitchbotPosition() const
+    {
+    	return SWITCHBOT == window_type && cell < SWITCHBOT_SLOT_COUNT;
+    }
 
 	bool operator==(const struct SItemPos& rhs) const
 	{
