@@ -1478,4 +1478,14 @@ void initapp()
 #else
 	PyModule_AddIntConstant(poModule, "ENABLE_NEW_EQUIPMENT_SYSTEM",	0);
 #endif
+
+#ifdef ENABLE_HIGHLIGHT_NEW_ITEM
+	PyModule_AddIntConstant(poModule, "ENABLE_HIGHLIGHT_NEW_ITEM",	1);
+	PyModule_AddIntConstant(poModule, "BL_ENABLE_PICKUP_ITEM_EFFECT",	1);
+	PyModule_AddIntConstant(poModule, "__BL_ENABLE_PICKUP_ITEM_EFFECT__",	1);
+#else
+	PyModule_AddIntConstant(poModule, "ENABLE_HIGHLIGHT_NEW_ITEM",	0);
+	PyModule_AddIntConstant(poModule, "BL_ENABLE_PICKUP_ITEM_EFFECT",	0);
+	PyModule_AddIntConstant(poModule, "__BL_ENABLE_PICKUP_ITEM_EFFECT__",	0);
+#endif
 }

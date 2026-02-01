@@ -1342,6 +1342,10 @@ void CInputDB::ItemLoad(LPDESC d, const char * c_pData)
 		item->SetSockets(p->alSockets);
 		item->SetAttributes(p->aAttr);
 
+#ifdef ENABLE_HIGHLIGHT_NEW_ITEM
+		item->SetLastOwnerPID(p->owner);
+#endif
+
 		if ((p->window == INVENTORY && ch->GetInventoryItem(p->pos)) ||
 				(p->window == EQUIPMENT && ch->GetWear(p->pos)))
 		{

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../eterBase/Utils.h"
+#include "../UserInterface/Locale_inc.h" // ENABLE_HIGHLIGHT_NEW_ITEM
 
 namespace UI
 {
@@ -406,6 +407,9 @@ namespace UI
 			virtual ~CAniImageBox();
 
 			void SetDelay(int iDelay);
+#ifdef ENABLE_HIGHLIGHT_NEW_ITEM
+			void SetDiffuseColor(const D3DXCOLOR& color);
+#endif
 			void AppendImage(const char * c_szFileName);
 			void SetRenderingRect(float fLeft, float fTop, float fRight, float fBottom);
 			void SetRenderingMode(int iMode);

@@ -1,7 +1,7 @@
 title subImage
 version 1.0
-image "Public.dds"
+image "Public_effect.dds"
 left 224
-top 252
+top 128
 right 256
-bottom 284
+bottom 192

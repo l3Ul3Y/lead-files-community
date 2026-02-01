@@ -244,6 +244,7 @@ class InventoryWindow(ui.ScriptWindow):
 	wndCostume = None
 	wndBelt = None
 	dlgPickMoney = None
+	liHighlightedItems = []
 	
 	sellingSlotNumber = -1
 	isLoaded = 0
@@ -532,6 +533,7 @@ class InventoryWindow(ui.ScriptWindow):
 		
 		for i in xrange(player.INVENTORY_PAGE_SIZE):
 			slotNumber = self.__InventoryLocalSlotPosToGlobalSlotPos(i)
+			slotNumberGlobal = slotNumber
 			
 			itemCount = getItemCount(slotNumber)
 			# itemCount == 0이면 소켓을 비운다.
@@ -569,10 +571,28 @@ class InventoryWindow(ui.ScriptWindow):
 				else:
 					self.wndItem.DeactivateSlot(slotNumber)			
 					
+			if app.ENABLE_HIGHLIGHT_NEW_ITEM and not constInfo.IS_AUTO_POTION(itemVnum):
+				if not slotNumberGlobal in self.liHighlightedItems:
+					self.wndItem.DeactivateSlot(i)
+		
 		self.wndItem.RefreshSlot()
+		if app.ENABLE_HIGHLIGHT_NEW_ITEM:
+			self.__RefreshHighlights()
 
 		if self.wndBelt:
 			self.wndBelt.RefreshSlot()
+
+	if app.ENABLE_HIGHLIGHT_NEW_ITEM:
+		def HighlightSlot(self, slot):
+			if not slot in self.liHighlightedItems:
+				self.liHighlightedItems.append(slot)
+
+		def __RefreshHighlights(self):
+			for i in xrange(player.INVENTORY_PAGE_SIZE):
+				slotNumber = self.__InventoryLocalSlotPosToGlobalSlotPos(i)
+				if slotNumber in self.liHighlightedItems:
+					self.wndItem.ActivateSlot(i)
+
 
 	def RefreshEquipSlotWindow(self):
 		getItemVNum=player.GetItemIndex
@@ -918,8 +938,12 @@ class InventoryWindow(ui.ScriptWindow):
 			self.tooltipItem.HideToolTip()
 
 	def OverInItem(self, overSlotPos):
-		overSlotPos = self.__InventoryLocalSlotPosToGlobalSlotPos(overSlotPos)
+		overSlotPosGlobal = self.__InventoryLocalSlotPosToGlobalSlotPos(overSlotPos)
 		self.wndItem.SetUsableItem(False)
+
+		if app.ENABLE_HIGHLIGHT_NEW_ITEM and overSlotPosGlobal in self.liHighlightedItems:
+			self.liHighlightedItems.remove(overSlotPosGlobal)
+			self.wndItem.DeactivateSlot(overSlotPos)
 
 		if mouseModule.mouseController.isAttached():
 			attachedItemType = mouseModule.mouseController.GetAttachedType()
@@ -928,12 +952,12 @@ class InventoryWindow(ui.ScriptWindow):
 				attachedSlotPos = mouseModule.mouseController.GetAttachedSlotNumber()
 				attachedItemVNum = mouseModule.mouseController.GetAttachedItemIndex()
 				
-				if self.__CanUseSrcItemToDstItem(attachedItemVNum, attachedSlotPos, overSlotPos):
+				if self.__CanUseSrcItemToDstItem(attachedItemVNum, attachedSlotPos, overSlotPosGlobal):
 					self.wndItem.SetUsableItem(True)
-					self.ShowToolTip(overSlotPos)
+					self.ShowToolTip(overSlotPosGlobal)
 					return
 				
-		self.ShowToolTip(overSlotPos)
+		self.ShowToolTip(overSlotPosGlobal)
 
 
 	def __IsUsableItemToItem(self, srcItemVNum, srcSlotPos):

@@ -1497,6 +1497,13 @@ namespace UI
 	{
 		m_byDelay = iDelay;
 	}
+#ifdef ENABLE_HIGHLIGHT_NEW_ITEM
+	void CAniImageBox::SetDiffuseColor(const D3DXCOLOR & color)
+	{
+		for (auto & elem : m_ImageVector)
+			elem->SetDiffuseColor(color.r, color.g, color.b, color.a);
+	}
+#endif
 	void CAniImageBox::AppendImage(const char * c_szFileName)
 	{
 		CResource * pResource = CResourceManager::Instance().GetResourcePointer(c_szFileName);

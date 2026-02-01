@@ -1627,11 +1627,15 @@ class SlotWindow(Window):
 	def HideRequirementSign(self, slotNumber):
 		wndMgr.HideRequirementSign(self.hWnd, slotNumber)
 
-	def ActivateSlot(self, slotNumber):
-		wndMgr.ActivateSlot(self.hWnd, slotNumber)
+	def ActivateSlot(self, slotNumber, r = 1.0, g = 1.0, b = 1.0, a = 1.0):
+		wndMgr.ActivateSlot(self.hWnd, slotNumber, r, g, b, a)
 
 	def DeactivateSlot(self, slotNumber):
 		wndMgr.DeactivateSlot(self.hWnd, slotNumber)
+
+	if app.ENABLE_HIGHLIGHT_NEW_ITEM:
+		def SetSlotDiffuseColor(self, slotindex, colortype):
+			wndMgr.SetSlotDiffuseColor(self.hWnd, slotindex, colortype)
 
 	def ShowSlotBaseImage(self, slotNumber):
 		wndMgr.ShowSlotBaseImage(self.hWnd, slotNumber)
