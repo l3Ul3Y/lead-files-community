@@ -78,7 +78,7 @@ class CItem : public CEntity
 
 		int			FindEquipCell(LPCHARACTER ch, int bCandidateCell = -1);
 		bool		IsEquipped() const		{ return m_bEquipped;	}
-		bool		EquipTo(LPCHARACTER ch, ItemCellType bWearCell);
+		bool		EquipTo(LPCHARACTER ch, BYTE bWearCell);
 		bool		IsEquipable() const;
 
 		bool		CanUsedBy(LPCHARACTER ch);

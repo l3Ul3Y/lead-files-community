@@ -801,7 +801,7 @@ bool CItem::IsEquipable() const
 }
 
 // return false on error state
-bool CItem::EquipTo(LPCHARACTER ch, ItemCellType bWearCell)
+bool CItem::EquipTo(LPCHARACTER ch, BYTE bWearCell)
 {
 	if (!ch)
 	{
