@@ -195,6 +195,9 @@ void CItem::UpdatePacket()
 	if (!m_pOwner || !m_pOwner->GetDesc())
 		return;
 
+	if (m_bWindow == SWITCHBOT)
+		return;
+
 	TPacketGCItemUpdate pack;
 
 	pack.header = HEADER_GC_ITEM_UPDATE;
@@ -303,6 +306,17 @@ LPITEM CItem::RemoveFromCharacter()
 				else
 					pOwner->SetItem(TItemPos(m_bWindow, m_wCell), NULL);
 			}
+			else if (m_bWindow == SWITCHBOT)
+			{
+				if (m_wCell >= SWITCHBOT_SLOT_COUNT)
+				{
+					sys_err("CItem::RemoveFromCharacter: pos >= SWITCHBOT_SLOT_COUNT");
+				}
+				else
+				{
+					pOwner->SetItem(TItemPos(SWITCHBOT, m_wCell), NULL);
+				}
+			}
 			else
 			{
 				TItemPos cell(INVENTORY, m_wCell);
@@ -345,6 +359,14 @@ bool CItem::AddToCharacter(LPCHARACTER ch, TItemPos Cell)
 		if (m_wCell >= DRAGON_SOUL_INVENTORY_MAX_NUM)
 		{
 			sys_err("CItem::AddToCharacter: cell overflow: %s to %s cell %d", m_pProto->szName, ch->GetName(), m_wCell);
+			return false;
+		}
+	}
+	else if (SWITCHBOT == window_type)
+	{
+		if (m_wCell >= SWITCHBOT_SLOT_COUNT)
+		{
+			sys_err("CItem::AddToCharacter:switchbot cell overflow: %s to %s cell %d", m_pProto->szName, ch->GetName(), m_wCell);
 			return false;
 		}
 	}

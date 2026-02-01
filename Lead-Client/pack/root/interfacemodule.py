@@ -45,6 +45,8 @@ import uiScriptLocale
 import event
 import localeInfo
 
+import uiSwitchbot
+
 IsQBHide = 0
 class Interface(object):
 	CHARACTER_STATUS_TAB = 1
@@ -74,6 +76,7 @@ class Interface(object):
 		self.wndMiniMap = None
 		self.wndGuild = None
 		self.wndGuildBuilding = None
+		self.wndSwitchbot = None
 
 		self.listGMName = {}
 		self.wndQuestWindow = {}
@@ -200,6 +203,8 @@ class Interface(object):
 			self.wndDragonSoulRefine.SetInventoryWindows(self.wndInventory, self.wndDragonSoul)
 			self.wndInventory.SetDragonSoulRefineWindow(self.wndDragonSoulRefine)
 
+		self.wndSwitchbot = uiSwitchbot.SwitchbotWindow()
+
 	def __MakeDialogs(self):
 		self.dlgExchange = uiExchange.ExchangeDialog()
 		self.dlgExchange.LoadDialog()
@@ -312,6 +317,7 @@ class Interface(object):
 		self.wndSafebox.SetItemToolTip(self.tooltipItem)
 		self.wndCube.SetItemToolTip(self.tooltipItem)
 		self.wndCubeResult.SetItemToolTip(self.tooltipItem)
+		self.wndSwitchbot.SetItemToolTip(self.tooltipItem)
 
 		# ITEM_MALL
 		self.wndMall.SetItemToolTip(self.tooltipItem)
@@ -453,6 +459,9 @@ class Interface(object):
 			self.wndItemSelect.Destroy()
 		# END_OF_ACCESSORY_REFINE_ADD_METIN_STONE
 
+		if self.wndSwitchbot:
+			self.wndSwitchbot.Destroy()
+
 		self.wndChatLog.Destroy()
 		for btn in self.questButtonList:
 			btn.SetEvent(0)
@@ -508,6 +517,7 @@ class Interface(object):
 		del self.tipBoard
 		del self.bigBoard
 		del self.wndItemSelect
+		del self.wndSwitchbot
 
 		self.questButtonList = []
 		self.whisperButtonList = []
@@ -856,7 +866,9 @@ class Interface(object):
 			
 		if self.wndExpandedTaskBar:
 			self.wndExpandedTaskBar.Hide()
- 
+
+		if self.wndSwitchbot:
+			self.wndSwitchbot.Hide()
 
 	def ShowMouseImage(self):
 		self.wndTaskBar.ShowMouseImage()
@@ -1058,6 +1070,20 @@ class Interface(object):
 		else:
 			self.wndChatLog.Show()
 
+	def ToggleSwitchbotWindow(self):
+		if self.wndSwitchbot.IsShow():
+			self.wndSwitchbot.Close()
+		else:
+			self.wndSwitchbot.Open()
+
+	def RefreshSwitchbotWindow(self):
+		if self.wndSwitchbot and self.wndSwitchbot.IsShow():
+			self.wndSwitchbot.RefreshSwitchbotWindow()
+
+	def RefreshSwitchbotItem(self, slot):
+		if self.wndSwitchbot and self.wndSwitchbot.IsShow():
+			self.wndSwitchbot.RefreshSwitchbotItem(slot)
+
 	def CheckGameButton(self):
 		if self.wndGameButton:
 			self.wndGameButton.CheckGameButton()
@@ -1146,6 +1172,9 @@ class Interface(object):
 		if app.ENABLE_DRAGON_SOUL_SYSTEM:
 			hideWindows += self.wndDragonSoul,\
 						self.wndDragonSoulRefine,
+
+		if self.wndSwitchbot:
+			hideWindows += self.wndSwitchbot,
 
 		hideWindows = filter(lambda x:x.IsShow(), hideWindows)
 		map(lambda x:x.Hide(), hideWindows)

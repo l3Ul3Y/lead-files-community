@@ -61,6 +61,8 @@
 #include <execinfo.h>
 #endif
 
+#include "switchbot.h"
+
 extern void WriteVersion();
 
 // 게임과 연결되는 소켓
@@ -313,6 +315,7 @@ int main(int argc, char **argv)
 	CDragonLairManager	dl_manager;
 
 	DSManager dsManager;
+	CSwitchbotManager switchbot;
 
 	if (!start(argc, argv)) {
 		CleanUpForEarlyExit();

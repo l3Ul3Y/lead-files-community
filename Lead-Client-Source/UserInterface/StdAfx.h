@@ -76,6 +76,7 @@ void initquest();
 void initsafebox();
 void initguild();
 void initMessenger();
+void initSwitchbot();
 
 extern const std::string& ApplicationStringTable_GetString(DWORD dwID);
 extern const std::string& ApplicationStringTable_GetString(DWORD dwID, LPCSTR szKey);

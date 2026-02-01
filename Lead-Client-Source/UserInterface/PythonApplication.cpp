@@ -11,6 +11,7 @@
 #include "PythonCharacterManager.h"
 
 #include "ProcessScanner.h"
+#include "PythonSwitchbot.h"
 
 extern void GrannyCreateSharedDeformBuffer();
 extern void GrannyDestroySharedDeformBuffer();

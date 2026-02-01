@@ -7,6 +7,7 @@
 #include "InsultChecker.h"
 
 #include "packet.h"
+#include "PythonSwitchbot.h"
 
 class CInstanceBase;
 class CNetworkActorManager;
@@ -695,4 +696,10 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		void __BettingGuildWar_Initialize();
 		void __BettingGuildWar_SetObserverCount(UINT uObserverCount);
 		void __BettingGuildWar_SetBettingMoney(UINT uBettingMoney);
+
+	public:
+		bool RecvSwitchbotPacket();
+
+		bool SendSwitchbotStartPacket(BYTE slot, std::vector<CPythonSwitchbot::TSwitchbotAttributeAlternativeTable> alternatives);
+		bool SendSwitchbotStopPacket(BYTE slot);
 };

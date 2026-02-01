@@ -326,6 +326,7 @@
     <ClCompile Include="PythonShop.cpp" />
     <ClCompile Include="PythonSkill.cpp" />
     <ClCompile Include="PythonSoundManagerModule.cpp" />
+    <ClCompile Include="PythonSwitchbot.cpp" />
     <ClCompile Include="PythonSystem.cpp" />
     <ClCompile Include="PythonSystemModule.cpp" />
     <ClCompile Include="PythonTextTail.cpp" />
@@ -381,6 +382,7 @@
     <ClInclude Include="PythonSafeBox.h" />
     <ClInclude Include="PythonShop.h" />
     <ClInclude Include="PythonSkill.h" />
+    <ClInclude Include="PythonSwitchbot.h" />
     <ClInclude Include="PythonSystem.h" />
     <ClInclude Include="PythonTextTail.h" />
     <ClInclude Include="resource.h" />

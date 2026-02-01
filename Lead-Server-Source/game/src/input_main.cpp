@@ -39,6 +39,8 @@
 #include "OXEvent.h"
 #include "DragonSoul.h"
 
+#include "switchbot.h"
+
 extern void SendShout(const char * szText, BYTE bEmpire);
 extern int g_nPortalLimitTime;
 
@@ -3224,7 +3226,13 @@ int CInputMain::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 					break;
 				}
 			}
+			break;
 
+		case HEADER_CG_SWITCHBOT:
+			if ((iExtraLen = Switchbot(ch, c_pData, m_iBufferLeft)) < 0)
+			{
+				return -1;
+			}
 			break;
 
 		case HEADER_CG_TARGET_INFO_LOAD:
@@ -3279,3 +3287,47 @@ int CInputDead::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 	return (iExtraLen);
 }
 
+int CInputMain::Switchbot(LPCHARACTER ch, const char* data, size_t uiBytes)
+{
+	const TPacketCGSwitchbot* p = reinterpret_cast<const TPacketCGSwitchbot*>(data);
+
+	if (uiBytes < sizeof(TPacketCGSwitchbot))
+	{
+		return -1;
+	}
+
+	const char* c_pData = data + sizeof(TPacketCGSwitchbot);
+	uiBytes -= sizeof(TPacketCGSwitchbot);
+
+	switch (p->subheader)
+	{
+	case SUBHEADER_CG_SWITCHBOT_START:
+		{
+			size_t extraLen = sizeof(TSwitchbotAttributeAlternativeTable) * SWITCHBOT_ALTERNATIVE_COUNT;
+			if (uiBytes < extraLen)
+			{
+				return -1;
+			}
+
+			std::vector<TSwitchbotAttributeAlternativeTable> vec_alternatives;
+
+			for (BYTE alternative = 0; alternative < SWITCHBOT_ALTERNATIVE_COUNT; ++alternative)
+			{
+				const TSwitchbotAttributeAlternativeTable* pAttr = reinterpret_cast<const TSwitchbotAttributeAlternativeTable*>(c_pData);
+				c_pData += sizeof(TSwitchbotAttributeAlternativeTable);
+				vec_alternatives.emplace_back(*pAttr);
+			}
+
+			CSwitchbotManager::Instance().Start(ch->GetPlayerID(), p->slot, vec_alternatives);
+			return extraLen;
+		}
+
+	case SUBHEADER_CG_SWITCHBOT_STOP:
+		{
+			CSwitchbotManager::Instance().Stop(ch->GetPlayerID(), p->slot);
+			return 0;
+		}
+	}
+
+	return 0;
+}

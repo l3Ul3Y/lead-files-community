@@ -6,9 +6,6 @@
 #include "desc.h"
 #include "item_manager.h"
 
-const int MAX_NORM_ATTR_NUM = ITEM_MANAGER::MAX_NORM_ATTR_NUM;
-const int MAX_RARE_ATTR_NUM = ITEM_MANAGER::MAX_RARE_ATTR_NUM;
-
 int CItem::GetAttributeSetIndex()
 {
 	if (GetType() == ITEM_WEAPON)

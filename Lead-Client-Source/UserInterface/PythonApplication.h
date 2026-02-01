@@ -338,6 +338,7 @@ class CPythonApplication : public CMSApplication, public CInputKeyboard, public 
 		CPythonMessenger			m_pyManager;
 		CPythonSafeBox				m_pySafeBox;
 		CPythonGuild				m_pyGuild;
+		CPythonSwitchbot			m_pySwitchbot;
 
 		CGuildMarkManager			m_kGuildMarkManager;
 		CGuildMarkDownloader		m_kGuildMarkDownloader;

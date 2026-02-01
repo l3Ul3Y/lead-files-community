@@ -187,6 +187,8 @@ typedef struct character_point_instant
 	LPITEM			pDSItems[DRAGON_SOUL_INVENTORY_MAX_NUM];
 	WORD			wDSItemGrid[DRAGON_SOUL_INVENTORY_MAX_NUM];
 
+	LPITEM			pSwitchbotItems[SWITCHBOT_SLOT_COUNT];
+
 	// by mhh
 	LPITEM			pCubeItems[CUBE_MAX_NUM];
 	LPCHARACTER		pCubeNpc;

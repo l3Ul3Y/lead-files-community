@@ -535,6 +535,10 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvDragonSoulRefine();
 				break;
 
+			case HEADER_GC_SWITCHBOT:
+				ret = RecvSwitchbotPacket();
+				break;
+
 			default:
 				ret = RecvDefaultPacket(header);
 				break;
@@ -4094,4 +4098,124 @@ bool CPythonNetworkStream::SendDragonSoulRefinePacket(BYTE bRefineType, TItemPos
 		return false;
 	}
 	return true;
+}
+
+bool CPythonNetworkStream::RecvSwitchbotPacket()
+{
+	TPacketGCSwitchbot pack;
+	if (!Recv(sizeof(pack), &pack))
+	{
+		return false;
+	}
+
+	size_t packet_size = int(pack.size) - sizeof(TPacketGCSwitchbot);
+	if (pack.subheader == SUBHEADER_GC_SWITCHBOT_UPDATE)
+	{
+		if (packet_size != sizeof(CPythonSwitchbot::TSwitchbotTable))
+		{
+			return false;
+		}
+
+		CPythonSwitchbot::TSwitchbotTable table;
+		if (!Recv(sizeof(table), &table))
+		{
+			return false;
+		}
+
+		CPythonSwitchbot::Instance().Update(table);
+		PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "RefreshSwitchbotWindow", Py_BuildValue("()"));
+	}
+	else if (pack.subheader == SUBHEADER_GC_SWITCHBOT_UPDATE_ITEM)
+	{
+		if (packet_size != sizeof(TSwitchbotUpdateItem))
+		{
+			return false;
+		}
+
+		TSwitchbotUpdateItem update;
+		if (!Recv(sizeof(update), &update))
+		{
+			return false;
+		}
+
+		TItemPos pos(SWITCHBOT, update.slot);
+
+		IAbstractPlayer& rkPlayer = IAbstractPlayer::GetSingleton();
+		rkPlayer.SetItemCount(pos, update.count);
+
+		for (int i = 0; i < ITEM_SOCKET_SLOT_MAX_NUM; ++i)
+		{
+			rkPlayer.SetItemMetinSocket(pos, i, update.alSockets[i]);
+
+		}
+
+		for (int j = 0; j < ITEM_ATTRIBUTE_SLOT_MAX_NUM; ++j)
+		{
+			rkPlayer.SetItemAttribute(pos, j, update.aAttr[j].bType, update.aAttr[j].sValue);
+		}
+
+		PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], "RefreshSwitchbotItem", Py_BuildValue("(i)", update.slot));
+		return true;
+	}
+	else if (pack.subheader == SUBHEADER_GC_SWITCHBOT_SEND_ATTRIBUTE_INFORMATION)
+	{
+		CPythonSwitchbot::Instance().ClearAttributeMap();
+
+		size_t table_size = sizeof(CPythonSwitchbot::TSwitchbottAttributeTable);
+		while (packet_size >= table_size)
+		{
+			const int test = sizeof(CPythonSwitchbot::TSwitchbottAttributeTable);
+
+			CPythonSwitchbot::TSwitchbottAttributeTable table;
+			if (!Recv(table_size, &table))
+			{
+				return false;
+			}
+
+			CPythonSwitchbot::Instance().AddAttributeToMap(table);
+			packet_size -= table_size;
+		}
+	}
+
+	return true;
+}
+
+bool CPythonNetworkStream::SendSwitchbotStartPacket(BYTE slot, std::vector<CPythonSwitchbot::TSwitchbotAttributeAlternativeTable> alternatives)
+{
+	TPacketCGSwitchbot pack;
+	pack.header = HEADER_CG_SWITCHBOT;
+	pack.subheader = SUBHEADER_CG_SWITCHBOT_START;
+	pack.size = sizeof(TPacketCGSwitchbot) + sizeof(CPythonSwitchbot::TSwitchbotAttributeAlternativeTable) * SWITCHBOT_ALTERNATIVE_COUNT;
+	pack.slot = slot;
+
+	if (!Send(sizeof(pack), &pack))
+	{
+		return false;
+	}
+
+	for (const auto& it : alternatives)
+	{
+		if (!Send(sizeof(it), &it))
+		{
+			return false;
+		}
+	}
+
+	return SendSequence();
+}
+
+bool CPythonNetworkStream::SendSwitchbotStopPacket(BYTE slot)
+{
+	TPacketCGSwitchbot pack;
+	pack.header = HEADER_CG_SWITCHBOT;
+	pack.subheader = SUBHEADER_CG_SWITCHBOT_STOP;
+	pack.size = sizeof(TPacketCGSwitchbot);
+	pack.slot = slot;
+
+	if (!Send(sizeof(pack), &pack))
+	{
+		return false;
+	}
+
+	return SendSequence();
 }

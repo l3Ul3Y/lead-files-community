@@ -216,6 +216,8 @@ CPacketInfoCG::CPacketInfoCG()
 	Set(HEADER_CG_DRAGON_SOUL_REFINE, sizeof(TPacketCGDragonSoulRefine), "DragonSoulRefine", false);
 	Set(HEADER_CG_STATE_CHECKER, sizeof(BYTE), "ServerStateCheck", false);
 	Set(HEADER_CG_TARGET_INFO_LOAD, sizeof(TPacketCGTargetInfoLoad), "TargetInfoLoad", true);
+
+	Set(HEADER_CG_SWITCHBOT, sizeof(TPacketGCSwitchbot), "Switchbot", true);
 }
 
 CPacketInfoCG::~CPacketInfoCG()
@@ -251,6 +253,7 @@ CPacketInfoGG::CPacketInfoGG()
 	// END_OF_BLOCK_CHAT
 
 	Set(HEADER_GG_CHECK_AWAKENESS,		sizeof(TPacketGGCheckAwakeness),	"CheckAwakeness",		false);
+	Set(HEADER_GG_SWITCHBOT, sizeof(TPacketGGSwitchbot), "Switchbot", false);
 }
 
 CPacketInfoGG::~CPacketInfoGG()

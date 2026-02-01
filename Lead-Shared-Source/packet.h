@@ -95,6 +95,8 @@ enum
 	HEADER_CG_SCRIPT_SELECT_ITEM	= 114,
 	// END_OF_SCRIPT_SELECT_ITEM
 
+	HEADER_CG_SWITCHBOT				= 171,
+
 	HEADER_CG_DRAGON_SOUL_REFINE			= 205,
 	HEADER_CG_STATE_CHECKER					= 206,
 
@@ -251,6 +253,7 @@ enum
 	// END_OF_SUPPORT_BGM
 
 	HEADER_GC_AUTH_SUCCESS			= 150,
+	HEADER_GC_SWITCHBOT				= 171,
 
 	//HYBRID CRYPT
 	HEADER_GC_HYBRIDCRYPT_KEYS		= 152,
@@ -287,6 +290,7 @@ enum
 	HEADER_GG_CHECK_CLIENT_VERSION		= 21,
 	HEADER_GG_BLOCK_CHAT			= 22,
 	HEADER_GG_CHECK_AWAKENESS		= 29,
+	HEADER_GG_SWITCHBOT				= 30,
 };
 
 #pragma pack(1)
@@ -2295,6 +2299,60 @@ typedef struct SPacketGCStateCheck
 	unsigned long index;
 	unsigned char state;
 } TPacketGCStateCheck;
+
+struct TPacketGGSwitchbot
+{
+	BYTE bHeader;
+	WORD wPort;
+	TSwitchbotTable table;
+
+	TPacketGGSwitchbot() : bHeader(HEADER_GG_SWITCHBOT), wPort(0)
+	{
+#if __cplusplus < 199711L
+		memset(&table, 0, sizeof(table));
+#else
+		table = {};
+#endif
+	}
+};
+
+enum ECGSwitchbotSubheader
+{
+	SUBHEADER_CG_SWITCHBOT_START,
+	SUBHEADER_CG_SWITCHBOT_STOP,
+};
+
+struct TPacketCGSwitchbot
+{
+	BYTE header;
+	int size;
+	BYTE subheader;
+	BYTE slot;
+};
+
+enum EGCSwitchbotSubheader
+{
+	SUBHEADER_GC_SWITCHBOT_UPDATE,
+	SUBHEADER_GC_SWITCHBOT_UPDATE_ITEM,
+	SUBHEADER_GC_SWITCHBOT_SEND_ATTRIBUTE_INFORMATION,
+};
+
+struct TPacketGCSwitchbot
+{
+	BYTE header;
+	int size;
+	BYTE subheader;
+	BYTE slot;
+};
+
+struct TSwitchbotUpdateItem
+{
+	BYTE	slot;
+	BYTE	vnum;
+	BYTE	count;
+	long	alSockets[ITEM_SOCKET_MAX_NUM];
+	TPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_MAX_NUM];
+};
 
 #pragma pack()
 #endif

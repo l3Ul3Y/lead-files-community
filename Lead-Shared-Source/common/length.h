@@ -93,6 +93,23 @@ enum EMisc
 	MAX_GROUP_ITEM_NUM = 256,
 };
 
+enum SwitchbotValues
+{
+	SWITCHBOT_SLOT_COUNT = 5,
+	SWITCHBOT_ALTERNATIVE_COUNT = 2,
+	//1 = Switching Item
+	//2 = Yang
+	SWITCHBOT_PRICE_TYPE = 1,
+	//Amount Swtichting Items the Yang-Price
+	SWITCHBOT_PRICE_AMOUNT = 1,
+};
+
+const DWORD c_arSwitchingItems[3] =
+{
+	39028,
+	71084,
+	76014,
+};
 
 enum EWearPositions
 {
@@ -710,6 +727,7 @@ enum EWindows
 	MALL,
 	DRAGON_SOUL_INVENTORY,
 	BELT_INVENTORY,
+	SWITCHBOT,
 	GROUND,					// Only used by client
 	WINDOW_TYPE_MAX,
 };
@@ -975,6 +993,8 @@ typedef struct SItemPos
 		case SAFEBOX:
 		case MALL:
 			return false;
+		case SWITCHBOT:
+			return cell < SWITCHBOT_SLOT_COUNT;
 		default:
 			return false;
 		}
@@ -1001,6 +1021,11 @@ typedef struct SItemPos
 	{
 		return INVENTORY == window_type && cell < INVENTORY_MAX_NUM;
 	}
+
+	bool IsSwitchbotPosition() const
+    {
+    	return SWITCHBOT == window_type && cell < SWITCHBOT_SLOT_COUNT;
+    }
 
 	bool operator==(const struct SItemPos& rhs) const
 	{

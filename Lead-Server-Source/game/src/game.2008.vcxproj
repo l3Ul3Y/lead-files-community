@@ -217,6 +217,7 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="switchbot.cpp" />
     <ClCompile Include="target.cpp" />
     <ClCompile Include="text_file_loader.cpp" />
     <ClCompile Include="trigger.cpp" />
@@ -329,6 +330,7 @@
     <ClInclude Include="start_position.h" />
     <ClInclude Include="state.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="switchbot.h" />
     <ClInclude Include="target.h" />
     <ClInclude Include="text_file_loader.h" />
     <ClInclude Include="typedef.h" />
