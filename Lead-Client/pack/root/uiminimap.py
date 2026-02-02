@@ -9,6 +9,7 @@ import app
 import colorInfo
 import constInfo
 import background
+import chr
 
 class MapTextToolTip(ui.Window):
 	def __init__(self):			
@@ -106,9 +107,16 @@ class AtlasWindow(ui.ScriptWindow):
 		self.tooltipInfo.SetParent(self.board)
 		self.infoGuildMark.SetParent(self.board)
 		self.SetPosition(wndMgr.GetScreenWidth() - 136 - 256 - 10, 0)
+		self.board.onMouseLeftButtonUpEvent = ui.__mem_func__(self.OnMouseLeftButtonUpEvent)
 		self.Hide()
 
 		miniMap.RegisterAtlasWindow(self)
+
+	def OnMouseLeftButtonUpEvent(self):
+		(mouseX, mouseY) = wndMgr.GetMousePosition()
+		(bFind, sName, iPosX, iPosY, dwTextColor, dwGuildID) = miniMap.GetAtlasInfo(mouseX, mouseY)
+		if chr.IsGameMaster(player.GetMainCharacterIndex()):
+			net.SendChatPacket("/goto {} {}".format(iPosX, iPosY))
 
 	def Destroy(self):
 		miniMap.UnregisterAtlasWindow()
