@@ -694,6 +694,9 @@ void CMapOutdoor::__ClearGarvage()
 
 void CMapOutdoor::__UpdateGarvage()
 {
+	if (m_TerrainDeleteVector.empty() && m_AreaDeleteVector.empty())
+		return;
+
 	const DWORD dwTerrainEraseInterval = 1000 * 60;
 	static DWORD dwEraseTime = ELTimer_GetMSec();
 	
