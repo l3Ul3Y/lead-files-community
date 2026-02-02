@@ -96,7 +96,8 @@ std::vector<TIndex>		CGraphicBase::ms_fillCubeIdxVector;
 LPD3DXMESH				CGraphicBase::ms_lpSphereMesh = NULL;
 LPD3DXMESH				CGraphicBase::ms_lpCylinderMesh = NULL;
 
-LPDIRECT3DVERTEXBUFFER9	CGraphicBase::ms_alpd3dPDTVB[PDT_VERTEXBUFFER_NUM];
+LPDIRECT3DVERTEXBUFFER9	CGraphicBase::ms_smallPdtVertexBuffer = NULL;
+LPDIRECT3DVERTEXBUFFER9	CGraphicBase::ms_largePdtVertexBuffer = NULL;
 
 LPDIRECT3DINDEXBUFFER9	CGraphicBase::ms_alpd3dDefIB[DEFAULT_IB_NUM];
 
@@ -153,33 +154,35 @@ bool CGraphicBase::SetPDTStream(SPDTVertexRaw* pSrcVertices, UINT uVtxCount)
 	if (!uVtxCount)
 		return false;
 
-	static DWORD s_dwVBPos=0;
-
-	if (s_dwVBPos>=PDT_VERTEXBUFFER_NUM)
-		s_dwVBPos=0;
-
-	IDirect3DVertexBuffer9* plpd3dFillRectVB=ms_alpd3dPDTVB[s_dwVBPos];
-	++s_dwVBPos;
-
-	assert(PDT_VERTEX_NUM>=uVtxCount);
-	if (uVtxCount >= PDT_VERTEX_NUM)
+	if (uVtxCount > LARGE_PDT_VERTEX_BUFFER_SIZE)
 		return false;
 
+	assert(uVtxCount <= LARGE_PDT_VERTEX_BUFFER_SIZE);
+
+	IDirect3DVertexBuffer9* vb = NULL;
+
+	if (uVtxCount <= SMALL_PDT_VERTEX_BUFFER_SIZE)
+		vb = ms_smallPdtVertexBuffer;
+	else
+		vb = ms_largePdtVertexBuffer;
+
+	if (!vb)
+		return false;
+
+	const UINT bytes = sizeof(TPDTVertex) * uVtxCount;
+
 	TPDTVertex* pDstVertices;
-	if (FAILED(
-		plpd3dFillRectVB->Lock(0, sizeof(TPDTVertex)*uVtxCount, (void**)&pDstVertices, D3DLOCK_DISCARD)
-	)) 
+	if (FAILED(vb->Lock(0, bytes, (void**)&pDstVertices, D3DLOCK_DISCARD)))
 	{
 		STATEMANAGER.SetStreamSource(0, NULL, 0);
 		return false;
 	}
-	
-	
-	memcpy(pDstVertices, pSrcVertices, sizeof(TPDTVertex)*uVtxCount);
 
-	plpd3dFillRectVB->Unlock();
+	memcpy(pDstVertices, pSrcVertices, bytes);
 
-	STATEMANAGER.SetStreamSource(0, plpd3dFillRectVB, sizeof(TPDTVertex));	
+	vb->Unlock();
+
+	STATEMANAGER.SetStreamSource(0, vb, sizeof(TPDTVertex));
 
 	return true;
 }

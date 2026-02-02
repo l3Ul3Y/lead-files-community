@@ -312,3 +312,9 @@ void CGraphicFontTexture::SelectTexture(DWORD dwTexture)
 	assert(CheckTextureIndex(dwTexture));
 	m_lpd3dTexture = m_pFontTextureVector[dwTexture]->GetD3DTexture();
 }
+
+CGraphicImageTexture* CGraphicFontTexture::GetTexture(DWORD dwTexture)
+{
+	assert(CheckTextureIndex(dwTexture));
+	return m_pFontTextureVector[dwTexture];
+}
