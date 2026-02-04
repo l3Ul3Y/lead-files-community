@@ -533,7 +533,6 @@ class InventoryWindow(ui.ScriptWindow):
 		
 		for i in xrange(player.INVENTORY_PAGE_SIZE):
 			slotNumber = self.__InventoryLocalSlotPosToGlobalSlotPos(i)
-			slotNumberGlobal = slotNumber
 			
 			itemCount = getItemCount(slotNumber)
 			# itemCount == 0이면 소켓을 비운다.
@@ -572,7 +571,7 @@ class InventoryWindow(ui.ScriptWindow):
 					self.wndItem.DeactivateSlot(slotNumber)			
 					
 			if not constInfo.IS_AUTO_POTION(itemVnum):
-				if not slotNumberGlobal in self.liHighlightedItems:
+				if not slotNumber in self.liHighlightedItems:
 					self.wndItem.DeactivateSlot(i)
 		
 		self.wndItem.RefreshSlot()
