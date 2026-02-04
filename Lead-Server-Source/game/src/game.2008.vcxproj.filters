@@ -146,6 +146,7 @@
     <ClCompile Include="wedding.cpp" />
     <ClCompile Include="xmas_event.cpp" />
     <ClCompile Include="public_table.cpp" />
+    <ClCompile Include="switchbot.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="affect.h" />
@@ -259,6 +260,7 @@
     <ClInclude Include="war_map.h" />
     <ClInclude Include="wedding.h" />
     <ClInclude Include="xmas_event.h" />
+    <ClInclude Include="switchbot.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="any_function.inc" />
