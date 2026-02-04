@@ -581,8 +581,10 @@ class InventoryWindow(ui.ScriptWindow):
 			self.wndBelt.RefreshSlot()
 
 	def HighlightSlot(self, slot):
-		if not slot in self.highlightedItems:
-			self.highlightedItems.append(slot)
+		if slot in self.highlightedItems:
+			return
+
+		self.highlightedItems.append(slot)
 
 	def __RefreshHighlights(self):
 		for i in xrange(player.INVENTORY_PAGE_SIZE):
