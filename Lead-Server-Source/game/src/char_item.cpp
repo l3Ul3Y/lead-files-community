@@ -5347,6 +5347,9 @@ bool CHARACTER::DropGold(int gold)
 
 bool CHARACTER::MoveItem(TItemPos Cell, TItemPos DestCell, ItemStackType count)
 {
+	if (Cell.IsSamePosition(DestCell))
+		return false;
+
 	LPITEM item = NULL;
 
 	if (!IsValidItemPosition(Cell))
