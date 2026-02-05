@@ -54,6 +54,7 @@ namespace UI
 
 				// Toggle
 				BOOL	bActive;
+				D3DXCOLOR Color{1.f, 1.f, 1.f, 1.f};
 
 				int		ixPosition;
 				int		iyPosition;
@@ -107,7 +108,7 @@ namespace UI
 			void SetSlotCount(DWORD dwIndex, DWORD dwCount);
 			void SetSlotCountNew(DWORD dwIndex, DWORD dwGrade, DWORD dwCount);
 			void SetSlotCoolTime(DWORD dwIndex, float fCoolTime, float fElapsedTime = 0.0f);
-			void ActivateSlot(DWORD dwIndex);
+			void ActivateSlot(DWORD dwIndex, const D3DXCOLOR & color);
 			void DeactivateSlot(DWORD dwIndex);
 			void RefreshSlot();
 
@@ -205,7 +206,9 @@ namespace UI
 
 			CGraphicImageInstance * m_pBaseImageInstance;
 			CImageBox * m_pToggleSlotImage;
-			CAniImageBox * m_pSlotActiveEffect;
+			CAniImageBox * m_pSlotActiveEffectSlot1;
+			CAniImageBox * m_pSlotActiveEffectSlot2;
+			CAniImageBox * m_pSlotActiveEffectSlot3;
 			std::deque<DWORD> m_ReserveDestroyEffectDeque;
 	};
 };

@@ -371,12 +371,14 @@ bool CItem::AddToCharacter(LPCHARACTER ch, TItemPos Cell)
 		}
 	}
 
+	bool bWereMine = (GetLastOwnerPID() == ch->GetPlayerID()) || (GetWindow() == EQUIPMENT);
+
 	if (ch->GetDesc())
 		m_dwLastOwnerPID = ch->GetPlayerID();
 
 	event_cancel(&m_pkDestroyEvent);
 
-	ch->SetItem(TItemPos(window_type, pos), this);
+	ch->SetItem(TItemPos(window_type, pos), this, bWereMine);
 	m_pOwner = ch;
 
 	Save();
@@ -894,6 +896,7 @@ bool CItem::EquipTo(LPCHARACTER ch, BYTE bWearCell)
 
 	m_pOwner->UpdatePacket();
 
+	SetLastOwnerPID(m_pOwner->GetPlayerID());
 	Save();
 
 	return (true);

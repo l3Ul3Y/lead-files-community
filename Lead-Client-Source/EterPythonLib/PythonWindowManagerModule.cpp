@@ -1277,8 +1277,14 @@ PyObject * wndMgrActivateSlot(PyObject * poSelf, PyObject * poArgs)
 	if (!pWin->IsType(UI::CSlotWindow::Type()))
 		return Py_BuildException();
 
+	D3DXCOLOR color = {1.f, 1.f, 1.f, 1.f};
+	PyTuple_GetFloat(poArgs, 2, &color.r);
+	PyTuple_GetFloat(poArgs, 3, &color.g);
+	PyTuple_GetFloat(poArgs, 4, &color.b);
+	PyTuple_GetFloat(poArgs, 5, &color.a);
+
 	UI::CSlotWindow * pSlotWin = (UI::CSlotWindow *)pWin;
-	pSlotWin->ActivateSlot(iSlotIndex);
+	pSlotWin->ActivateSlot(iSlotIndex, color);
 	return Py_BuildNone();
 }
 

@@ -406,6 +406,7 @@ namespace UI
 			virtual ~CAniImageBox();
 
 			void SetDelay(int iDelay);
+			void SetDiffuseColor(const D3DXCOLOR& color);
 			void AppendImage(const char * c_szFileName);
 			void SetRenderingRect(float fLeft, float fTop, float fRight, float fBottom);
 			void SetRenderingMode(int iMode);

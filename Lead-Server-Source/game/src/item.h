@@ -133,6 +133,7 @@ class CItem : public CEntity
 		void		SetOwnershipEvent(LPEVENT pkEvent);
 
 		DWORD		GetLastOwnerPID()	{ return m_dwLastOwnerPID; }
+		void		SetLastOwnerPID(DWORD pid) { m_dwLastOwnerPID = pid; }
 
 		int		GetAttributeSetIndex(); // 속성 붙는것을 지정한 배열의 어느 인덱스를 사용하는지 돌려준다.
 		void		AlterToMagicItem();

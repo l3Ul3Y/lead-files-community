@@ -1003,6 +1003,14 @@ typedef struct SItemPos
 		}
 		return false;
 	}
+
+	bool IsSamePosition(const SItemPos& other) const
+	{
+		return *this == other
+			|| ((INVENTORY == window_type || EQUIPMENT == window_type)
+				&& (INVENTORY == other.window_type || EQUIPMENT == other.window_type)
+				&& cell == other.cell);
+	}
 	
 	bool IsEquipPosition() const
 	{

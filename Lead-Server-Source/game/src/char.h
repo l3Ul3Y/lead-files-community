@@ -843,7 +843,9 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		void			SetItemLoaded()	{ m_bItemLoaded = true; }
 
 		void			ClearItem();
-		void			SetItem(TItemPos Cell, LPITEM item);
+
+		void			SetItem(TItemPos Cell, LPITEM item, bool bWereMine = false);
+
 		LPITEM			GetItem(TItemPos Cell) const;
 		LPITEM			GetInventoryItem(ItemCellType wCell) const;
 		bool			IsEmptyItemGrid(TItemPos Cell, BYTE size, int iExceptionCell = -1) const;

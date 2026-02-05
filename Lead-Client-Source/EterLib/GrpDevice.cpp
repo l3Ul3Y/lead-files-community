@@ -624,36 +624,47 @@ RETRY:
 
 void CGraphicDevice::__InitializePDTVertexBufferList()
 {
-	for (UINT i=0; i<PDT_VERTEXBUFFER_NUM; ++i)
-		ms_alpd3dPDTVB[i]=NULL;	
+	ms_smallPdtVertexBuffer = NULL;
+	ms_largePdtVertexBuffer = NULL;
 }
 		
 void CGraphicDevice::__DestroyPDTVertexBufferList()
 {
-	for (UINT i=0; i<PDT_VERTEXBUFFER_NUM; ++i)
+	if (ms_smallPdtVertexBuffer)
 	{
-		if (ms_alpd3dPDTVB[i])
-		{
-			ms_alpd3dPDTVB[i]->Release();
-			ms_alpd3dPDTVB[i]=NULL;
-		}
+		ms_smallPdtVertexBuffer->Release();
+		ms_smallPdtVertexBuffer = NULL;
+	}
+
+	if (ms_largePdtVertexBuffer)
+	{
+		ms_largePdtVertexBuffer->Release();
+		ms_largePdtVertexBuffer = NULL;
 	}
 }
 
 bool CGraphicDevice::__CreatePDTVertexBufferList()
 {
-	for (UINT i=0; i<PDT_VERTEXBUFFER_NUM; ++i)
-	{
-		if (FAILED(
-			ms_lpd3dDevice->CreateVertexBuffer(
-			sizeof(TPDTVertex)*PDT_VERTEX_NUM, 
-			D3DUSAGE_DYNAMIC|D3DUSAGE_WRITEONLY, 
-			D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1, 
-			D3DPOOL_DEFAULT, 
-			&ms_alpd3dPDTVB[i], NULL)
-		))
+	HRESULT hr = ms_lpd3dDevice->CreateVertexBuffer(
+		sizeof(TPDTVertex) * SMALL_PDT_VERTEX_BUFFER_SIZE,
+		D3DUSAGE_DYNAMIC|D3DUSAGE_WRITEONLY,
+		D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1,
+		D3DPOOL_DEFAULT,
+		&ms_smallPdtVertexBuffer, NULL);
+
+	if (FAILED(hr))
 		return false;
-	}
+
+	hr = ms_lpd3dDevice->CreateVertexBuffer(
+		sizeof(TPDTVertex) * LARGE_PDT_VERTEX_BUFFER_SIZE,
+		D3DUSAGE_DYNAMIC|D3DUSAGE_WRITEONLY,
+		D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1,
+		D3DPOOL_DEFAULT,
+		&ms_largePdtVertexBuffer, NULL);
+
+	if (FAILED(hr))
+		return false;
+
 	return true;
 }
 

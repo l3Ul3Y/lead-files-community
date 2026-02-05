@@ -506,18 +506,17 @@ void CSlotWindow::SetSlotCoolTime(DWORD dwIndex, float fCoolTime, float fElapsed
 	pSlot->fStartCoolTime = CTimer::Instance().GetCurrentSecond() - fElapsedTime;
 }
 
-void CSlotWindow::ActivateSlot(DWORD dwIndex)
+void CSlotWindow::ActivateSlot(DWORD dwIndex, const D3DXCOLOR & color)
 {
 	TSlot * pSlot;
 	if (!GetSlotPointer(dwIndex, &pSlot))
 		return;
 
 	pSlot->bActive = TRUE;
+	pSlot->Color = color;
 
-	if (!m_pSlotActiveEffect)
-	{
+	if (!m_pSlotActiveEffectSlot1 || !m_pSlotActiveEffectSlot2 || !m_pSlotActiveEffectSlot3)
 		__CreateSlotEnableEffect();
-	}
 }
 
 void CSlotWindow::DeactivateSlot(DWORD dwIndex)
@@ -968,8 +967,12 @@ void CSlotWindow::OnUpdate()
 	}
 	m_ReserveDestroyEffectDeque.clear();
 
-	if (m_pSlotActiveEffect)
-		m_pSlotActiveEffect->Update();
+	if (m_pSlotActiveEffectSlot1)
+		m_pSlotActiveEffectSlot1->Update();
+	if (m_pSlotActiveEffectSlot2)
+		m_pSlotActiveEffectSlot2->Update();
+	if (m_pSlotActiveEffectSlot3)
+		m_pSlotActiveEffectSlot3->Update();
 }
 
 void CSlotWindow::OnRender()
@@ -1088,12 +1091,31 @@ void CSlotWindow::OnRender()
 		}
 
 		if (rSlot.bActive)
-		if (m_pSlotActiveEffect)
 		{
-			int ix = m_rect.left + rSlot.ixPosition;
-			int iy = m_rect.top + rSlot.iyPosition;
-			m_pSlotActiveEffect->SetPosition(ix, iy);
-			m_pSlotActiveEffect->Render();
+			if (m_pSlotActiveEffectSlot1 && rSlot.byyPlacedItemSize==1)
+			{
+				int ix = m_rect.left + rSlot.ixPosition;
+				int iy = m_rect.top + rSlot.iyPosition;
+				m_pSlotActiveEffectSlot1->SetDiffuseColor(rSlot.Color);
+				m_pSlotActiveEffectSlot1->SetPosition(ix, iy);
+				m_pSlotActiveEffectSlot1->Render();
+			}
+			else if (m_pSlotActiveEffectSlot2 && rSlot.byyPlacedItemSize==2)
+			{
+				int ix = m_rect.left + rSlot.ixPosition;
+				int iy = m_rect.top + rSlot.iyPosition;
+				m_pSlotActiveEffectSlot2->SetDiffuseColor(rSlot.Color);
+				m_pSlotActiveEffectSlot2->SetPosition(ix, iy);
+				m_pSlotActiveEffectSlot2->Render();
+			}
+			else if (m_pSlotActiveEffectSlot3 && rSlot.byyPlacedItemSize==3)
+			{
+				int ix = m_rect.left + rSlot.ixPosition;
+				int iy = m_rect.top + rSlot.iyPosition;
+				m_pSlotActiveEffectSlot3->SetDiffuseColor(rSlot.Color);
+				m_pSlotActiveEffectSlot3->SetPosition(ix, iy);
+				m_pSlotActiveEffectSlot3->Render();
+			}
 		}
 	}
 
@@ -1289,22 +1311,56 @@ void CSlotWindow::__CreateSlotEnableEffect()
 {
 	__DestroySlotEnableEffect();
 
-	m_pSlotActiveEffect = new CAniImageBox(NULL);
-	m_pSlotActiveEffect->AppendImage("d:/ymir work/ui/public/slotactiveeffect/00.sub");
-	m_pSlotActiveEffect->AppendImage("d:/ymir work/ui/public/slotactiveeffect/01.sub");
-	m_pSlotActiveEffect->AppendImage("d:/ymir work/ui/public/slotactiveeffect/02.sub");
-	m_pSlotActiveEffect->AppendImage("d:/ymir work/ui/public/slotactiveeffect/03.sub");
-	m_pSlotActiveEffect->AppendImage("d:/ymir work/ui/public/slotactiveeffect/04.sub");
-	m_pSlotActiveEffect->AppendImage("d:/ymir work/ui/public/slotactiveeffect/05.sub");
-	m_pSlotActiveEffect->AppendImage("d:/ymir work/ui/public/slotactiveeffect/06.sub");
-	m_pSlotActiveEffect->AppendImage("d:/ymir work/ui/public/slotactiveeffect/07.sub");
-	m_pSlotActiveEffect->AppendImage("d:/ymir work/ui/public/slotactiveeffect/08.sub");
-	m_pSlotActiveEffect->AppendImage("d:/ymir work/ui/public/slotactiveeffect/09.sub");
-	m_pSlotActiveEffect->AppendImage("d:/ymir work/ui/public/slotactiveeffect/10.sub");
-	m_pSlotActiveEffect->AppendImage("d:/ymir work/ui/public/slotactiveeffect/11.sub");
-	m_pSlotActiveEffect->AppendImage("d:/ymir work/ui/public/slotactiveeffect/12.sub");
-	m_pSlotActiveEffect->SetRenderingMode(CGraphicExpandedImageInstance::RENDERING_MODE_SCREEN);
-	m_pSlotActiveEffect->Show();
+	m_pSlotActiveEffectSlot1 = new CAniImageBox(NULL);
+	m_pSlotActiveEffectSlot1->AppendImage("d:/ymir work/ui/public/slotactiveeffect/00.sub");
+	m_pSlotActiveEffectSlot1->AppendImage("d:/ymir work/ui/public/slotactiveeffect/01.sub");
+	m_pSlotActiveEffectSlot1->AppendImage("d:/ymir work/ui/public/slotactiveeffect/02.sub");
+	m_pSlotActiveEffectSlot1->AppendImage("d:/ymir work/ui/public/slotactiveeffect/03.sub");
+	m_pSlotActiveEffectSlot1->AppendImage("d:/ymir work/ui/public/slotactiveeffect/04.sub");
+	m_pSlotActiveEffectSlot1->AppendImage("d:/ymir work/ui/public/slotactiveeffect/05.sub");
+	m_pSlotActiveEffectSlot1->AppendImage("d:/ymir work/ui/public/slotactiveeffect/06.sub");
+	m_pSlotActiveEffectSlot1->AppendImage("d:/ymir work/ui/public/slotactiveeffect/07.sub");
+	m_pSlotActiveEffectSlot1->AppendImage("d:/ymir work/ui/public/slotactiveeffect/08.sub");
+	m_pSlotActiveEffectSlot1->AppendImage("d:/ymir work/ui/public/slotactiveeffect/09.sub");
+	m_pSlotActiveEffectSlot1->AppendImage("d:/ymir work/ui/public/slotactiveeffect/10.sub");
+	m_pSlotActiveEffectSlot1->AppendImage("d:/ymir work/ui/public/slotactiveeffect/11.sub");
+	m_pSlotActiveEffectSlot1->AppendImage("d:/ymir work/ui/public/slotactiveeffect/12.sub");
+	m_pSlotActiveEffectSlot1->SetRenderingMode(CGraphicExpandedImageInstance::RENDERING_MODE_SCREEN);
+	m_pSlotActiveEffectSlot1->Show();
+
+	m_pSlotActiveEffectSlot2 = new CAniImageBox(NULL);
+	m_pSlotActiveEffectSlot2->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot2/00.sub");
+	m_pSlotActiveEffectSlot2->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot2/01.sub");
+	m_pSlotActiveEffectSlot2->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot2/02.sub");
+	m_pSlotActiveEffectSlot2->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot2/03.sub");
+	m_pSlotActiveEffectSlot2->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot2/04.sub");
+	m_pSlotActiveEffectSlot2->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot2/05.sub");
+	m_pSlotActiveEffectSlot2->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot2/06.sub");
+	m_pSlotActiveEffectSlot2->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot2/07.sub");
+	m_pSlotActiveEffectSlot2->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot2/08.sub");
+	m_pSlotActiveEffectSlot2->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot2/09.sub");
+	m_pSlotActiveEffectSlot2->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot2/10.sub");
+	m_pSlotActiveEffectSlot2->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot2/11.sub");
+	m_pSlotActiveEffectSlot2->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot2/12.sub");
+	m_pSlotActiveEffectSlot2->SetRenderingMode(CGraphicExpandedImageInstance::RENDERING_MODE_SCREEN);
+	m_pSlotActiveEffectSlot2->Show();
+
+	m_pSlotActiveEffectSlot3 = new CAniImageBox(NULL);
+	m_pSlotActiveEffectSlot3->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot3/00.sub");
+	m_pSlotActiveEffectSlot3->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot3/01.sub");
+	m_pSlotActiveEffectSlot3->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot3/02.sub");
+	m_pSlotActiveEffectSlot3->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot3/03.sub");
+	m_pSlotActiveEffectSlot3->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot3/04.sub");
+	m_pSlotActiveEffectSlot3->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot3/05.sub");
+	m_pSlotActiveEffectSlot3->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot3/06.sub");
+	m_pSlotActiveEffectSlot3->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot3/07.sub");
+	m_pSlotActiveEffectSlot3->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot3/08.sub");
+	m_pSlotActiveEffectSlot3->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot3/09.sub");
+	m_pSlotActiveEffectSlot3->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot3/10.sub");
+	m_pSlotActiveEffectSlot3->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot3/11.sub");
+	m_pSlotActiveEffectSlot3->AppendImage("d:/ymir work/ui/public/slotactiveeffect/slot3/12.sub");
+	m_pSlotActiveEffectSlot3->SetRenderingMode(CGraphicExpandedImageInstance::RENDERING_MODE_SCREEN);
+	m_pSlotActiveEffectSlot3->Show();
 }
 
 void CSlotWindow::__CreateFinishCoolTimeEffect(TSlot * pSlot)
@@ -1352,10 +1408,20 @@ void CSlotWindow::__DestroyToggleSlotImage()
 
 void CSlotWindow::__DestroySlotEnableEffect()
 {
-	if (m_pSlotActiveEffect)
+	if (m_pSlotActiveEffectSlot1)
 	{
-		delete m_pSlotActiveEffect;
-		m_pSlotActiveEffect = NULL;
+		delete m_pSlotActiveEffectSlot1;
+		m_pSlotActiveEffectSlot1 = NULL;
+	}
+	if (m_pSlotActiveEffectSlot2)
+	{
+		delete m_pSlotActiveEffectSlot2;
+		m_pSlotActiveEffectSlot2 = NULL;
+	}
+	if (m_pSlotActiveEffectSlot3)
+	{
+		delete m_pSlotActiveEffectSlot3;
+		m_pSlotActiveEffectSlot3 = NULL;
 	}
 }
 
@@ -1387,7 +1453,9 @@ void CSlotWindow::__Initialize()
 	m_isUsableItem = FALSE;
 
 	m_pToggleSlotImage = NULL;
-	m_pSlotActiveEffect = NULL;
+	m_pSlotActiveEffectSlot1 = NULL;
+	m_pSlotActiveEffectSlot2 = NULL;
+	m_pSlotActiveEffectSlot3 = NULL;
 	m_pBaseImageInstance = NULL;
 }
 

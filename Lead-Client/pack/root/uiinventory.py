@@ -244,6 +244,7 @@ class InventoryWindow(ui.ScriptWindow):
 	wndCostume = None
 	wndBelt = None
 	dlgPickMoney = None
+	highlightedItems = []
 	
 	sellingSlotNumber = -1
 	isLoaded = 0
@@ -569,10 +570,28 @@ class InventoryWindow(ui.ScriptWindow):
 				else:
 					self.wndItem.DeactivateSlot(slotNumber)			
 					
+			if not constInfo.IS_AUTO_POTION(itemVnum):
+				if not slotNumber in self.highlightedItems:
+					self.wndItem.DeactivateSlot(i)
+		
 		self.wndItem.RefreshSlot()
+		self.__RefreshHighlights()
 
 		if self.wndBelt:
 			self.wndBelt.RefreshSlot()
+
+	def HighlightSlot(self, slot):
+		if slot in self.highlightedItems:
+			return
+
+		self.highlightedItems.append(slot)
+
+	def __RefreshHighlights(self):
+		for i in xrange(player.INVENTORY_PAGE_SIZE):
+			slotNumber = self.__InventoryLocalSlotPosToGlobalSlotPos(i)
+			if slotNumber in self.highlightedItems:
+				self.wndItem.ActivateSlot(i)
+
 
 	def RefreshEquipSlotWindow(self):
 		getItemVNum=player.GetItemIndex
@@ -918,8 +937,12 @@ class InventoryWindow(ui.ScriptWindow):
 			self.tooltipItem.HideToolTip()
 
 	def OverInItem(self, overSlotPos):
-		overSlotPos = self.__InventoryLocalSlotPosToGlobalSlotPos(overSlotPos)
+		overSlotPosGlobal = self.__InventoryLocalSlotPosToGlobalSlotPos(overSlotPos)
 		self.wndItem.SetUsableItem(False)
+
+		if overSlotPosGlobal in self.highlightedItems:
+			self.highlightedItems.remove(overSlotPosGlobal)
+			self.wndItem.DeactivateSlot(overSlotPos)
 
 		if mouseModule.mouseController.isAttached():
 			attachedItemType = mouseModule.mouseController.GetAttachedType()
@@ -928,12 +951,12 @@ class InventoryWindow(ui.ScriptWindow):
 				attachedSlotPos = mouseModule.mouseController.GetAttachedSlotNumber()
 				attachedItemVNum = mouseModule.mouseController.GetAttachedItemIndex()
 				
-				if self.__CanUseSrcItemToDstItem(attachedItemVNum, attachedSlotPos, overSlotPos):
+				if self.__CanUseSrcItemToDstItem(attachedItemVNum, attachedSlotPos, overSlotPosGlobal):
 					self.wndItem.SetUsableItem(True)
-					self.ShowToolTip(overSlotPos)
+					self.ShowToolTip(overSlotPosGlobal)
 					return
 				
-		self.ShowToolTip(overSlotPos)
+		self.ShowToolTip(overSlotPosGlobal)
 
 
 	def __IsUsableItemToItem(self, srcItemVNum, srcSlotPos):

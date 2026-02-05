@@ -262,7 +262,7 @@ LPITEM CHARACTER::GetItem(TItemPos Cell) const
 	return NULL;
 }
 
-void CHARACTER::SetItem(TItemPos Cell, LPITEM pItem)
+void CHARACTER::SetItem(TItemPos Cell, LPITEM pItem, bool bWereMine)
 {
 	ItemCellType wCell = Cell.cell;
 	BYTE window_type = Cell.window_type;
@@ -435,8 +435,7 @@ void CHARACTER::SetItem(TItemPos Cell, LPITEM pItem)
 			pack.vnum = pItem->GetVnum();
 			pack.flags = pItem->GetFlag();
 			pack.anti_flags	= pItem->GetAntiFlag();
-			pack.highlight = (Cell.window_type == DRAGON_SOUL_INVENTORY);
-
+			pack.highlight = !bWereMine || (Cell.window_type == DRAGON_SOUL_INVENTORY);
 
 			thecore_memcpy(pack.alSockets, pItem->GetSockets(), sizeof(pack.alSockets));
 			thecore_memcpy(pack.aAttr, pItem->GetAttributes(), sizeof(pack.aAttr));
@@ -5348,6 +5347,9 @@ bool CHARACTER::DropGold(int gold)
 
 bool CHARACTER::MoveItem(TItemPos Cell, TItemPos DestCell, ItemStackType count)
 {
+	if (Cell.IsSamePosition(DestCell))
+		return false;
+
 	LPITEM item = NULL;
 
 	if (!IsValidItemPosition(Cell))
@@ -5481,7 +5483,7 @@ bool CHARACTER::MoveItem(TItemPos Cell, TItemPos DestCell, ItemStackType count)
 				DestCell.window_type, DestCell.cell, count);
 			
 			item->RemoveFromCharacter();
-			SetItem(DestCell, item);
+			SetItem(DestCell, item, true);
 
 			if (INVENTORY == Cell.window_type && INVENTORY == DestCell.window_type)
 				SyncQuickslot(QUICKSLOT_TYPE_ITEM, Cell.cell, DestCell.cell);

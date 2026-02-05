@@ -37,6 +37,7 @@ public:
 	void DestroyDeviceObjects();
 
 	bool CheckTextureIndex(DWORD dwTexture);
+	CGraphicImageTexture* GetTexture(DWORD dwTexture);
 	void SelectTexture(DWORD dwTexture);
 
 	bool UpdateTexture();

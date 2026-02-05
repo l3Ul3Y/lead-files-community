@@ -4,6 +4,9 @@
 #include "Ray.h"
 #include <vector>
 
+static const UINT SMALL_PDT_VERTEX_BUFFER_SIZE = 16;
+static const UINT LARGE_PDT_VERTEX_BUFFER_SIZE = 768;
+
 void PixelPositionToD3DXVECTOR3(const D3DXVECTOR3& c_rkPPosSrc, D3DXVECTOR3* pv3Dst);
 void D3DXVECTOR3ToPixelPosition(const D3DXVECTOR3& c_rv3Src, D3DXVECTOR3* pv3Dst);
 
@@ -300,13 +303,7 @@ class CGraphicBase
 		static bool						ms_isLowTextureMemory;
 		static bool						ms_isHighTextureMemory;
 
-		enum
-		{
-			PDT_VERTEX_NUM = 16,
-			PDT_VERTEXBUFFER_NUM = 100,				
-		};
-		
-		
-		static LPDIRECT3DVERTEXBUFFER9	ms_alpd3dPDTVB[PDT_VERTEXBUFFER_NUM];
+		static LPDIRECT3DVERTEXBUFFER9	ms_smallPdtVertexBuffer;
+		static LPDIRECT3DVERTEXBUFFER9	ms_largePdtVertexBuffer;
 		static LPDIRECT3DINDEXBUFFER9	ms_alpd3dDefIB[DEFAULT_IB_NUM];
 };

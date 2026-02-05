@@ -6,6 +6,7 @@
 #include "../EterLocale/StringCodec.h"
 #include "../EterBase/Utils.h"
 #include "../EterLocale/Arabic.h"
+#include <map>
 
 extern DWORD GetDefaultCodePage();
 
@@ -547,8 +548,9 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 	STATEMANAGER.SetTextureStageState(0, D3DTSS_ALPHAARG2,	D3DTA_DIFFUSE);
 	STATEMANAGER.SetTextureStageState(0, D3DTSS_ALPHAOP,	D3DTOP_MODULATE);
 
+	std::map<CGraphicImageTexture*, std::vector<SPDTVertexRaw> > verticesMap;
 	{
-		const float fFontHalfWeight=1.0f;
+		const float fFontHalfWeight = 1.0f;
 
 		float fCurX;
 		float fCurY;
@@ -562,37 +564,35 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 		float fFontMaxHeight;
 		float fFontAdvance;
 
-		SVertex akVertex[4];
-		akVertex[0].z=m_v3Position.z;
-		akVertex[1].z=m_v3Position.z;
-		akVertex[2].z=m_v3Position.z;
-		akVertex[3].z=m_v3Position.z;
+		SPDTVertexRaw akVertex[4];
+		akVertex[0].pz = m_v3Position.z;
+		akVertex[1].pz = m_v3Position.z;
+		akVertex[2].pz = m_v3Position.z;
+		akVertex[3].pz = m_v3Position.z;
 
-		CGraphicFontTexture::TCharacterInfomation* pCurCharInfo;		
+		CGraphicFontTexture::TCharacterInfomation* pCurCharInfo;
 
-		// 테두리
 		if (m_isOutline)
 		{
-			fCurX=fStanX;
-			fCurY=fStanY;
-			fFontMaxHeight=0.0f;
+			fCurX = fStanX;
+			fCurY = fStanY;
+			fFontMaxHeight = 0.0f;
 
 			CGraphicFontTexture::TPCharacterInfomationVector::iterator i;
-			for (i=m_pCharInfoVector.begin(); i!=m_pCharInfoVector.end(); ++i)
+			for (i = m_pCharInfoVector.begin(); i != m_pCharInfoVector.end(); ++i)
 			{
 				pCurCharInfo = *i;
 
-				fFontWidth=float(pCurCharInfo->width);
-				fFontHeight=float(pCurCharInfo->height);
-				fFontAdvance=float(pCurCharInfo->advance);
+				fFontWidth = float(pCurCharInfo->width);
+				fFontHeight = float(pCurCharInfo->height);
+				fFontAdvance = float(pCurCharInfo->advance);
 
-				// NOTE : 폰트 출력에 Width 제한을 둡니다. - [levites]
-				if ((fCurX+fFontWidth)-m_v3Position.x > m_fLimitWidth)
+				if ((fCurX + fFontWidth) - m_v3Position.x > m_fLimitWidth)
 				{
 					if (m_isMultiLine)
 					{
-						fCurX=fStanX;
-						fCurY+=fFontMaxHeight;
+						fCurX = fStanX;
+						fCurY += fFontMaxHeight;
 					}
 					else
 					{
@@ -614,97 +614,83 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 				fFontEx = fFontSx + fFontWidth;
 				fFontEy = fFontSy + fFontHeight;
 
-				pFontTexture->SelectTexture(pCurCharInfo->index);
-				STATEMANAGER.SetTexture(0, pFontTexture->GetD3DTexture());
+				CGraphicImageTexture* pTexture = pFontTexture->GetTexture(pCurCharInfo->index);
+				std::vector<SPDTVertexRaw>& batchVertices = verticesMap[pTexture];
 
-				akVertex[0].u=pCurCharInfo->left;
-				akVertex[0].v=pCurCharInfo->top;
-				akVertex[1].u=pCurCharInfo->left;
-				akVertex[1].v=pCurCharInfo->bottom;
-				akVertex[2].u=pCurCharInfo->right;
-				akVertex[2].v=pCurCharInfo->top;
-				akVertex[3].u=pCurCharInfo->right;
-				akVertex[3].v=pCurCharInfo->bottom;
+				akVertex[0].u = pCurCharInfo->left;
+				akVertex[0].v = pCurCharInfo->top;
+				akVertex[1].u = pCurCharInfo->left;
+				akVertex[1].v = pCurCharInfo->bottom;
+				akVertex[2].u = pCurCharInfo->right;
+				akVertex[2].v = pCurCharInfo->top;
+				akVertex[3].u = pCurCharInfo->right;
+				akVertex[3].v = pCurCharInfo->bottom;
 
-				akVertex[3].color = akVertex[2].color = akVertex[1].color = akVertex[0].color = m_dwOutLineColor;
+				akVertex[3].diffuse = akVertex[2].diffuse = akVertex[1].diffuse = akVertex[0].diffuse = m_dwOutLineColor;
 
-				
-				float feather = 0.0f; // m_fFontFeather
-				
-				akVertex[0].y=fFontSy-feather;
-				akVertex[1].y=fFontEy+feather;
-				akVertex[2].y=fFontSy-feather;
-				akVertex[3].y=fFontEy+feather;
+				float feather = 0.0f;
 
-				// 왼
-				akVertex[0].x=fFontSx-fFontHalfWeight-feather;
-				akVertex[1].x=fFontSx-fFontHalfWeight-feather;
-				akVertex[2].x=fFontEx-fFontHalfWeight+feather;
-				akVertex[3].x=fFontEx-fFontHalfWeight+feather;
-				
-				if (CGraphicBase::SetPDTStream((SPDTVertex*)akVertex, 4))
-					STATEMANAGER.DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-				
+				akVertex[0].py = fFontSy - feather;
+				akVertex[1].py = fFontEy + feather;
+				akVertex[2].py = fFontSy - feather;
+				akVertex[3].py = fFontEy + feather;
 
-				// 오른
-				akVertex[0].x=fFontSx+fFontHalfWeight-feather;
-				akVertex[1].x=fFontSx+fFontHalfWeight-feather;
-				akVertex[2].x=fFontEx+fFontHalfWeight+feather;
-				akVertex[3].x=fFontEx+fFontHalfWeight+feather;
+				akVertex[0].px = fFontSx - fFontHalfWeight - feather;
+				akVertex[1].px = fFontSx - fFontHalfWeight - feather;
+				akVertex[2].px = fFontEx - fFontHalfWeight + feather;
+				akVertex[3].px = fFontEx - fFontHalfWeight + feather;
 
-				if (CGraphicBase::SetPDTStream((SPDTVertex*)akVertex, 4))
-					STATEMANAGER.DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-				
-				akVertex[0].x=fFontSx-feather;
-				akVertex[1].x=fFontSx-feather;
-				akVertex[2].x=fFontEx+feather;
-				akVertex[3].x=fFontEx+feather;
-				
-				// 위
-				akVertex[0].y=fFontSy-fFontHalfWeight-feather;
-				akVertex[1].y=fFontEy-fFontHalfWeight+feather;
-				akVertex[2].y=fFontSy-fFontHalfWeight-feather;
-				akVertex[3].y=fFontEy-fFontHalfWeight+feather;
+				batchVertices.insert(batchVertices.end(), akVertex, akVertex + 4);
 
-				// 20041216.myevan.DrawPrimitiveUP
-				if (CGraphicBase::SetPDTStream((SPDTVertex*)akVertex, 4))
-					STATEMANAGER.DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-				
-				// 아래
-				akVertex[0].y=fFontSy+fFontHalfWeight-feather;
-				akVertex[1].y=fFontEy+fFontHalfWeight+feather;
-				akVertex[2].y=fFontSy+fFontHalfWeight-feather;
-				akVertex[3].y=fFontEy+fFontHalfWeight+feather;
+				akVertex[0].px = fFontSx + fFontHalfWeight - feather;
+				akVertex[1].px = fFontSx + fFontHalfWeight - feather;
+				akVertex[2].px = fFontEx + fFontHalfWeight + feather;
+				akVertex[3].px = fFontEx + fFontHalfWeight + feather;
 
-				// 20041216.myevan.DrawPrimitiveUP
-				if (CGraphicBase::SetPDTStream((SPDTVertex*)akVertex, 4))
-					STATEMANAGER.DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-				
+				batchVertices.insert(batchVertices.end(), akVertex, akVertex + 4);
+
+				akVertex[0].px = fFontSx - feather;
+				akVertex[1].px = fFontSx - feather;
+				akVertex[2].px = fFontEx + feather;
+				akVertex[3].px = fFontEx + feather;
+
+				akVertex[0].py = fFontSy - fFontHalfWeight - feather;
+				akVertex[1].py = fFontEy - fFontHalfWeight + feather;
+				akVertex[2].py = fFontSy - fFontHalfWeight - feather;
+				akVertex[3].py = fFontEy - fFontHalfWeight + feather;
+
+				batchVertices.insert(batchVertices.end(), akVertex, akVertex + 4);
+
+				akVertex[0].py = fFontSy + fFontHalfWeight - feather;
+				akVertex[1].py = fFontEy + fFontHalfWeight + feather;
+				akVertex[2].py = fFontSy + fFontHalfWeight - feather;
+				akVertex[3].py = fFontEy + fFontHalfWeight + feather;
+
+				batchVertices.insert(batchVertices.end(), akVertex, akVertex + 4);
+
 				fCurX += fFontAdvance;
 			}
 		}
 
-		// 메인 폰트
-		fCurX=fStanX;
-		fCurY=fStanY;
-		fFontMaxHeight=0.0f;
+		fCurX = fStanX;
+		fCurY = fStanY;
+		fFontMaxHeight = 0.0f;
 
 		for (int i = 0; i < m_pCharInfoVector.size(); ++i)
 		{
 			pCurCharInfo = m_pCharInfoVector[i];
 
-			fFontWidth=float(pCurCharInfo->width);
-			fFontHeight=float(pCurCharInfo->height);
-			fFontMaxHeight=max(fFontHeight, pCurCharInfo->height);
-			fFontAdvance=float(pCurCharInfo->advance);
+			fFontWidth = float(pCurCharInfo->width);
+			fFontHeight = float(pCurCharInfo->height);
+			fFontMaxHeight = max(fFontHeight, pCurCharInfo->height);
+			fFontAdvance = float(pCurCharInfo->advance);
 
-			// NOTE : 폰트 출력에 Width 제한을 둡니다. - [levites]
-			if ((fCurX+fFontWidth)-m_v3Position.x > m_fLimitWidth)
+			if ((fCurX + fFontWidth) - m_v3Position.x > m_fLimitWidth)
 			{
 				if (m_isMultiLine)
 				{
-					fCurX=fStanX;
-					fCurY+=fFontMaxHeight;
+					fCurX = fStanX;
+					fCurY += fFontMaxHeight;
 				}
 				else
 				{
@@ -721,47 +707,57 @@ void CGraphicTextInstance::Render(RECT * pClipRect)
 				}
 			}
 
-			fFontSx = fCurX-0.5f;
-			fFontSy = fCurY-0.5f;
+			fFontSx = fCurX - 0.5f;
+			fFontSy = fCurY - 0.5f;
 			fFontEx = fFontSx + fFontWidth;
 			fFontEy = fFontSy + fFontHeight;
 
-			pFontTexture->SelectTexture(pCurCharInfo->index);
-			STATEMANAGER.SetTexture(0, pFontTexture->GetD3DTexture());
+			CGraphicImageTexture* pTexture = pFontTexture->GetTexture(pCurCharInfo->index);
+			std::vector<SPDTVertexRaw>& batchVertices = verticesMap[pTexture];
 
-			akVertex[0].x=fFontSx;
-			akVertex[0].y=fFontSy;
-			akVertex[0].u=pCurCharInfo->left;
-			akVertex[0].v=pCurCharInfo->top;
+			akVertex[0].px = fFontSx;
+			akVertex[0].py = fFontSy;
+			akVertex[0].u = pCurCharInfo->left;
+			akVertex[0].v = pCurCharInfo->top;
 
-			akVertex[1].x=fFontSx;
-			akVertex[1].y=fFontEy;
-			akVertex[1].u=pCurCharInfo->left;
-			akVertex[1].v=pCurCharInfo->bottom;
+			akVertex[1].px = fFontSx;
+			akVertex[1].py = fFontEy;
+			akVertex[1].u = pCurCharInfo->left;
+			akVertex[1].v = pCurCharInfo->bottom;
 
-			akVertex[2].x=fFontEx;
-			akVertex[2].y=fFontSy;
-			akVertex[2].u=pCurCharInfo->right;
-			akVertex[2].v=pCurCharInfo->top;
+			akVertex[2].px = fFontEx;
+			akVertex[2].py = fFontSy;
+			akVertex[2].u = pCurCharInfo->right;
+			akVertex[2].v = pCurCharInfo->top;
 
-			akVertex[3].x=fFontEx;
-			akVertex[3].y=fFontEy;
-			akVertex[3].u=pCurCharInfo->right;
-			akVertex[3].v=pCurCharInfo->bottom;
+			akVertex[3].px = fFontEx;
+			akVertex[3].py = fFontEy;
+			akVertex[3].u = pCurCharInfo->right;
+			akVertex[3].v = pCurCharInfo->bottom;
 
-			//m_dwColorInfoVector[i];
-			//m_dwTextColor;
-			akVertex[0].color = akVertex[1].color = akVertex[2].color = akVertex[3].color = m_dwColorInfoVector[i];
+			akVertex[0].diffuse = akVertex[1].diffuse = akVertex[2].diffuse = akVertex[3].diffuse = m_dwColorInfoVector[i];
 
-			// 20041216.myevan.DrawPrimitiveUP
-			if (CGraphicBase::SetPDTStream((SPDTVertex*)akVertex, 4))
-				STATEMANAGER.DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-			//STATEMANAGER.DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, akVertex, sizeof(SVertex));
+			batchVertices.insert(batchVertices.end(), akVertex, akVertex + 4);
 
 			fCurX += fFontAdvance;
 		}
-	}
 
+		for (std::map<CGraphicImageTexture*, std::vector<SPDTVertexRaw> >::iterator it = verticesMap.begin(); it != verticesMap.end(); ++it)
+		{
+			STATEMANAGER.SetTexture(0, it->first->GetD3DTexture());
+
+			std::vector<SPDTVertexRaw>& vertices = it->second;
+			for (std::vector<SPDTVertexRaw>::iterator f = vertices.begin(), l = vertices.end(); f != l; )
+			{
+				size_t remaining = static_cast<size_t>(l - f);
+				UINT batchCount = remaining > LARGE_PDT_VERTEX_BUFFER_SIZE ? LARGE_PDT_VERTEX_BUFFER_SIZE : static_cast<UINT>(remaining);
+
+				if (CGraphicBase::SetPDTStream(&*f, batchCount))
+					STATEMANAGER.DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, batchCount - 2);
+				f += batchCount;
+			}
+		}
+	}
 	if (m_isCursor)
 	{
 		// Draw Cursor
