@@ -244,7 +244,7 @@ class InventoryWindow(ui.ScriptWindow):
 	wndCostume = None
 	wndBelt = None
 	dlgPickMoney = None
-	liHighlightedItems = []
+	highlightedItems = []
 	
 	sellingSlotNumber = -1
 	isLoaded = 0
@@ -533,7 +533,6 @@ class InventoryWindow(ui.ScriptWindow):
 		
 		for i in xrange(player.INVENTORY_PAGE_SIZE):
 			slotNumber = self.__InventoryLocalSlotPosToGlobalSlotPos(i)
-			slotNumberGlobal = slotNumber
 			
 			itemCount = getItemCount(slotNumber)
 			# itemCount == 0이면 소켓을 비운다.
@@ -572,7 +571,7 @@ class InventoryWindow(ui.ScriptWindow):
 					self.wndItem.DeactivateSlot(slotNumber)			
 					
 			if not constInfo.IS_AUTO_POTION(itemVnum):
-				if not slotNumberGlobal in self.liHighlightedItems:
+				if not slotNumber in self.highlightedItems:
 					self.wndItem.DeactivateSlot(i)
 		
 		self.wndItem.RefreshSlot()
@@ -582,13 +581,15 @@ class InventoryWindow(ui.ScriptWindow):
 			self.wndBelt.RefreshSlot()
 
 	def HighlightSlot(self, slot):
-		if not slot in self.liHighlightedItems:
-			self.liHighlightedItems.append(slot)
+		if slot in self.highlightedItems:
+			return
+
+		self.highlightedItems.append(slot)
 
 	def __RefreshHighlights(self):
 		for i in xrange(player.INVENTORY_PAGE_SIZE):
 			slotNumber = self.__InventoryLocalSlotPosToGlobalSlotPos(i)
-			if slotNumber in self.liHighlightedItems:
+			if slotNumber in self.highlightedItems:
 				self.wndItem.ActivateSlot(i)
 
 
@@ -939,8 +940,8 @@ class InventoryWindow(ui.ScriptWindow):
 		overSlotPosGlobal = self.__InventoryLocalSlotPosToGlobalSlotPos(overSlotPos)
 		self.wndItem.SetUsableItem(False)
 
-		if overSlotPosGlobal in self.liHighlightedItems:
-			self.liHighlightedItems.remove(overSlotPosGlobal)
+		if overSlotPosGlobal in self.highlightedItems:
+			self.highlightedItems.remove(overSlotPosGlobal)
 			self.wndItem.DeactivateSlot(overSlotPos)
 
 		if mouseModule.mouseController.isAttached():

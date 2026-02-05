@@ -206,7 +206,7 @@ namespace UI
 
 			CGraphicImageInstance * m_pBaseImageInstance;
 			CImageBox * m_pToggleSlotImage;
-			CAniImageBox * m_pSlotActiveEffect;
+			CAniImageBox * m_pSlotActiveEffectSlot1;
 			CAniImageBox * m_pSlotActiveEffectSlot2;
 			CAniImageBox * m_pSlotActiveEffectSlot3;
 			std::deque<DWORD> m_ReserveDestroyEffectDeque;
