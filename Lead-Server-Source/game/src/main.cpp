@@ -53,10 +53,6 @@
 #include "DragonSoul.h"
 #include <boost/bind.hpp>
 
-#ifndef __WIN32__
-#include <gtest/gtest.h>
-#endif
-
 #ifdef USE_STACKTRACE
 #include <execinfo.h>
 #endif
