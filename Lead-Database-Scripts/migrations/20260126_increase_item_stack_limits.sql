@@ -1,4 +1,4 @@
-ALTER TABLE player.player
+ALTER TABLE player.item
 MODIFY COLUMN `count` int(11) UNSIGNED NOT NULL DEFAULT 0;
 
 ALTER TABLE player.shop_item
