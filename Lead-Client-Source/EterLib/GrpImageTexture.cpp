@@ -63,7 +63,13 @@ bool CGraphicImageTexture::CreateDeviceObjects()
 		if (!CEterPackManager::Instance().Get(mappedFile, m_stFileName.c_str(), &c_pvMap))
 			return false;
 
-		return CreateFromMemoryFile(mappedFile.Size(), c_pvMap, m_d3dFmt, m_dwFilter);
+		if (!CreateFromMemoryFile(mappedFile.Size(), c_pvMap, m_d3dFmt, m_dwFilter))
+		{
+			TraceError("CGraphicImageTexture::CreateDeviceObjects - texture not found(%s)", m_stFileName.c_str());
+			return false;
+		}
+
+		return true;
 	}
 
 	m_bEmpty = false;
