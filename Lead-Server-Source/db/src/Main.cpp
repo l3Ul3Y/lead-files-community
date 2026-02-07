@@ -11,96 +11,97 @@
 #include "ItemIDRangeManager.h"
 #include <signal.h>
 
-	void SetPlayerDBName(const char* c_pszPlayerDBName);
-	void SetTablePostfix(const char* c_pszTablePostfix);
-	int Start();
+void SetPlayerDBName(const char* c_pszPlayerDBName);
+void SetTablePostfix(const char* c_pszTablePostfix);
+int Start();
 
-	std::string g_stTablePostfix;
-	std::string g_stLocaleNameColumn = "name";
-	std::string g_stLocale = "euckr";
-	std::string g_stPlayerDBName = "";
+BOOL g_loadProtoFromDatabase = false;
+std::string g_stTablePostfix;
+std::string g_stLocaleNameColumn = "name";
+std::string g_stLocale = "euckr";
+std::string g_stPlayerDBName = "";
 
-	BOOL g_test_server = false;
+BOOL g_test_server = false;
 
-	//단위 초
-	int g_iPlayerCacheFlushSeconds = 60*7;
-	int g_iItemCacheFlushSeconds = 60*5;
+//단위 초
+int g_iPlayerCacheFlushSeconds = 60*7;
+int g_iItemCacheFlushSeconds = 60*5;
 
-	//g_iLogoutSeconds 수치는 g_iPlayerCacheFlushSeconds 와 g_iItemCacheFlushSeconds 보다 길어야 한다.
-	int g_iLogoutSeconds = 60*10;
+//g_iLogoutSeconds 수치는 g_iPlayerCacheFlushSeconds 와 g_iItemCacheFlushSeconds 보다 길어야 한다.
+int g_iLogoutSeconds = 60*10;
 
-	int g_log = 1;
+int g_log = 1;
 
 
-	// MYSHOP_PRICE_LIST
-	int g_iItemPriceListTableCacheFlushSeconds = 540;
-	// END_OF_MYSHOP_PRICE_LIST
+// MYSHOP_PRICE_LIST
+int g_iItemPriceListTableCacheFlushSeconds = 540;
+// END_OF_MYSHOP_PRICE_LIST
 
-	void emergency_sig(int sig)
-	{
-		if (sig == SIGSEGV)
-			sys_log(0, "SIGNAL: SIGSEGV");
-		else if (sig == SIGUSR1)
-			sys_log(0, "SIGNAL: SIGUSR1");
+void emergency_sig(int sig)
+{
+	if (sig == SIGSEGV)
+		sys_log(0, "SIGNAL: SIGSEGV");
+	else if (sig == SIGUSR1)
+		sys_log(0, "SIGNAL: SIGUSR1");
 
-		if (sig == SIGSEGV)
-			abort();
-	}
+	if (sig == SIGSEGV)
+		abort();
+}
 
-	int main()
-	{
-		CConfig Config;
-		CNetPoller poller;
-		CDBManager DBManager; 
-		CClientManager ClientManager;
-		CGuildManager GuildManager;
-		CPrivManager PrivManager;
-		CMoneyLog MoneyLog;
-		ItemAwardManager ItemAwardManager;
-		marriage::CManager MarriageManager;
-		CItemIDRangeManager ItemIDRangeManager;
+int main()
+{
+	CConfig Config;
+	CNetPoller poller;
+	CDBManager DBManager;
+	CClientManager ClientManager;
+	CGuildManager GuildManager;
+	CPrivManager PrivManager;
+	CMoneyLog MoneyLog;
+	ItemAwardManager ItemAwardManager;
+	marriage::CManager MarriageManager;
+	CItemIDRangeManager ItemIDRangeManager;
 
-		if (!Start())
-			return 1;
-
-		GuildManager.Initialize();
-		MarriageManager.Initialize();
-		ItemIDRangeManager.Build();
-		sys_log(0, "Metin2DBCacheServer Start\n");
-
-		CClientManager::instance().MainLoop();
-
-		signal_timer_disable();
-
-		DBManager.Quit();
-		int iCount;
-
-		while (1)
-		{
-			iCount = 0;
-
-			iCount += CDBManager::instance().CountReturnQuery(SQL_PLAYER);
-			iCount += CDBManager::instance().CountAsyncQuery(SQL_PLAYER);
-
-			if (iCount == 0)
-				break;
-
-			usleep(1000);
-			sys_log(0, "WAITING_QUERY_COUNT %d", iCount);
-		}
-
+	if (!Start())
 		return 1;
-	}
 
-	void emptybeat(LPHEART heart, int pulse)
+	GuildManager.Initialize();
+	MarriageManager.Initialize();
+	ItemIDRangeManager.Build();
+	sys_log(0, "Metin2DBCacheServer Start\n");
+
+	CClientManager::instance().MainLoop();
+
+	signal_timer_disable();
+
+	DBManager.Quit();
+	int iCount;
+
+	while (1)
 	{
-		if (!(pulse % heart->passes_per_sec))	// 1초에 한번
-		{
-		}
+		iCount = 0;
+
+		iCount += CDBManager::instance().CountReturnQuery(SQL_PLAYER);
+		iCount += CDBManager::instance().CountAsyncQuery(SQL_PLAYER);
+
+		if (iCount == 0)
+			break;
+
+		usleep(1000);
+		sys_log(0, "WAITING_QUERY_COUNT %d", iCount);
 	}
 
-	//
-	// @version	05/06/13 Bang2ni - 아이템 가격정보 캐시 flush timeout 설정 추가.
+	return 1;
+}
+
+void emptybeat(LPHEART heart, int pulse)
+{
+	if (!(pulse % heart->passes_per_sec))	// 1초에 한번
+	{
+	}
+}
+
+//
+// @version	05/06/13 Bang2ni - 아이템 가격정보 캐시 flush timeout 설정 추가.
 //
 int Start()
 {
@@ -108,6 +109,17 @@ int Start()
 	{
 		fprintf(stderr, "Loading conf.txt failed.\n");
 		return false;
+	}
+
+	int iLoadProtoFromDatabase;
+	if (CConfig::instance().GetValue("LOAD_PROTO_FROM_DATABASE", &iLoadProtoFromDatabase))
+	{
+		if (iLoadProtoFromDatabase)
+		{
+			sys_log(0, "Loading item_proto / mob_proto from database since 'LOAD_PROTO_FROM_DATABASE' is set to 1");
+			sys_log(0, "Ignoring txt proto files (item_proto.txt, mob_proto.txt)...");
+			g_loadProtoFromDatabase = true;
+		}
 	}
 
 	if (!CConfig::instance().GetValue("TEST_SERVER", &g_test_server))

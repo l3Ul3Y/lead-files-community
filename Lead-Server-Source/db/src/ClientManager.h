@@ -167,8 +167,10 @@
     private:
 	bool		InitializeTables();
 	bool		InitializeShopTable();
-	bool		InitializeMobTable();
-	bool		InitializeItemTable();
+	bool		InitializeMobTableFromTxt();
+	bool		InitializeItemTableFromTxt();
+	bool		InitializeMobTableFromDatabase();
+	bool		InitializeItemTableFromDatabase();
 	bool		InitializeQuestItemTable();
 	bool		InitializeSkillTable();
 	bool		InitializeRefineTable();
@@ -179,8 +181,8 @@
 	bool		InitializeObjectProto();
 	bool		InitializeObjectTable();
 
-	bool		MirrorMobTableIntoDB();
-	bool		MirrorItemTableIntoDB();
+	bool		MirrorMobTableIntoDatabase();
+	bool		MirrorItemTableIntoDatabase();
 
 	void		AddPeer(socket_t fd);
 	void		RemovePeer(CPeer * pPeer);
