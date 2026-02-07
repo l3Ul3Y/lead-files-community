@@ -813,31 +813,6 @@ void DESC::SendLoginSuccessPacket()
 	Packet(&p, sizeof(TPacketGCLoginSuccess));
 }
 
-//void DESC::SendServerStatePacket(int nIndex)
-//{
-//	TPacketGCStateCheck rp;
-//
-//	int iTotal; 
-//	int * paiEmpireUserCount;
-//	int iLocal;
-//
-//	DESC_MANAGER::instance().GetUserCount(iTotal, &paiEmpireUserCount, iLocal);
-//
-//	rp.header	= 1; 
-//	rp.key		= 0;
-//	rp.index	= nIndex;
-//
-//	if (g_bNoMoreClient) rp.state = 0;
-//	else rp.state = iTotal > g_iFullUserCount ? 3 : iTotal > g_iBusyUserCount ? 2 : 1;
-//	
-//	this->Packet(&rp, sizeof(rp));
-//	//printf("STATE_CHECK PACKET PROCESSED.\n");
-//}
-
-
-
-
-
 void DESC::SetLoginKey(DWORD dwKey)
 {
 	m_dwLoginKey = dwKey;

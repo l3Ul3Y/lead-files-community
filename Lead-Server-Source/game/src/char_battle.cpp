@@ -2981,7 +2981,7 @@ bool CHARACTER::Shoot(BYTE bType)
 void CHARACTER::FlyTarget(DWORD dwTargetVID, long x, long y, BYTE bHeader)
 {
 	LPCHARACTER pkVictim = CHARACTER_MANAGER::instance().Find(dwTargetVID);
-	TPacketGCFlyTargeting pack;
+	TPacketGCAddFlyTargeting pack;
 
 	//pack.bHeader	= HEADER_GC_FLY_TARGETING;
 	pack.bHeader	= (bHeader == HEADER_CG_FLY_TARGETING) ? HEADER_GC_FLY_TARGETING : HEADER_GC_ADD_FLY_TARGETING;

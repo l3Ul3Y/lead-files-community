@@ -109,7 +109,7 @@ enum
 	HEADER_GC_HANDSHAKE				= 0xff,
 
 	HEADER_GC_CHARACTER_ADD			= 1,
-	HEADER_GC_CHARACTER_DEL			= 2,
+	HEADER_GC_CHARACTER_DELETE			= 2,
 	HEADER_GC_MOVE					= 3,
 	HEADER_GC_CHAT					= 4,
 	HEADER_GC_SYNC_POSITION			= 5,
@@ -245,7 +245,7 @@ enum
 	// END_OF_MINING
 
 	HEADER_GC_DAMAGE_INFO           = 135,
-	HEADER_GC_CHAR_ADDITIONAL_INFO	= 136,
+	HEADER_GC_CHARACTER_ADDITIONAL_INFO	= 136,
 
 	// SUPPORT_BGM
 	HEADER_GC_MAIN_CHARACTER3_BGM		= 137,
@@ -522,7 +522,7 @@ typedef struct packet_player_delete_success
 {
 	BYTE        header;
 	BYTE        account_index;
-} TPacketGCDestroyCharacterSuccess;
+} TPacketGCCharacterDeleteSuccess;
 
 typedef struct command_player_create
 {
@@ -611,7 +611,7 @@ typedef struct command_whisper
 typedef struct command_entergame
 {
 	BYTE	header;
-} TPacketCGEnterGame;
+} TPacketCGEntergame;
 
 typedef struct command_item_use
 {
@@ -710,7 +710,7 @@ typedef struct command_position
 {
 	BYTE	header;
 	BYTE	position;
-} TPacketCGPosition;
+} TPacketCGCharacterPosition;
 
 typedef struct command_script_answer
 {
@@ -831,7 +831,7 @@ typedef struct packet_create_failure
 {
 	BYTE	header;
 	BYTE	bType;
-} TPacketGCCreateFailure;
+} TPacketGCCharacterCreateFailure;
 
 enum
 {
@@ -973,7 +973,7 @@ typedef struct packet_main_character3_bgm
 	long	lx, ly, lz;
 	BYTE	empire;
 	BYTE	skill_group;
-} TPacketGCMainCharacter3_BGM;
+} TPacketGCMainCharacter3Bgm;
 
 typedef struct packet_main_character4_bgm_vol
 {
@@ -991,14 +991,14 @@ typedef struct packet_main_character4_bgm_vol
 	long	lx, ly, lz;
 	BYTE	empire;
 	BYTE	skill_group;
-} TPacketGCMainCharacter4_BGM_VOL;
+} TPacketGCMainCharacter4BgmVol;
 // END_OF_SUPPORT_BGM
 
 typedef struct packet_points
 {
 	BYTE	header;
 	INT		points[POINT_MAX_NUM];
-} TPacketGCPoints;
+} TPacketGCCharacterPoints;
 
 typedef struct packet_skill_level
 {
@@ -1013,7 +1013,7 @@ typedef struct packet_point_change
 	BYTE	type;
 	long	amount;
 	long	value;
-} TPacketGCPointChange;
+} TPacketGCCharacterPointChange;
 
 typedef struct packet_stun
 {
@@ -1120,7 +1120,7 @@ typedef struct packet_quickslot_swap
 	BYTE	header;
 	BYTE	pos;
 	BYTE	pos_to;
-} TPacketGCQuickSlotSwap;
+} TPacketGCQuickslotSwap;
 
 typedef struct packet_motion
 {
@@ -1221,7 +1221,7 @@ typedef struct packet_position
 	BYTE	header;
 	DWORD	vid;
 	BYTE	position;
-} TPacketGCPosition;
+} TPacketGCCharacterPosition;
 
 typedef struct packet_ping
 {
@@ -1306,7 +1306,7 @@ typedef struct command_fly_targeting
 	BYTE		bHeader;
 	DWORD		dwTargetVID;
 	long		x, y;
-} TPacketCGFlyTargeting;
+} TPacketCGAddFlyTargeting;
 
 typedef struct packet_fly_targeting
 {
@@ -1314,7 +1314,7 @@ typedef struct packet_fly_targeting
 	DWORD		dwShooterVID;
 	DWORD		dwTargetVID;
 	long		x, y;
-} TPacketGCFlyTargeting;
+} TPacketGCAddFlyTargeting;
 
 typedef struct packet_shoot
 {
@@ -1342,7 +1342,7 @@ typedef struct packet_pvp
 	DWORD       dwVIDSrc;
 	DWORD       dwVIDDst;
 	BYTE        bMode;	// 0 이면 끔, 1이면 켬
-} TPacketGCPVP;
+} TPacketGCPvp;
 
 typedef struct command_use_skill
 {
@@ -1765,14 +1765,14 @@ typedef struct command_mark_upload
 typedef struct command_mark_idxlist
 {
 	BYTE	header;
-} TPacketCGMarkIDXList;
+} TPacketCGMarkIdxlist;
 
 typedef struct command_mark_crclist
 {
 	BYTE	header;
 	BYTE	imgIdx;
 	DWORD	crclist[80];
-} TPacketCGMarkCRCList;
+} TPacketCGMarkCrclist;
 
 typedef struct packet_mark_idxlist
 {
@@ -1780,7 +1780,7 @@ typedef struct packet_mark_idxlist
 	DWORD	bufSize;
 	WORD	count;
 	//뒤에 size * (WORD + WORD)만큼 데이터 붙음
-} TPacketGCMarkIDXList;
+} TPacketGCMarkIdxlist;
 
 typedef struct packet_mark_block
 {
@@ -1804,14 +1804,14 @@ typedef struct command_symbol_crc
 	DWORD guild_id;
 	DWORD crc;
 	DWORD size;
-} TPacketCGSymbolCRC;
+} TPacketCGSymbolCrc;
 
 typedef struct packet_symbol_data
 {
 	BYTE header;
 	WORD size;
 	DWORD guild_id;
-} TPacketGCGuildSymbolData;
+} TPacketGCSymbolData;
 
 typedef struct packet_observer_add
 {
@@ -1907,7 +1907,7 @@ typedef struct SPacketCGMyShop
 	BYTE	bHeader;
 	char	szSign[SHOP_SIGN_MAX_LEN + 1];
 	BYTE	bCount;
-} TPacketCGMyShop;
+} TPacketCGMyshop;
 
 typedef struct SPacketGCTime
 {
@@ -1932,7 +1932,7 @@ typedef struct SPacketGCChangeSkillGroup
 {
 	BYTE        header;
 	BYTE        skill_group;
-} TPacketGCChangeSkillGroup;
+} TPacketGCSkillGroup;
 
 typedef struct SPacketCGRefine
 {
@@ -1969,7 +1969,7 @@ typedef struct SPacketGCNPCPosition
 	WORD count;
 
 	// array of TNPCPosition
-} TPacketGCNPCPosition;
+} TPacketGCNpcPosition;
 
 typedef struct SPacketGCSpecialEffect
 {
@@ -2160,7 +2160,7 @@ typedef struct SPacketGCHybridCryptKeys
 	uint8_t *pDataKeyStream;
 	uint8_t *m_pStream;
 
-} TPacketGCHybridCryptKeys;
+} TPacketGCHybridcryptKeys;
 
 typedef struct SPacketGCPackageSDB
 {
@@ -2217,7 +2217,7 @@ typedef struct SPacketGCPackageSDB
 public:
 	uint8_t *m_pStream;
 	int32_t iStreamLen;
-} TPacketGCPackageSDB;
+} TPacketGCHybridcryptSdb;
 
 #define MAX_EFFECT_FILE_NAME 128
 typedef struct SPacketGCSpecificEffect
@@ -2273,15 +2273,7 @@ typedef struct SPacketCGStateCheck
 	BYTE header;
 	unsigned long key;	
 	unsigned long index;
-} TPacketCGStateCheck;
-
-typedef struct SPacketGCStateCheck
-{
-	BYTE header;
-	unsigned long key;
-	unsigned long index;
-	unsigned char state;
-} TPacketGCStateCheck;
+} TPacketCGStateChecker;
 
 struct TPacketGGSwitchbot
 {

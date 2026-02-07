@@ -844,7 +844,7 @@ void CHARACTER::EncodeInsertPacket(LPENTITY entity)
 		TPacketGCCharacterAdditionalInfo addPacket;
 		memset(&addPacket, 0, sizeof(TPacketGCCharacterAdditionalInfo));
 
-		addPacket.header = HEADER_GC_CHAR_ADDITIONAL_INFO;
+		addPacket.header = HEADER_GC_CHARACTER_ADDITIONAL_INFO;
 		addPacket.dwVID = m_vid;
 
 		addPacket.awPart[CHR_EQUIPPART_ARMOR] = GetPart(PART_MAIN);
@@ -957,7 +957,7 @@ void CHARACTER::EncodeRemovePacket(LPENTITY entity)
 
 	TPacketGCCharacterDelete pack;
 
-	pack.header	= HEADER_GC_CHARACTER_DEL;
+	pack.header	= HEADER_GC_CHARACTER_DELETE;
 	pack.id	= m_vid;
 
 	d->Packet(&pack, sizeof(TPacketGCCharacterDelete));
@@ -1483,7 +1483,7 @@ void CHARACTER::MainCharacterPacket()
 		if (CHARACTER_IsBGMVolumeEnable())
 		{
 			sys_log(1, "bgm_info.play_bgm_vol(%d, name='%s', vol=%f)", mapIndex, bgmInfo.name.c_str(), bgmInfo.vol);
-			TPacketGCMainCharacter4_BGM_VOL mainChrPacket;
+			TPacketGCMainCharacter4BgmVol mainChrPacket;
 			mainChrPacket.header = HEADER_GC_MAIN_CHARACTER4_BGM_VOL;
 			mainChrPacket.dwVID = m_vid;
 			mainChrPacket.wRaceNum = GetRaceNum();
@@ -1496,12 +1496,12 @@ void CHARACTER::MainCharacterPacket()
 
 			mainChrPacket.fBGMVol = bgmInfo.vol;
 			strlcpy(mainChrPacket.szBGMName, bgmInfo.name.c_str(), sizeof(mainChrPacket.szBGMName));
-			GetDesc()->Packet(&mainChrPacket, sizeof(TPacketGCMainCharacter4_BGM_VOL));
+			GetDesc()->Packet(&mainChrPacket, sizeof(TPacketGCMainCharacter4BgmVol));
 		}
 		else
 		{
 			sys_log(1, "bgm_info.play(%d, '%s')", mapIndex, bgmInfo.name.c_str());
-			TPacketGCMainCharacter3_BGM mainChrPacket;
+			TPacketGCMainCharacter3Bgm mainChrPacket;
 			mainChrPacket.header = HEADER_GC_MAIN_CHARACTER3_BGM;
 			mainChrPacket.dwVID = m_vid;
 			mainChrPacket.wRaceNum = GetRaceNum();
@@ -1512,7 +1512,7 @@ void CHARACTER::MainCharacterPacket()
 			mainChrPacket.skill_group = GetSkillGroup();
 			strlcpy(mainChrPacket.szChrName, GetName(), sizeof(mainChrPacket.szChrName));
 			strlcpy(mainChrPacket.szBGMName, bgmInfo.name.c_str(), sizeof(mainChrPacket.szBGMName));
-			GetDesc()->Packet(&mainChrPacket, sizeof(TPacketGCMainCharacter3_BGM));
+			GetDesc()->Packet(&mainChrPacket, sizeof(TPacketGCMainCharacter3Bgm));
 		}
 	}
 	// END_OF_SUPPORT_BGM
@@ -1539,7 +1539,7 @@ void CHARACTER::PointsPacket()
 	if (!GetDesc())
 		return;
 
-	TPacketGCPoints pack;
+	TPacketGCCharacterPoints pack;
 
 	pack.header	= HEADER_GC_CHARACTER_POINTS;
 
@@ -1557,7 +1557,7 @@ void CHARACTER::PointsPacket()
 	for (int i = POINT_ST; i < POINT_MAX_NUM; ++i)
 		pack.points[i] = GetPoint(i);
 
-	GetDesc()->Packet(&pack, sizeof(TPacketGCPoints));
+	GetDesc()->Packet(&pack, sizeof(TPacketGCCharacterPoints));
 }
 
 bool CHARACTER::ChangeSex()

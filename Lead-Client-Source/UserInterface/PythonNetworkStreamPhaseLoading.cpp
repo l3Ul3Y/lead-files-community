@@ -238,7 +238,7 @@ bool CPythonNetworkStream::RecvMainCharacter2_EMPIRE()
 
 bool CPythonNetworkStream::RecvMainCharacter3_BGM()
 {
-	TPacketGCMainCharacter3_BGM mainChrPacket;
+	TPacketGCMainCharacter3Bgm mainChrPacket;
 	if (!Recv(sizeof(mainChrPacket), &mainChrPacket))
 		return false;
 
@@ -266,7 +266,7 @@ bool CPythonNetworkStream::RecvMainCharacter3_BGM()
 
 bool CPythonNetworkStream::RecvMainCharacter4_BGM_VOL()
 {
-	TPacketGCMainCharacter4_BGM_VOL mainChrPacket;
+	TPacketGCMainCharacter4BgmVol mainChrPacket;
 	if (!Recv(sizeof(mainChrPacket), &mainChrPacket))
 		return false;
 
@@ -321,9 +321,9 @@ float CPythonNetworkStream::GetFieldMusicVolume()
 
 bool CPythonNetworkStream::__RecvPlayerPoints()
 {
-	TPacketGCPoints PointsPacket;
+	TPacketGCCharacterPoints PointsPacket;
 
-	if (!Recv(sizeof(TPacketGCPoints), &PointsPacket))
+	if (!Recv(sizeof(TPacketGCCharacterPoints), &PointsPacket))
 		return false;
 
 	for (DWORD i = 0; i < POINT_MAX_NUM; ++i)

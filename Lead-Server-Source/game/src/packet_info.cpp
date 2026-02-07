@@ -133,12 +133,12 @@ CPacketInfoCG::CPacketInfoCG()
 	Set(HEADER_CG_HANDSHAKE, sizeof(TPacketCGHandshake), "Handshake", false);
 	Set(HEADER_CG_TIME_SYNC, sizeof(TPacketCGHandshake), "TimeSync", true);
 	Set(HEADER_CG_MARK_LOGIN, sizeof(TPacketCGMarkLogin), "MarkLogin", false);
-	Set(HEADER_CG_MARK_IDXLIST, sizeof(TPacketCGMarkIDXList), "MarkIdxList", false);
-	Set(HEADER_CG_MARK_CRCLIST, sizeof(TPacketCGMarkCRCList), "MarkCrcList", false);
+	Set(HEADER_CG_MARK_IDXLIST, sizeof(TPacketCGMarkIdxlist), "MarkIdxList", false);
+	Set(HEADER_CG_MARK_CRCLIST, sizeof(TPacketCGMarkCrclist), "MarkCrcList", false);
 	Set(HEADER_CG_MARK_UPLOAD, sizeof(TPacketCGMarkUpload), "MarkUpload", false);
 
 	Set(HEADER_CG_GUILD_SYMBOL_UPLOAD, sizeof(TPacketCGGuildSymbolUpload), "SymbolUpload", false);
-	Set(HEADER_CG_SYMBOL_CRC, sizeof(TPacketCGSymbolCRC), "SymbolCRC", false);
+	Set(HEADER_CG_SYMBOL_CRC, sizeof(TPacketCGSymbolCrc), "SymbolCRC", false);
 	Set(HEADER_CG_LOGIN, sizeof(TPacketCGLogin), "Login", true);
 	Set(HEADER_CG_LOGIN2, sizeof(TPacketCGLogin2), "Login2", true);
 	Set(HEADER_CG_LOGIN3, sizeof(TPacketCGLogin3), "Login3", true);
@@ -149,7 +149,7 @@ CPacketInfoCG::CPacketInfoCG()
 	Set(HEADER_CG_CHARACTER_SELECT, sizeof(TPacketCGCharacterSelect), "Select", true);
 	Set(HEADER_CG_CHARACTER_CREATE, sizeof(TPacketCGCharacterCreate), "Create", true);
 	Set(HEADER_CG_CHARACTER_DELETE, sizeof(TPacketCGCharacterDelete), "Delete", true);
-	Set(HEADER_CG_ENTERGAME, sizeof(TPacketCGEnterGame), "EnterGame", true);
+	Set(HEADER_CG_ENTERGAME, sizeof(TPacketCGEntergame), "EnterGame", true);
 
 	Set(HEADER_CG_ITEM_USE, sizeof(TPacketCGItemUse), "ItemUse", true);
 	Set(HEADER_CG_ITEM_DROP, sizeof(TPacketCGItemDrop), "ItemDrop", true);
@@ -164,7 +164,7 @@ CPacketInfoCG::CPacketInfoCG()
 
 	Set(HEADER_CG_ON_CLICK, sizeof(TPacketCGOnClick), "OnClick", true);
 	Set(HEADER_CG_EXCHANGE, sizeof(TPacketCGExchange), "Exchange", true);
-	Set(HEADER_CG_CHARACTER_POSITION, sizeof(TPacketCGPosition), "Position", true);
+	Set(HEADER_CG_CHARACTER_POSITION, sizeof(TPacketCGCharacterPosition), "Position", true);
 	Set(HEADER_CG_SCRIPT_ANSWER, sizeof(TPacketCGScriptAnswer), "ScriptAnswer", true);
 	Set(HEADER_CG_SCRIPT_BUTTON, sizeof(TPacketCGScriptButton), "ScriptButton", true);
 	Set(HEADER_CG_QUEST_INPUT_STRING, sizeof(TPacketCGQuestInputString), "QuestInputString", true);
@@ -173,8 +173,8 @@ CPacketInfoCG::CPacketInfoCG()
 	Set(HEADER_CG_MOVE, sizeof(TPacketCGMove), "Move", true);
 	Set(HEADER_CG_SYNC_POSITION, sizeof(TPacketCGSyncPosition), "SyncPosition", true);
 
-	Set(HEADER_CG_FLY_TARGETING, sizeof(TPacketCGFlyTargeting), "FlyTarget", true);
-	Set(HEADER_CG_ADD_FLY_TARGETING, sizeof(TPacketCGFlyTargeting), "AddFlyTarget", true);
+	Set(HEADER_CG_FLY_TARGETING, sizeof(TPacketCGAddFlyTargeting), "FlyTarget", true);
+	Set(HEADER_CG_ADD_FLY_TARGETING, sizeof(TPacketCGAddFlyTargeting), "AddFlyTarget", true);
 	Set(HEADER_CG_SHOOT, sizeof(TPacketCGShoot), "Shoot", true);
 
 	Set(HEADER_CG_USE_SKILL, sizeof(TPacketCGUseSkill), "UseSkill", true);
@@ -203,7 +203,7 @@ CPacketInfoCG::CPacketInfoCG()
 	Set(HEADER_CG_FISHING, sizeof(TPacketCGFishing), "Fishing", true);
 	Set(HEADER_CG_GIVE_ITEM, sizeof(TPacketCGGiveItem), "ItemGive", true);
 	Set(HEADER_CG_HACK, sizeof(TPacketCGHack), "Hack", true);
-	Set(HEADER_CG_MYSHOP, sizeof(TPacketCGMyShop), "MyShop", true);
+	Set(HEADER_CG_MYSHOP, sizeof(TPacketCGMyshop), "MyShop", true);
 
 	Set(HEADER_CG_REFINE, sizeof(TPacketCGRefine), "Refine", true);
 	Set(HEADER_CG_CHANGE_NAME, sizeof(TPacketCGChangeName), "ChangeName", true);

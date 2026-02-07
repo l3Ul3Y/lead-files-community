@@ -524,7 +524,7 @@ void DESC_MANAGER::SendClientPackageCryptKey( LPDESC desc )
 		return;
 	}
 
-	TPacketGCHybridCryptKeys packet;
+	TPacketGCHybridcryptKeys packet;
 	{
 		packet.bHeader = HEADER_GC_HYBRIDCRYPT_KEYS;
 		m_pPackageCrypt->GetPackageCryptKeys( &(packet.pDataKeyStream), packet.KeyStreamLen );
@@ -543,7 +543,7 @@ void DESC_MANAGER::SendClientPackageSDBToLoadMap( LPDESC desc, const char* pMapN
 		return;
 	}
 
-	TPacketGCPackageSDB packet;
+	TPacketGCHybridcryptSdb packet;
 	{
 		packet.bHeader      = HEADER_GC_HYBRIDCRYPT_SDB;
 		if( !m_pPackageCrypt->GetRelatedMapSDBStreams( pMapName, &(packet.m_pDataSDBStream), packet.iStreamLen ) )

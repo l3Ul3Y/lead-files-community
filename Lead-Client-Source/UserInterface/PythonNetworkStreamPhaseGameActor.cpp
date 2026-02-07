@@ -263,21 +263,21 @@ void CPythonNetworkStream::__RecvCharacterUpdatePacket(SNetworkUpdateActorData *
 
 bool CPythonNetworkStream::RecvCharacterDeletePacket()
 {
-	TPacketGCCharacterDelete chrDelPacket;
+	TPacketGCCharacterDelete chrDeletePacket;
 
-	if (!Recv(sizeof(chrDelPacket), &chrDelPacket))
+	if (!Recv(sizeof(chrDeletePacket), &chrDeletePacket))
 	{
 		TraceError("CPythonNetworkStream::RecvCharacterDeletePacket - Recv Error");
 		return false;
 	}
 
-	m_rokNetActorMgr->RemoveActor(chrDelPacket.id);
+	m_rokNetActorMgr->RemoveActor(chrDeletePacket.id);
 
 	// 캐릭터가 사라질때 개인 상점도 없애줍니다.
 	// Key Check 를 하기때문에 없어도 상관은 없습니다.
 	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_GAME], 
 		"BINARY_PrivateShop_Disappear", 
-		Py_BuildValue("(i)", chrDelPacket.id)
+		Py_BuildValue("(i)", chrDeletePacket.id)
 	);
 
 	return true;

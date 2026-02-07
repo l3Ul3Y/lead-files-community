@@ -143,11 +143,11 @@ void CHARACTER::SetSkillGroup(BYTE bSkillGroup)
 
 	m_points.skill_group = bSkillGroup; 
 
-	TPacketGCChangeSkillGroup p;
+	TPacketGCSkillGroup p;
 	p.header = HEADER_GC_SKILL_GROUP;
 	p.skill_group = m_points.skill_group;
 
-	GetDesc()->Packet(&p, sizeof(TPacketGCChangeSkillGroup));
+	GetDesc()->Packet(&p, sizeof(TPacketGCSkillGroup));
 }
 
 int CHARACTER::ComputeCooltime(int time)

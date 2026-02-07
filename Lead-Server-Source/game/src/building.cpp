@@ -136,7 +136,7 @@ void CObject::EncodeRemovePacket(LPENTITY entity)
 
 	TPacketGCCharacterDelete pack;
 
-	pack.header = HEADER_GC_CHARACTER_DEL;
+	pack.header = HEADER_GC_CHARACTER_DELETE;
 	pack.id     = m_dwVID;
 
 	d->Packet(&pack, sizeof(TPacketGCCharacterDelete));

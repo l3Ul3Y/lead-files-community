@@ -208,7 +208,7 @@ void CPythonNetworkStream::GamePhase()
  				ret = RecvCharacterAppendPacket();
 				break;
 
-			case HEADER_GC_CHAR_ADDITIONAL_INFO:
+			case HEADER_GC_CHARACTER_ADDITIONAL_INFO:
 				ret = RecvCharacterAdditionalInfo();
 				break;
 
@@ -216,7 +216,7 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvCharacterUpdatePacket();
 				break;
 
-			case HEADER_GC_CHARACTER_DEL:
+			case HEADER_GC_CHARACTER_DELETE:
 				ret = RecvCharacterDeletePacket();
 				break;
 
@@ -819,7 +819,7 @@ bool CPythonNetworkStream::RecvDuelStartPacket()
 
 bool CPythonNetworkStream::RecvPVPPacket()
 {
-	TPacketGCPVP kPVPPacket;
+	TPacketGCPvp kPVPPacket;
 	if (!Recv(sizeof(kPVPPacket), &kPVPPacket))
 		return false;
 
@@ -1307,9 +1307,9 @@ bool CPythonNetworkStream::SendWhisperPacket(const char * name, const char * c_s
 
 bool CPythonNetworkStream::RecvPointChange()
 {
-	TPacketGCPointChange PointChange;
+	TPacketGCCharacterPointChange PointChange;
 
-	if (!Recv(sizeof(TPacketGCPointChange), &PointChange))
+	if (!Recv(sizeof(TPacketGCCharacterPointChange), &PointChange))
 	{
 		Tracen("Recv Point Change Packet Error");
 		return false;
@@ -1433,12 +1433,12 @@ bool CPythonNetworkStream::RecvDeadPacket()
 
 bool CPythonNetworkStream::SendCharacterPositionPacket(BYTE iPosition)
 {
-	TPacketCGPosition PositionPacket;
+	TPacketCGCharacterPosition PositionPacket;
 
 	PositionPacket.header = HEADER_CG_CHARACTER_POSITION;
 	PositionPacket.position = iPosition;
 
-	if (!Send(sizeof(TPacketCGPosition), &PositionPacket))
+	if (!Send(sizeof(TPacketCGCharacterPosition), &PositionPacket))
 	{
 		Tracen("Send Character Position Packet Error");
 		return false;
@@ -1465,9 +1465,9 @@ bool CPythonNetworkStream::SendOnClickPacket(DWORD vid)
 
 bool CPythonNetworkStream::RecvCharacterPositionPacket()
 {
-	TPacketGCPosition PositionPacket;
+	TPacketGCCharacterPosition PositionPacket;
 
-	if (!Recv(sizeof(TPacketGCPosition), &PositionPacket))
+	if (!Recv(sizeof(TPacketGCCharacterPosition), &PositionPacket))
 		return false;
 
 	CInstanceBase * pChrInstance = CPythonCharacterManager::Instance().GetInstancePtr(PositionPacket.vid);
@@ -2334,7 +2334,7 @@ bool CPythonNetworkStream::SendSpecial(int nLen, void * pvBuf)
 
 bool CPythonNetworkStream::RecvAddFlyTargetingPacket()
 {
-	TPacketGCFlyTargeting kPacket;
+	TPacketGCAddFlyTargeting kPacket;
 	if (!Recv(sizeof(kPacket), &kPacket))
 		return false;
 
@@ -2372,7 +2372,7 @@ bool CPythonNetworkStream::RecvAddFlyTargetingPacket()
 
 bool CPythonNetworkStream::RecvFlyTargetingPacket()
 {
-	TPacketGCFlyTargeting kPacket;
+	TPacketGCAddFlyTargeting kPacket;
 	if (!Recv(sizeof(kPacket), &kPacket))
 		return false;
 
@@ -2425,7 +2425,7 @@ bool CPythonNetworkStream::SendShootPacket(UINT uSkill)
 
 bool CPythonNetworkStream::SendAddFlyTargetingPacket(DWORD dwTargetVID, const TPixelPosition & kPPosTarget)
 {
-	TPacketCGFlyTargeting packet;
+	TPacketCGAddFlyTargeting packet;
 
 	//CPythonCharacterManager & rpcm = CPythonCharacterManager::Instance();
 
@@ -2448,7 +2448,7 @@ bool CPythonNetworkStream::SendAddFlyTargetingPacket(DWORD dwTargetVID, const TP
 
 bool CPythonNetworkStream::SendFlyTargetingPacket(DWORD dwTargetVID, const TPixelPosition & kPPosTarget)
 {
-	TPacketCGFlyTargeting packet;
+	TPacketCGAddFlyTargeting packet;
 
 	//CPythonCharacterManager & rpcm = CPythonCharacterManager::Instance();
 
@@ -3649,7 +3649,7 @@ bool CPythonNetworkStream::RecvDungeon()
 // MyShop
 bool CPythonNetworkStream::SendBuildPrivateShopPacket(const char * c_szName, const std::vector<TShopItemTable> & c_rSellingItemStock)
 {
-	TPacketCGMyShop packet;
+	TPacketCGMyshop packet;
 	packet.bHeader = HEADER_CG_MYSHOP;
 	strncpy(packet.szSign, c_szName, SHOP_SIGN_MAX_LEN);
 	packet.bCount = static_cast<BYTE>(c_rSellingItemStock.size());
@@ -3735,7 +3735,7 @@ bool CPythonNetworkStream::RecvWalkModePacket()
 
 bool CPythonNetworkStream::RecvChangeSkillGroupPacket()
 {
-	TPacketGCChangeSkillGroup ChangeSkillGroup;
+	TPacketGCSkillGroup ChangeSkillGroup;
 	if (!Recv(sizeof(ChangeSkillGroup), &ChangeSkillGroup))
 		return false;
 
@@ -3805,7 +3805,7 @@ bool CPythonNetworkStream::RecvRefineInformationPacket()
 
 bool CPythonNetworkStream::RecvNPCList()
 {
-	TPacketGCNPCPosition kNPCPosition;
+	TPacketGCNpcPosition kNPCPosition;
 	if (!Recv(sizeof(kNPCPosition), &kNPCPosition))
 		return false;
 

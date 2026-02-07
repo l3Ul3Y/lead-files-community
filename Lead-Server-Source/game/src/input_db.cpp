@@ -163,7 +163,7 @@ void CInputDB::PlayerCreateFailure(LPDESC d, BYTE bType)
 	if (!d)
 		return;
 
-	TPacketGCCreateFailure pack;
+	TPacketGCCharacterCreateFailure pack;
 
 	pack.header	= HEADER_GC_CHARACTER_CREATE_FAILURE;
 	pack.bType	= bType;
