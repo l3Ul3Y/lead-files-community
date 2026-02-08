@@ -36,15 +36,6 @@ extern DWORD __DEFAULT_CODE_PAGE__;
 
 #define APP_NAME	"Metin 2"
 
-enum
-{
-#if defined(LOCALE_SERVICE_JAPAN)
-	PLAYER_NAME_MAX_LEN = 16,
-#else
-	PLAYER_NAME_MAX_LEN = 12,
-#endif
-};
-
 void initapp();
 void initime();
 void initsystem();

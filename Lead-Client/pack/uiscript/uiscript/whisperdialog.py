@@ -1,4 +1,5 @@
 import uiScriptLocale
+import chr
 
 ROOT = "d:/ymir work/ui/public/"
 
@@ -59,7 +60,7 @@ window = {
 							"width" : 120,
 							"height" : 17,
 
-							"input_limit" : PLAYER_NAME_MAX_LEN,
+							"input_limit" : chr.CHARACTER_NAME_MAX_LEN,
 
 							"text" : uiScriptLocale.WHISPER_NAME,
 						},

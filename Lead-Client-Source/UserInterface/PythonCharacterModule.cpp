@@ -1325,7 +1325,7 @@ void initchr()
 	PyObject * poModule = Py_InitModule("chr", s_methods);
 
 	// Length
-	PyModule_AddIntConstant(poModule, "PLAYER_NAME_MAX_LEN",				PLAYER_NAME_MAX_LEN);
+	PyModule_AddIntConstant(poModule, "CHARACTER_NAME_MAX_LEN",				CHARACTER_NAME_MAX_LEN);
 
 	// General
 	PyModule_AddIntConstant(poModule, "MOTION_NONE",						CRaceMotionData::NAME_NONE);

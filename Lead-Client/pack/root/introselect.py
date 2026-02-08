@@ -425,7 +425,7 @@ class SelectCharacterWindow(ui.Window):
 		nameInputBoard.SetTitle(localeInfo.SELECT_CHANGE_NAME_TITLE)
 		nameInputBoard.SetAcceptEvent(ui.__mem_func__(self.AcceptInputName))
 		nameInputBoard.SetCancelEvent(ui.__mem_func__(self.CancelInputName))
-		nameInputBoard.SetMaxLength(chr.PLAYER_NAME_MAX_LEN)
+		nameInputBoard.SetMaxLength(chr.CHARACTER_NAME_MAX_LEN)
 		nameInputBoard.SetBoardWidth(200)
 		nameInputBoard.SetDescription(localeInfo.SELECT_INPUT_CHANGING_NAME)
 		nameInputBoard.Open()

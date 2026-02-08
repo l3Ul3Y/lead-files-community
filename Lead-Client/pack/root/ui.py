@@ -3180,7 +3180,6 @@ class PythonScriptLoader(object):
 			import chr
 			import player
 			import app
-			self.ScriptDictionary["PLAYER_NAME_MAX_LEN"] = chr.PLAYER_NAME_MAX_LEN
 			self.ScriptDictionary["DRAGON_SOUL_EQUIPMENT_SLOT_START"] = player.DRAGON_SOUL_EQUIPMENT_SLOT_START
 			self.ScriptDictionary["LOCALE_PATH"] = app.GetLocalePath()
 			execfile(FileName, self.ScriptDictionary)
