@@ -19,6 +19,7 @@ class RefineDialog(ui.ScriptWindow):
 	def __Initialize(self):
 		self.dlgQuestion = None
 		self.children = []
+		self.materialData = []
 		self.vnum = 0
 		self.targetItemPos = 0
 		self.dialogHeight = 0
@@ -107,6 +108,7 @@ class RefineDialog(ui.ScriptWindow):
 		self.successPercentage = None
 		self.slotList = []
 		self.children = []
+		self.materialData = []
 
 	def Open(self, targetItemPos, nextGradeItemVnum, cost, prob, type):
 
@@ -120,6 +122,8 @@ class RefineDialog(ui.ScriptWindow):
 		self.cost = cost
 		self.percentage = prob
 		self.type = type
+
+		self.materialData = []
 
 		self.probText.SetText(localeInfo.REFINE_SUCCESS_PROBALITY % (self.percentage))
 		self.costText.SetText(localeInfo.REFINE_COST % (localeInfo.NumberToMoneyString(self.cost)))
@@ -170,13 +174,7 @@ class RefineDialog(ui.ScriptWindow):
 		textLine = ui.TextLine()
 		textLine.SetParent(thinBoard)
 		textLine.SetFontName(localeInfo.UI_DEF_FONT)
-
-		hasCount = player.GetItemCountByVnum(vnum)
-		textLine.SetText("%d/%d x %s" % (hasCount, count, item.GetItemName()))
-		if hasCount >= count:
-			textLine.SetPackedFontColor(0xff82ce4d)
-		else:
-			textLine.SetPackedFontColor(0xffff6f6f)
+		textLine.SetText("")
 		textLine.SetOutline()
 		textLine.SetFeather(False)
 		textLine.SetWindowVerticalAlignCenter()
@@ -191,8 +189,34 @@ class RefineDialog(ui.ScriptWindow):
 		textLine.Show()
 		self.children.append(textLine)
 
+		self.materialData.append([vnum, count, textLine])
+
 		self.dialogHeight += 34
 		self.UpdateDialog()
+
+	def OnUpdate(self):
+		if not self.IsShow():
+			return
+			
+		for data in self.materialData:
+			vnum = data[0]
+			needed_count = data[1]
+			text_line = data[2]
+			
+			current_count = player.GetItemCountByVnum(vnum)
+			
+			item.SelectItem(vnum)
+			itemName = item.GetItemName()
+			
+			newText = "%d/%d x %s" % (current_count, needed_count, itemName)
+			
+			if text_line.GetText() != newText:
+				text_line.SetText(newText)
+				
+				if current_count >= needed_count:
+					text_line.SetPackedFontColor(0xff82ce4d)
+				else:
+					text_line.SetPackedFontColor(0xffff6f6f)
 
 	def UpdateDialog(self):
 		newWidth = self.toolTip.GetWidth() + 60

@@ -1,11 +1,14 @@
 import uiScriptLocale
 
+OFFSET_X = 420
+OFFSET_Y = 601
+
 window = {
 	"name" : "RefineDialog",
 	"style" : ("movable", "float",),
 
-	"x" : SCREEN_WIDTH - 400,
-	"y" : 70 * 800 / SCREEN_HEIGHT,
+	"x" : SCREEN_WIDTH - OFFSET_X,
+	"y" : SCREEN_HEIGHT - OFFSET_Y,
 
 	"width" : 0,
 	"height" : 0,
