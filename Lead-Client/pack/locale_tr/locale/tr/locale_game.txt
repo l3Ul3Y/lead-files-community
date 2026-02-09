@@ -498,7 +498,7 @@ QUEST_UNLIMITED_TIME	Zaman sýnýrý yok.
 QUEST_ZEROSEC	0 sn.
 QUICKSLOT_REGISTER_DISABLE_ITEM	Bu nesne hýzlý eriþim alanýna eklenemez.
 RECEIVE_MESSAGE	%s mesaj gönderdi.
-REFINE_COST	Yükseltme bedeli: %d Yang
+REFINE_COST	Yükseltme bedeli: %s
 REFINE_DESTROY_WARNING	Eþya arýndýrýlýrken yok olabilir.
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_1	Bunlar iyileþtirme yapýlarak yükseltilecek,
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_2	fakat hata vermesi durumunda nesne yok olabilir. Devam etmek istiyor musunuz?

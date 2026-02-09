@@ -498,7 +498,7 @@ QUEST_UNLIMITED_TIME	Без ограничения времени
 QUEST_ZEROSEC	0 сек.
 QUICKSLOT_REGISTER_DISABLE_ITEM	Этот предмет не может быть добавлен в поле быстрого доступа.
 RECEIVE_MESSAGE	%s отправил вам сообщение.
-REFINE_COST	Затраты на улучшение: %d янг
+REFINE_COST	Затраты на улучшение: %s
 REFINE_DESTROY_WARNING	Вероятность разрушения предмета при его улучшении.
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_1	Это повышает вероятность улучшения,
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_2	но в случае неудачи предмет будет разрушен. Вы уверенны, что хотите продолжить?

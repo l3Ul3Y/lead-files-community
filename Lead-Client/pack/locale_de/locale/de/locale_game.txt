@@ -383,7 +383,7 @@ QUEST_UNLIMITED_TIME	Keine Zeitbeschränkung
 QUEST_ZEROSEC	0 Sek.
 QUICKSLOT_REGISTER_DISABLE_ITEM	Dieser Gegenstand kann nicht zum Schnellzugriffsfeld hinzugefügt werden.
 RECEIVE_MESSAGE	%s hat dir eine Nachricht gesendet.
-REFINE_COST	Verbesserungskosten: %d Yang
+REFINE_COST	Verbesserungskosten: %s
 REFINE_DESTROY_WARNING	Der Gegenstand könnte beim Veredeln zerstört werden.
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_1	Dies erhöht die Verbesserungswahrscheinlichkeit,
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_2	aber bei einem Fehlschlag wird der Gegenstand zerstört. Möchtest du fortfahren?

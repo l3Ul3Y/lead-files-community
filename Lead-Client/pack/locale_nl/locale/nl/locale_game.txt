@@ -498,7 +498,7 @@ QUEST_UNLIMITED_TIME	Geen tijd limiet.
 QUEST_ZEROSEC	0 Sec.	
 QUICKSLOT_REGISTER_DISABLE_ITEM	Dit Voorwerp kan niet toegevoegd worden in de Snelle Toegangs Gebied	
 RECEIVE_MESSAGE	%s heeft je een bericht gestuurd.	
-REFINE_COST	Kosten voor Bevordering: %d Yang
+REFINE_COST	Kosten voor Bevordering: %s
 REFINE_DESTROY_WARNING	Dit Voorwerp kan vernietigd worden tijden het opwaarderen.	
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_1	Dit zal de kansen voor upwaarderen vergroten.
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_2	Als je niet slaagt dan kan het Voorwerp vernietigd worden. /n Wil je doorgaan?
