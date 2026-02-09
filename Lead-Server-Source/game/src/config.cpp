@@ -279,12 +279,6 @@ void config_init(const string& st_localeServiceName)
 		exit(1);
 	}
 
-	if (!GetIPInfo())
-	{
-		fprintf(stderr, "Can not get public ip address\n");
-		exit(1);
-	}
-
 	char db_host[2][64], db_user[2][64], db_pwd[2][64], db_db[2][64];
 	// ... 아... db_port는 이미 있는데... 네이밍 어찌해야함...
 	int mysql_db_port[2];
@@ -995,6 +989,15 @@ void config_init(const string& st_localeServiceName)
 	LocaleService_TransferDefaultSetting();
 	LocaleService_LoadEmpireTextConvertTables();
 	// END_OF_LOCALE_SERVICE
+
+	if (g_szPublicIP[0] == '\0')
+	{
+		if (!GetIPInfo())
+		{
+			fprintf(stderr, "BIND_IP not configured and cannot get IP automatically\n");
+			exit(1);
+		}
+	}
 
 	fclose(fp);
 
