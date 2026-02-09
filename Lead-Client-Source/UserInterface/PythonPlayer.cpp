@@ -877,7 +877,7 @@ void CPythonPlayer::MoveQuickSlot(int Source, int Target)
 #ifdef ENABLE_NEW_EQUIPMENT_SYSTEM
 bool CPythonPlayer::IsBeltInventorySlot(TItemPos Cell)
 {
-	return Cell.IsBeltInventoryCell();
+	return Cell.IsBeltInventoryPosition();
 }
 #endif
 

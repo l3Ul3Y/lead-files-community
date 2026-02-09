@@ -110,23 +110,20 @@ window = {
 								"height" : 182,
 
 								"slot" : (
-									{"index":EQUIPMENT_START_INDEX+0, "x":39, "y":37, "width":32, "height":64},
-									{"index":EQUIPMENT_START_INDEX+1, "x":39, "y":2, "width":32, "height":32},
-									{"index":EQUIPMENT_START_INDEX+2, "x":39, "y":145, "width":32, "height":32},
-									{"index":EQUIPMENT_START_INDEX+3, "x":75, "y":67, "width":32, "height":32},
-									{"index":EQUIPMENT_START_INDEX+4, "x":3, "y":3, "width":32, "height":96},
-									{"index":EQUIPMENT_START_INDEX+5, "x":114, "y":67, "width":32, "height":32},
-									{"index":EQUIPMENT_START_INDEX+6, "x":114, "y":35, "width":32, "height":32},
-									{"index":EQUIPMENT_START_INDEX+7, "x":2, "y":145, "width":32, "height":32},
-									{"index":EQUIPMENT_START_INDEX+8, "x":75, "y":145, "width":32, "height":32},
-									{"index":EQUIPMENT_START_INDEX+9, "x":114, "y":2, "width":32, "height":32},
-									{"index":EQUIPMENT_START_INDEX+10, "x":75, "y":35, "width":32, "height":32},
-									## 새 반지1
-									# {"index":item.EQUIPMENT_RING1, "x":2, "y":106, "width":32, "height":32},
-									## 새 반지2
-									# {"index":item.EQUIPMENT_RING2, "x":75, "y":106, "width":32, "height":32},
-									## 새 벨트
-									# {"index":item.EQUIPMENT_BELT, "x":39, "y":106, "width":32, "height":32},
+									{"index":item.EQUIPMENT_BODY, "x":39, "y":37, "width":32, "height":64},
+									{"index":item.EQUIPMENT_HEAD, "x":39, "y":2, "width":32, "height":32},
+									{"index":item.EQUIPMENT_SHOES, "x":39, "y":145, "width":32, "height":32},
+									{"index":item.EQUIPMENT_WRIST, "x":75, "y":67, "width":32, "height":32},
+									{"index":item.EQUIPMENT_WEAPON, "x":3, "y":3, "width":32, "height":96},
+									{"index":item.EQUIPMENT_NECK, "x":114, "y":67, "width":32, "height":32},
+									{"index":item.EQUIPMENT_EAR, "x":114, "y":35, "width":32, "height":32},
+									{"index":item.EQUIPMENT_UNIQUE1, "x":2, "y":145, "width":32, "height":32},
+									{"index":item.EQUIPMENT_UNIQUE2, "x":75, "y":145, "width":32, "height":32},
+									{"index":item.EQUIPMENT_ARROW, "x":114, "y":2, "width":32, "height":32},
+									{"index":item.EQUIPMENT_SHIELD, "x":75, "y":35, "width":32, "height":32},
+									{"index":item.EQUIPMENT_RING1, "x":2, "y":106, "width":32, "height":32},
+									{"index":item.EQUIPMENT_RING2, "x":75, "y":106, "width":32, "height":32},
+									{"index":item.EQUIPMENT_BELT, "x":39, "y":106, "width":32, "height":32},
 								),
 							},
 							## Dragon Soul Button
