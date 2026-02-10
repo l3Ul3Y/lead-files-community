@@ -383,7 +383,7 @@ QUEST_UNLIMITED_TIME	No time limit.
 QUEST_ZEROSEC	0 Sec.	
 QUICKSLOT_REGISTER_DISABLE_ITEM	This Item cannot be added to the Fast Access Field.	
 RECEIVE_MESSAGE	%s sent you a message.	
-REFINE_COST	Costs for Advancement: %d Yang
+REFINE_COST	Costs for Advancement: %s
 REFINE_DESTROY_WARNING	This Item could be destroyed while upgrading.	
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_1	This will improve the chance for upgrading,
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_2	but if you fail the Item could be destroyed. /n Do you want to continue?

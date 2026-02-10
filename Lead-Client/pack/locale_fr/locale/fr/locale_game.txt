@@ -383,7 +383,7 @@ QUEST_UNLIMITED_TIME	Pas de limite de temps
 QUEST_ZEROSEC	0 Sec.
 QUICKSLOT_REGISTER_DISABLE_ITEM	Cette objet ne peut pas être ajouté au champ d'accès rapide
 RECEIVE_MESSAGE	%s vous envoie un message.
-REFINE_COST	Coût de la progression : %d Yangs
+REFINE_COST	Coût de la progression : %s
 REFINE_DESTROY_WARNING	Cet objet peut être détruit durant la tentative de raffinage.
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_1	Ceci augmente les chances d'upper un objet
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_2	mais si vous échouez, l'objet pourra être détruit. Souhaitez vous continuer ?

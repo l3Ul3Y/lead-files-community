@@ -383,7 +383,7 @@ QUEST_UNLIMITED_TIME	Nincs idõkorlát
 QUEST_ZEROSEC	0 mp.
 QUICKSLOT_REGISTER_DISABLE_ITEM	Ez a tárgy nem adható a gyors elérésû mezõhöz.
 RECEIVE_MESSAGE	%s üzenetet küldött neked.
-REFINE_COST	Javítási költségek: %d Yang
+REFINE_COST	Javítási költségek: %s
 REFINE_DESTROY_WARNING	A tárgy megsérülhet a fejlesztés során.
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_1	Növeli a javítás esélyét,
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_2	de ha nem sikerül, akkor a tárgy megsemmisülhet. Folytatod?

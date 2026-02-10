@@ -498,7 +498,7 @@ QUEST_UNLIMITED_TIME	Nici o limitã de timp
 QUEST_ZEROSEC	0 sec.
 QUICKSLOT_REGISTER_DISABLE_ITEM	Acest obiect nu poate fi adãugat la câmpul de acces rapid.
 RECEIVE_MESSAGE	%s þi-a trimis un mesaj.
-REFINE_COST	Costuri de îmbunãtãþire: %d Yang
+REFINE_COST	Costuri de îmbunãtãþire: %s
 REFINE_DESTROY_WARNING	Obiectul poate fi distrus prin înnobilare.
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_1	Creºte probabilitatea de îmbunãtãþire,
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_2	dar dacã nu îþi reuºeºte, obiectul va fi distrus. Continui?

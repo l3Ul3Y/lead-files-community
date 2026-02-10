@@ -498,7 +498,7 @@ QUEST_UNLIMITED_TIME	Brak limitu czasowego.
 QUEST_ZEROSEC	0 Sek.
 QUICKSLOT_REGISTER_DISABLE_ITEM	Ten Przedmiot nie mo¿e zostaæ dodany do Szybkiego Pola Dostêpu.
 RECEIVE_MESSAGE	%s wys³a³ Ci wiadomoœæ.
-REFINE_COST	Cena za Ulepszenie: %d Yang
+REFINE_COST	Cena za Ulepszenie: %s
 REFINE_DESTROY_WARNING	Ten przedmiot mo¿e zostaæ zniszczony podczas uszlachetnienia.
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_1	To zwiêkszy szanse na ulepszenie,
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_2	ale jeœli zawiedziesz, Przedmiot zostanie zniszczony. Czy chcesz kontynuowaæ?

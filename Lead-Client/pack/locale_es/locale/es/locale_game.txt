@@ -498,7 +498,7 @@ QUEST_UNLIMITED_TIME	Sin límite de tiempo.
 QUEST_ZEROSEC	0 Seg.
 QUICKSLOT_REGISTER_DISABLE_ITEM	Este objeto no puede añadirse en el Campo de Acceso Rápido.
 RECEIVE_MESSAGE	%s te ha enviado un mensaje.
-REFINE_COST	Coste por Mejora: %d Yang
+REFINE_COST	Coste por Mejora: %s
 REFINE_DESTROY_WARNING	Este objeto puede ser destruido en la mejora.
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_1	Esto aumentará la probabilidad de mejorar.
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_2	pero si fallas el artículo será destruido. ¿Deseas continuar?

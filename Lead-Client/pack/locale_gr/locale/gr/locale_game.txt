@@ -498,7 +498,7 @@ QUEST_UNLIMITED_TIME	Χωρίς χρονικό όριο.
 QUEST_ZEROSEC	0 Δευτ.
 QUICKSLOT_REGISTER_DISABLE_ITEM	Το αντικείμενο δε μπορεί να προστεθεί στο ΠεδίοΓρήγορης Πρόσβασης.
 RECEIVE_MESSAGE	Ο %s σου έστειλε μήνυμα.
-REFINE_COST	Κόστος Προαγωγής: %d Yang
+REFINE_COST	Κόστος Προαγωγής: %s
 REFINE_DESTROY_WARNING	Το Αντικείμενο μπορεί να καταστραφεί κατά τον εξευγενισμό.
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_1	Αυτό θα βελτιώσει τις πιθανότητες αναβάθμισης,
 REFINE_DESTROY_WARNING_WITH_BONUS_PERCENT_2	αλλά αν αποτύχεις, το αντικείμενο μπορεί να καταστραφεί. /n Θέλεις να συνεχίσεις;
