@@ -744,12 +744,12 @@ void CHARACTER::Reward(bool bItemDrop)
 				if (pkAttacker->IsEquipUniqueItem(UNIQUE_ITEM_FASTER_ALIGNMENT_UP_BY_KILL))
 				{
 						pkAttacker->UpdateAlignment(14);
-				} 
+				}
 				else
 				{
 					pkAttacker->UpdateAlignment(7);
 				}
-				}
+			}
 			else
 			{
 				pkAttacker->UpdateAlignment(2);
@@ -1459,7 +1459,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 		{
 			Cube_close(this);
 		}
-		
+
 		CShopManager::instance().StopShopping(this);
 		CloseMyShop();
 		CloseSafebox();
@@ -1525,7 +1525,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 			   {
 			   GetArena()->SendPacketToObserver(&damageInfo, sizeof(TPacketGCDamageInfo));
 			   }
-			 */		
+			 */
 		}
 	}
 
@@ -1536,11 +1536,11 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 	//    pAttacker		: 공격자
 	//    dam		: 데미지
 	//    EDamageType	: 어떤 형식의 공격인가?
-	//    
+	//
 	// Return value
 	//    true		: dead
 	//    false		: not dead yet
-	// 
+	//
 	bool CHARACTER::Damage(LPCHARACTER pAttacker, int dam, EDamageType type) // returns true if dead
 	{
 		if (DAMAGE_TYPE_MAGIC == type)
@@ -1643,7 +1643,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 		// 마법형 스킬과, 레인지형 스킬은(궁자객) 크리티컬과, 관통공격 계산을 한다.
 		// 원래는 하지 않아야 하는데 Nerf(다운밸런스)패치를 할 수 없어서 크리티컬과
 		// 관통공격의 원래 값을 쓰지 않고, /2 이상하여 적용한다.
-		// 
+		//
 		// 무사 이야기가 많아서 밀리 스킬도 추가
 		//
 		// 20091109 : 무사가 결과적으로 엄청나게 강해진 것으로 결론남, 독일 기준 무사 비율 70% 육박
@@ -1732,7 +1732,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 				}
 			}
 		}
-		// 
+		//
 		// 콤보 공격, 활 공격, 즉 평타 일 때만 속성값들을 계산을 한다.
 		//
 		else if (type == DAMAGE_TYPE_NORMAL || type == DAMAGE_TYPE_NORMAL_RANGE)
@@ -1789,7 +1789,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 					{
 						int reflectDamage = dam * GetPoint(POINT_REFLECT_MELEE) / 100;
 
-						// NOTE: 공격자가 IMMUNE_REFLECT 속성을 갖고있다면 반사를 안 하는 게 
+						// NOTE: 공격자가 IMMUNE_REFLECT 속성을 갖고있다면 반사를 안 하는 게
 						// 아니라 1/3 데미지로 고정해서 들어가도록 기획에서 요청.
 						if (pAttacker->IsImmune(IMMUNE_REFLECT))
 							reflectDamage = int(reflectDamage / 3.0f + 0.5f);
@@ -1837,7 +1837,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 
 				if (iPenetratePct)
 				{
-					
+
 					//관통타격 저항 값 적용.
 					iPenetratePct -= GetPoint(POINT_RESIST_PENETRATE);
 
@@ -1942,7 +1942,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 
 		//
 		// 평타 또는 스킬로 인한 보너스 피해/방어 계산
-		// 
+		//
 		switch (type)
 		{
 			case DAMAGE_TYPE_NORMAL:
@@ -1997,7 +1997,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 
 		//
 		// 전체 방어력 상승 (몰 아이템)
-		// 
+		//
 		if (GetPoint(POINT_MALL_DEFBONUS) > 0)
 		{
 			int dec_dam = MIN(200, dam * GetPoint(POINT_MALL_DEFBONUS) / 100);
@@ -2149,8 +2149,8 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 				if(pAttacker)
 				{
 					pAttacker->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("-> %s, DAM %d HP %d(%d%%) %s%s"),
-							GetName(), 
-							dam, 
+							GetName(),
+							dam,
 							GetHP(),
 							(GetHP() * 100) / GetMaxHP(),
 							IsCritical ? "crit " : "",
@@ -2160,7 +2160,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 
 				ChatPacket(CHAT_TYPE_PARTY, LC_TEXT("<- %s, DAM %d HP %d(%d%%) %s%s"),
 						pAttacker ? pAttacker->GetName() : 0,
-						dam, 
+						dam,
 						GetHP(),
 						(GetHP() * 100) / GetMaxHP(),
 						IsCritical ? "crit " : "",
@@ -2248,7 +2248,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 				iExp += iExp * 20 /100;
 
 			// 사귀타워 경험치 보너스
-			if (to->GetMapIndex() >= 660000 && to->GetMapIndex() < 670000) 
+			if (to->GetMapIndex() >= 660000 && to->GetMapIndex() < 670000)
 				iExp += iExp * 20 / 100; // 1.2배 (20%)
 
 			// 아이템 경험치 두배 속성
@@ -2304,7 +2304,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 
 		if (test_server)
 		{
-			sys_log(0, "Bonus Exp : Ramadan Candy: %d MallExp: %d PointExp: %d", 
+			sys_log(0, "Bonus Exp : Ramadan Candy: %d MallExp: %d PointExp: %d",
 					to->GetPoint(POINT_RAMADAN_CANDY_BONUS_EXP),
 					to->GetPoint(POINT_MALL_EXPBONUS),
 					to->GetPoint(POINT_EXP)
@@ -2336,7 +2336,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 				// 1억이 100%
 				DWORD dwUpdatePoint = 2000*iExp/to->GetLevel()/to->GetLevel()/3;
 
-				if (to->GetPremiumRemainSeconds(PREMIUM_MARRIAGE_FAST) > 0 || 
+				if (to->GetPremiumRemainSeconds(PREMIUM_MARRIAGE_FAST) > 0 ||
 						you->GetPremiumRemainSeconds(PREMIUM_MARRIAGE_FAST) > 0)
 					dwUpdatePoint = (DWORD)(dwUpdatePoint * 3);
 
@@ -2382,7 +2382,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 			int		m_iMode;
 			int		m_iMemberCount;
 
-			FPartyDistributor(LPCHARACTER center, int member_count, int total, DWORD iExp, int iMode) 
+			FPartyDistributor(LPCHARACTER center, int member_count, int total, DWORD iExp, int iMode)
 				: total(total), c(center), x(center->GetX()), y(center->GetY()), _iExp(iExp), m_iMode(iMode), m_iMemberCount(member_count)
 				{
 					if (m_iMemberCount == 0)
@@ -2784,7 +2784,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 							pkVictim->OnMove();
 
 							if (pkVictim->CanBeginFight())
-								pkVictim->BeginFight(m_me); 
+								pkVictim->BeginFight(m_me);
 
 							pkVictim->Damage(m_me, iDam, DAMAGE_TYPE_MAGIC);
 							// 타격치 계산부 끝
@@ -2804,7 +2804,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 									pkVictim->OnMove();
 
 									if (pkVictim->CanBeginFight())
-										pkVictim->BeginFight(m_me); 
+										pkVictim->BeginFight(m_me);
 
 									m_me->ComputeSkill(m_bType, pkVictim);
 									m_me->UseArrow(pkArrow, iUseArrow);
@@ -2830,7 +2830,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 								pkVictim->OnMove();
 
 								if (pkVictim->CanBeginFight())
-									pkVictim->BeginFight(m_me); 
+									pkVictim->BeginFight(m_me);
 
 								sys_log(0, "%s kwankeyok %s", m_me->GetName(), pkVictim->GetName());
 								m_me->ComputeSkill(m_bType, pkVictim);
@@ -2923,7 +2923,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 							pkVictim->OnMove();
 
 							if (pkVictim->CanBeginFight())
-								pkVictim->BeginFight(m_me); 
+								pkVictim->BeginFight(m_me);
 
 							sys_log(0, "%s - Skill %d -> %s", m_me->GetName(), m_bType, pkVictim->GetName());
 							m_me->ComputeSkill(m_bType, pkVictim);
@@ -2968,7 +2968,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 		if (!CanMove())
 		{
 			return false;
-		}	
+		}
 
 		CFuncShoot f(this, bType);
 
@@ -2987,7 +2987,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 	void CHARACTER::FlyTarget(DWORD dwTargetVID, long x, long y, BYTE bHeader)
 	{
 		LPCHARACTER pkVictim = CHARACTER_MANAGER::instance().Find(dwTargetVID);
-		TPacketGCFlyTargeting pack;
+		TPacketGCAddFlyTargeting pack;
 
 		//pack.bHeader	= HEADER_GC_FLY_TARGETING;
 		pack.bHeader	= (bHeader == HEADER_CG_FLY_TARGETING) ? HEADER_GC_FLY_TARGETING : HEADER_GC_ADD_FLY_TARGETING;
@@ -3036,7 +3036,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 			if (!pAttacker)
 				continue;
 
-			if (pAttacker->IsAffectFlag(AFF_EUNHYUNG) || 
+			if (pAttacker->IsAffectFlag(AFF_EUNHYUNG) ||
 					pAttacker->IsAffectFlag(AFF_INVISIBILITY) ||
 					pAttacker->IsAffectFlag(AFF_REVIVE_INVISIBLE))
 				continue;

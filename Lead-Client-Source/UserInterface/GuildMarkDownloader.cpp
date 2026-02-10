@@ -163,11 +163,11 @@ UINT CGuildMarkDownloader::__GetPacketSize(UINT header)
 		case HEADER_GC_PING:
 			return sizeof(TPacketGCPing);
 		case HEADER_GC_MARK_IDXLIST:
-			return sizeof(TPacketGCMarkIDXList);
+			return sizeof(TPacketGCMarkIdxlist);
 		case HEADER_GC_MARK_BLOCK:
 			return sizeof(TPacketGCMarkBlock);
 		case HEADER_GC_SYMBOL_DATA:
-			return sizeof(TPacketGCGuildSymbolData);
+			return sizeof(TPacketGCSymbolData);
 		case HEADER_CG_MARK_CRCLIST:	// 사용하지 않음
 			return sizeof(BYTE);
 	}
@@ -276,7 +276,7 @@ bool CGuildMarkDownloader::__LoginState_RecvPhase()
 // MARK_BUG_FIX
 bool CGuildMarkDownloader::__SendMarkIDXList()
 {
-	TPacketCGMarkIDXList kPacketMarkIDXList;
+	TPacketCGMarkIdxlist kPacketMarkIDXList;
 	kPacketMarkIDXList.header = HEADER_CG_MARK_IDXLIST;
 	if (!Send(sizeof(kPacketMarkIDXList), &kPacketMarkIDXList))
 		return false;
@@ -286,7 +286,7 @@ bool CGuildMarkDownloader::__SendMarkIDXList()
 
 bool CGuildMarkDownloader::__LoginState_RecvMarkIndex()
 {
-	TPacketGCMarkIDXList kPacketMarkIndex;
+	TPacketGCMarkIdxlist kPacketMarkIndex;
 
 	if (!Peek(sizeof(kPacketMarkIndex), &kPacketMarkIndex))
 		return false;
@@ -319,7 +319,7 @@ bool CGuildMarkDownloader::__LoginState_RecvMarkIndex()
 
 bool CGuildMarkDownloader::__SendMarkCRCList()
 {
-	TPacketCGMarkCRCList kPacketMarkCRCList;
+	TPacketCGMarkCrclist kPacketMarkCRCList;
 
 	if (!CGuildMarkManager::Instance().GetBlockCRCList(m_currentRequestingImageIndex, kPacketMarkCRCList.crclist))
 		__CompleteState_Set();
@@ -402,7 +402,7 @@ bool CGuildMarkDownloader::__SendSymbolCRCList()
 {
 	for (DWORD i=0; i<m_kVec_dwGuildID.size(); ++i)
 	{
-		TPacketCGSymbolCRC kSymbolCRCPacket;
+		TPacketCGSymbolCrc kSymbolCRCPacket;
 		kSymbolCRCPacket.header = HEADER_CG_SYMBOL_CRC;
 		kSymbolCRCPacket.guild_id = m_kVec_dwGuildID[i];
 
@@ -433,7 +433,7 @@ bool CGuildMarkDownloader::__LoginState_RecvSymbolData()
 
 	//////////////////////////////////////////////////////////////
 
-	TPacketGCGuildSymbolData kPacketSymbolData;
+	TPacketGCSymbolData kPacketSymbolData;
 	if (!Recv(sizeof(kPacketSymbolData), &kPacketSymbolData))
 		return false;
 

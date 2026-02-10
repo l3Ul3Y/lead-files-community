@@ -220,9 +220,9 @@ bool CAccountConnector::__AuthState_RecvHandshake()
 
 bool CAccountConnector::__AuthState_RecvHybridCryptKeys(int iTotalSize)
 {
-	int iFixedHeaderSize = TPacketGCHybridCryptKeys::GetFixedHeaderSize();
+	int iFixedHeaderSize = TPacketGCHybridcryptKeys::GetFixedHeaderSize();
 	
-	TPacketGCHybridCryptKeys kPacket(iTotalSize-iFixedHeaderSize);
+	TPacketGCHybridcryptKeys kPacket(iTotalSize-iFixedHeaderSize);
 
 	if (!Recv(iFixedHeaderSize, &kPacket))
 		return false;
@@ -236,9 +236,9 @@ bool CAccountConnector::__AuthState_RecvHybridCryptKeys(int iTotalSize)
 
 bool CAccountConnector::__AuthState_RecvHybridCryptSDB(int iTotalSize)
 {
-	int iFixedHeaderSize = TPacketGCPackageSDB::GetFixedHeaderSize();
+	int iFixedHeaderSize = TPacketGCHybridcryptSdb::GetFixedHeaderSize();
 
-	TPacketGCPackageSDB kPacket(iTotalSize-iFixedHeaderSize);
+	TPacketGCHybridcryptSdb kPacket(iTotalSize-iFixedHeaderSize);
 
 	if (!Recv(iFixedHeaderSize, &kPacket))
 		return false;

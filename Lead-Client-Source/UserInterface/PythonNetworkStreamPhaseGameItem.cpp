@@ -353,9 +353,9 @@ bool CPythonNetworkStream::RecvQuickSlotDelPacket()
 
 bool CPythonNetworkStream::RecvQuickSlotMovePacket()
 {
-	TPacketGCQuickSlotSwap packet_quick_slot_swap;
+	TPacketGCQuickslotSwap packet_quick_slot_swap;
 
-	if (!Recv(sizeof(TPacketGCQuickSlotSwap), &packet_quick_slot_swap))
+	if (!Recv(sizeof(TPacketGCQuickslotSwap), &packet_quick_slot_swap))
 		return false;
 
 	IAbstractPlayer& rkPlayer=IAbstractPlayer::GetSingleton();

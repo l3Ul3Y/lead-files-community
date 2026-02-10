@@ -184,7 +184,7 @@ void CInputLogin::ChangeName(LPDESC d, const char * data)
 
 	if (!check_name(p->name))
 	{
-		TPacketGCCreateFailure pack;
+		TPacketGCCharacterCreateFailure pack;
 		pack.header = HEADER_GC_CHARACTER_CREATE_FAILURE;
 		pack.bType = 0;
 		d->Packet(&pack, sizeof(pack));
@@ -403,7 +403,7 @@ void CInputLogin::CharacterCreate(LPDESC d, const char * data)
 
 	if (0 == strcmp(c_rAccountTable.login, pinfo->name))
 	{
-		TPacketGCCreateFailure pack;
+		TPacketGCCharacterCreateFailure pack;
 		pack.header = HEADER_GC_CHARACTER_CREATE_FAILURE;
 		pack.bType = 1;
 
@@ -739,7 +739,7 @@ int CInputLogin::GuildSymbolUpload(LPDESC d, const char* c_pData, size_t uiBytes
 
 void CInputLogin::GuildSymbolCRC(LPDESC d, const char* c_pData)
 {
-	const TPacketCGSymbolCRC & CGPacket = *((TPacketCGSymbolCRC *) c_pData);
+	const TPacketCGSymbolCrc & CGPacket = *((TPacketCGSymbolCrc *) c_pData);
 
 	sys_log(0, "GuildSymbolCRC %u %u %u", CGPacket.guild_id, CGPacket.crc, CGPacket.size);
 
@@ -752,7 +752,7 @@ void CInputLogin::GuildSymbolCRC(LPDESC d, const char* c_pData)
 
 	if (pkGS->raw.size() != CGPacket.size || pkGS->crc != CGPacket.crc)
 	{
-		TPacketGCGuildSymbolData GCPacket;
+		TPacketGCSymbolData GCPacket;
 
 		GCPacket.header = HEADER_GC_SYMBOL_DATA;
 		GCPacket.size = sizeof(GCPacket) + pkGS->raw.size();
@@ -813,7 +813,7 @@ void CInputLogin::GuildMarkIDXList(LPDESC d, const char* c_pData)
 		rkMarkMgr.CopyMarkIdx(buf);
 	}
 
-	TPacketGCMarkIDXList p;
+	TPacketGCMarkIdxlist p;
 	p.header = HEADER_GC_MARK_IDXLIST;
 	p.bufSize = sizeof(p) + bufSize;
 	p.count = rkMarkMgr.GetMarkCount();
@@ -832,7 +832,7 @@ void CInputLogin::GuildMarkIDXList(LPDESC d, const char* c_pData)
 
 void CInputLogin::GuildMarkCRCList(LPDESC d, const char* c_pData)
 {
-	TPacketCGMarkCRCList * pCG = (TPacketCGMarkCRCList *) c_pData;
+	TPacketCGMarkCrclist * pCG = (TPacketCGMarkCrclist *) c_pData;
 
 	std::map<BYTE, const SGuildMarkBlock *> mapDiffBlocks;
 	CGuildMarkManager::instance().GetDiffBlocks(pCG->imgIdx, pCG->crclist, mapDiffBlocks);

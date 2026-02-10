@@ -106,8 +106,8 @@ void CPythonNetworkStream::SelectPhase()
 			break;
 
 		case HEADER_GC_CHARACTER_POINT_CHANGE:
-			TPacketGCPointChange PointChange;
-			Recv(sizeof(TPacketGCPointChange), &PointChange);
+			TPacketGCCharacterPointChange PointChange;
+			Recv(sizeof(TPacketGCCharacterPointChange), &PointChange);
 			return;
 			break;
 
@@ -230,9 +230,9 @@ bool CPythonNetworkStream::__RecvPlayerCreateSuccessPacket()
 
 bool CPythonNetworkStream::__RecvPlayerCreateFailurePacket()
 {
-	TPacketGCCreateFailure packet;
+	TPacketGCCharacterCreateFailure packet;
 
-	if (!Recv(sizeof(TPacketGCCreateFailure), &packet))
+	if (!Recv(sizeof(TPacketGCCharacterCreateFailure), &packet))
 		return false;
 
 	PyCallClassMemberFunc(m_apoPhaseWnd[PHASE_WINDOW_CREATE], "OnCreateFailure", Py_BuildValue("(i)", packet.bType));
@@ -242,8 +242,8 @@ bool CPythonNetworkStream::__RecvPlayerCreateFailurePacket()
 
 bool CPythonNetworkStream::__RecvPlayerDestroySuccessPacket()
 {
-	TPacketGCDestroyCharacterSuccess packet;
-	if (!Recv(sizeof(TPacketGCDestroyCharacterSuccess), &packet))
+	TPacketGCCharacterDeleteSuccess packet;
+	if (!Recv(sizeof(TPacketGCCharacterDeleteSuccess), &packet))
 		return false;
 
 	memset(&m_akSimplePlayerInfo[packet.account_index], 0, sizeof(m_akSimplePlayerInfo[packet.account_index]));

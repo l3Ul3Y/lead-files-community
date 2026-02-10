@@ -63,7 +63,7 @@ void CPVP::Packet(bool bDelete)
 		return;
 	}
 
-	TPacketGCPVP pack;
+	TPacketGCPvp pack;
 
 	pack.bHeader = HEADER_GC_PVP;
 
@@ -578,7 +578,7 @@ void CPVPManager::SendList(LPDESC d)
 
 	DWORD dwVID = d->GetCharacter()->GetVID();
 
-	TPacketGCPVP pack;
+	TPacketGCPvp pack;
 
 	pack.bHeader = HEADER_GC_PVP;
 

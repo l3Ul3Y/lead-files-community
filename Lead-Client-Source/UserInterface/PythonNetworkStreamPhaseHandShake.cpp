@@ -136,13 +136,13 @@ bool CPythonNetworkStream::RecvHandshakeOKPacket()
 
 bool CPythonNetworkStream::RecvHybridCryptKeyPacket()
 {
-	int iFixedHeaderSize = TPacketGCHybridCryptKeys::GetFixedHeaderSize();
+	int iFixedHeaderSize = TPacketGCHybridcryptKeys::GetFixedHeaderSize();
 
 	TDynamicSizePacketHeader header;
 	if( !Peek( sizeof(header), &header) )
 		return false;
 
-	TPacketGCHybridCryptKeys kPacket(header.size-iFixedHeaderSize);
+	TPacketGCHybridcryptKeys kPacket(header.size-iFixedHeaderSize);
 
 	if (!Recv(iFixedHeaderSize, &kPacket))
 		return false;
@@ -156,13 +156,13 @@ bool CPythonNetworkStream::RecvHybridCryptKeyPacket()
 
 bool CPythonNetworkStream::RecvHybridCryptSDBPacket()
 {
-	int iFixedHeaderSize = TPacketGCPackageSDB::GetFixedHeaderSize();
+	int iFixedHeaderSize = TPacketGCHybridcryptSdb::GetFixedHeaderSize();
 
 	TDynamicSizePacketHeader header;
 	if( !Peek( sizeof(header), &header) )
 		return false;
 
-	TPacketGCPackageSDB kPacket(header.size-iFixedHeaderSize);
+	TPacketGCHybridcryptSdb kPacket(header.size-iFixedHeaderSize);
 
 	if (!Recv(iFixedHeaderSize, &kPacket))
 		return false;

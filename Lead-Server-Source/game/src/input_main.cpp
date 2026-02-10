@@ -1910,7 +1910,7 @@ int CInputMain::SyncPosition(LPCHARACTER ch, const char * c_pcData, size_t uiByt
 
 void CInputMain::FlyTarget(LPCHARACTER ch, const char * pcData, BYTE bHeader)
 {
-	TPacketCGFlyTargeting * p = (TPacketCGFlyTargeting *) pcData;
+	TPacketCGAddFlyTargeting * p = (TPacketCGAddFlyTargeting *) pcData;
 	ch->FlyTarget(p->dwTargetVID, p->x, p->y, bHeader);
 }
 
@@ -2872,10 +2872,10 @@ void CInputMain::Hack(LPCHARACTER ch, const char * c_pData)
 
 int CInputMain::MyShop(LPCHARACTER ch, const char * c_pData, size_t uiBytes)
 {
-	TPacketCGMyShop * p = (TPacketCGMyShop *) c_pData;
+	TPacketCGMyshop * p = (TPacketCGMyshop *) c_pData;
 	int iExtraLen = p->bCount * sizeof(TShopItemTable);
 
-	if (uiBytes < sizeof(TPacketCGMyShop) + iExtraLen)
+	if (uiBytes < sizeof(TPacketCGMyshop) + iExtraLen)
 		return -1;
 
 	if (ch->GetGold() >= GOLD_MAX)
@@ -2895,7 +2895,7 @@ int CInputMain::MyShop(LPCHARACTER ch, const char * c_pData, size_t uiBytes)
 	}
 
 	sys_log(0, "MyShop count %d", p->bCount);
-	ch->OpenMyShop(p->szSign, (TShopItemTable *) (c_pData + sizeof(TPacketCGMyShop)), p->bCount);
+	ch->OpenMyShop(p->szSign, (TShopItemTable *) (c_pData + sizeof(TPacketCGMyshop)), p->bCount);
 	return (iExtraLen);
 }
 
